@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mayank Agrawal — Software Developer</title>
+<meta name="description" content="Portfolio of Mayank Agrawal — Software Developer building MERN backends, RESTful APIs, and AI-driven automation tools. Open to opportunities.">
+<meta property="og:title" content="Mayank Agrawal — Software Developer">
+<meta property="og:description" content="MERN, backend APIs, and AI-driven automation. Open to opportunities.">
+<meta property="og:image" content="https://github.com/Magraa.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0f1c28">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f1c28'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle' fill='%23e0a24a' font-family='monospace' font-weight='700'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ---------- Tokens ---------- */
+  :root{
+    --ink-950:#0d1620;
+    --ink-900:#0f1c28;
+    --ink-800:#16283a;
+    --paper:#f5f4ee;
+    --paper-dim:#e7e5db;
+    --line:#c9cabc;
+    --line-strong:#9a9c8c;
+    --text:#1c2420;
+    --text-dim:#5a6058;
+    --accent:#b5651d;
+    --accent-ink:#8a4a12;
+    --accent-soft:#e7c9a3;
+    --good:#3f6b4a;
+
+    --bg: var(--paper);
+    --surface: #ffffff;
+    --surface-2: var(--paper-dim);
+    --fg: var(--text);
+    --fg-dim: var(--text-dim);
+    --rule: var(--line);
+    --rule-strong: var(--line-strong);
+    --acc: var(--accent);
+    --acc-ink: var(--accent-ink);
+    --acc-soft: var(--accent-soft);
+
+    --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', serif;
+    --font-body: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: var(--ink-950);
+      --surface: var(--ink-900);
+      --surface-2: var(--ink-800);
+      --fg: #eae7dc;
+      --fg-dim: #9aa5ac;
+      --rule: #2a3b4a;
+      --rule-strong: #3d5468;
+      --acc: #e0a24a;
+      --acc-ink: #f3c583;
+      --acc-soft: #4a3a24;
+      --good: #5a9e6f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg: var(--ink-950);
+    --surface: var(--ink-900);
+    --surface-2: var(--ink-800);
+    --fg: #eae7dc;
+    --fg-dim: #9aa5ac;
+    --rule: #2a3b4a;
+    --rule-strong: #3d5468;
+    --acc: #e0a24a;
+    --acc-ink: #f3c583;
+    --acc-soft: #4a3a24;
+    --good: #5a9e6f;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.6;
+    background-image:
+      linear-gradient(var(--rule) 1px, transparent 1px),
+      linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: -1px -1px;
+    overflow-x: hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  h1,h2,h3{font-family:var(--font-display); font-weight:500; text-wrap:balance; margin:0;}
+  a{color:inherit;}
+  .mono{font-family:var(--font-mono);}
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--fg-dim);
+  }
+  .eyebrow::before{content:"§ ";color:var(--acc);}
+
+  .wrap{max-width:1040px; margin:0 auto; padding:0 28px;}
+
+  /* ---------- Ruler strip ---------- */
+  .ruler{
+    height:12px;
+    background-image: repeating-linear-gradient(to right, var(--rule-strong) 0 1px, transparent 1px 10px);
+    background-position: -1px 0;
+    opacity:0.5;
+  }
+
+  /* ---------- Nav ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom:1px solid var(--rule);
+  }
+  .nav-inner{
+    max-width:1040px; margin:0 auto; padding:14px 28px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px;
+  }
+  .nav-mark{
+    font-family:var(--font-mono); font-weight:600; font-size:0.9rem;
+    letter-spacing:0.02em;
+    display:flex; align-items:center; gap:8px;
+  }
+  .nav-mark .dot{width:8px;height:8px;border-radius:50%;background:var(--acc);display:inline-block;}
+  .nav-right{display:flex; align-items:center; gap:24px;}
+  .nav-links{display:flex; gap:22px; list-style:none; margin:0; padding:0;}
+  .nav-links a{
+    font-family:var(--font-mono); font-size:0.78rem; text-decoration:none;
+    color:var(--fg-dim); letter-spacing:0.03em; text-transform:uppercase;
+    border-bottom:1px solid transparent; padding-bottom:2px;
+    transition:color .15s, border-color .15s;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible{color:var(--fg); border-color:var(--acc);}
+  @media (max-width:700px){ .nav-links{display:none;} }
+
+  .status-pill{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.04em;
+    color:var(--good); border:1px solid var(--good); padding:5px 10px;
+    white-space:nowrap;
+  }
+  .dot-live{
+    width:7px; height:7px; border-radius:50%; background:var(--good);
+    box-shadow:0 0 0 0 color-mix(in srgb, var(--good) 50%, transparent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 color-mix(in srgb, var(--good) 45%, transparent);}
+    70%{box-shadow:0 0 0 6px color-mix(in srgb, var(--good) 0%, transparent);}
+    100%{box-shadow:0 0 0 0 color-mix(in srgb, var(--good) 0%, transparent);}
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{padding:72px 0 64px; position:relative;}
+  .hero-grid{
+    display:grid; grid-template-columns:1fr 240px; gap:44px; align-items:start;
+  }
+  .hero-eyebrow{margin-bottom:22px;}
+  .hero h1{
+    font-size:clamp(2.6rem, 6vw, 4.4rem);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+  }
+  .hero h1 em{
+    font-style:italic; color:var(--acc-ink); font-weight:500;
+  }
+  .hero-sub{
+    max-width:52ch; margin-top:22px; font-size:1.08rem; color:var(--fg-dim);
+  }
+
+  .dim-line{ position:relative; width:280px; max-width:100%; height:34px; margin-top:30px; }
+  .dim-label{
+    position:absolute; top:0; left:0; font-size:0.68rem; letter-spacing:0.1em;
+    color:var(--acc-ink);
+  }
+  .dim-bar{
+    position:absolute; bottom:6px; left:0; right:0; height:1px; background:var(--rule-strong);
+    transform-origin:left; animation:draw 900ms ease-out both;
+  }
+  .dim-bar::before, .dim-bar::after{
+    content:""; position:absolute; top:-4px; width:1px; height:9px; background:var(--rule-strong);
+  }
+  .dim-bar::before{left:0;}
+  .dim-bar::after{right:0;}
+  @keyframes draw{ from{transform:scaleX(0);} to{transform:scaleX(1);} }
+
+  .hero-links{display:flex; flex-wrap:wrap; gap:12px; margin-top:26px;}
+  .pill{
+    font-family:var(--font-mono); font-size:0.8rem;
+    border:1px solid var(--rule-strong); padding:9px 16px;
+    text-decoration:none; color:var(--fg);
+    display:inline-flex; align-items:center; gap:8px;
+    transition:border-color .15s, background .15s, transform .15s;
+  }
+  .pill:hover{border-color:var(--acc); background:var(--surface-2); transform:translateY(-1px);}
+  .pill.solid{background:var(--acc); border-color:var(--acc); color:var(--ink-950);}
+  .pill.solid:hover{background:var(--acc-ink); border-color:var(--acc-ink); color:var(--ink-950);}
+
+  /* ---------- Title block (engineering-drawing corner stamp) ---------- */
+  .titleblock{
+    border:1px solid var(--rule-strong);
+    background:var(--surface);
+  }
+  .avatar-img{
+    width:100%; aspect-ratio:1/1; object-fit:cover; display:block;
+    border-bottom:1px solid var(--rule-strong);
+    filter: sepia(8%) saturate(85%);
+  }
+  .tb-row{
+    display:grid; grid-template-columns:78px 1fr;
+    border-top:1px solid var(--rule);
+    font-family:var(--font-mono); font-size:0.68rem;
+  }
+  .tb-row:first-of-type{border-top:none;}
+  .tb-k{padding:7px 8px; color:var(--fg-dim); border-right:1px solid var(--rule); letter-spacing:0.04em;}
+  .tb-v{padding:7px 8px; color:var(--fg);}
+  .tb-v.status-live{color:var(--good); display:flex; align-items:center; gap:6px;}
+  @media (max-width:760px){
+    .hero-grid{grid-template-columns:1fr;}
+    .titleblock{max-width:240px;}
+  }
+
+  /* ---------- Section shell ---------- */
+  section{padding:64px 0; border-top:1px solid var(--rule);}
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:20px;
+    margin-bottom:36px; flex-wrap:wrap;
+  }
+  .section-head h2{font-size:1.7rem;}
+  .section-count{font-family:var(--font-mono); font-size:0.75rem; color:var(--fg-dim);}
+  .section-intro{max-width:62ch; color:var(--fg-dim); margin:-20px 0 32px; font-size:0.98rem;}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- About ---------- */
+  .about-body{max-width:66ch; font-size:1.04rem; color:var(--fg-dim);}
+  .about-body strong{color:var(--fg); font-weight:600;}
+
+  /* ---------- Experience ledger ---------- */
+  .ledger{border-top:1px solid var(--rule);}
+  .role{
+    display:grid; grid-template-columns:150px 1fr; gap:24px;
+    padding:26px 0; border-bottom:1px solid var(--rule);
+  }
+  .role-date{font-family:var(--font-mono); font-size:0.78rem; color:var(--fg-dim); padding-top:4px;}
+  .role-title{font-size:1.12rem; font-weight:600; margin:0 0 2px;}
+  .role-org{font-family:var(--font-mono); font-size:0.82rem; color:var(--acc-ink); margin-bottom:10px;}
+  .role ul{margin:0; padding-left:18px; color:var(--fg-dim); font-size:0.96rem;}
+  .role li{margin-bottom:5px;}
+  @media (max-width:640px){ .role{grid-template-columns:1fr;} }
+
+  /* ---------- Flagship projects ---------- */
+  .flagship-list{display:flex; flex-direction:column; gap:1px; background:var(--rule); border:1px solid var(--rule);}
+  .flagship{background:var(--surface); padding:30px 30px 26px; transition:background .15s;}
+  .flagship:hover{background:var(--surface-2);}
+  .flagship-head{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .flagship-head h3{font-size:1.3rem; font-family:var(--font-body); font-weight:700;}
+  .flagship-head h3 .alt{font-weight:400; color:var(--fg-dim); font-size:0.85em;}
+  .status{
+    font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase;
+    padding:3px 7px; border:1px solid var(--rule-strong); color:var(--fg-dim); white-space:nowrap;
+  }
+  .status.live{color:var(--good); border-color:var(--good);}
+  .flagship-desc{margin:14px 0 20px; max-width:74ch; color:var(--fg-dim); font-size:0.98rem;}
+  .flagship-desc strong{color:var(--fg); font-weight:600;}
+
+  .spec-strip{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr));
+    border:1px solid var(--rule); margin-bottom:18px;
+  }
+  .spec{padding:9px 12px; border-left:1px solid var(--rule);}
+  .spec:first-child{border-left:none;}
+  .spec-k{display:block; font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.08em; color:var(--fg-dim); text-transform:uppercase;}
+  .spec-v{display:block; font-family:var(--font-mono); font-size:0.76rem; color:var(--acc-ink); margin-top:3px;}
+
+  .tags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;}
+  .tag{
+    font-family:var(--font-mono); font-size:0.68rem; color:var(--acc-ink);
+    background:var(--acc-soft); padding:2px 8px; border-radius:2px;
+  }
+  .card-link{
+    font-family:var(--font-mono); font-size:0.78rem; text-decoration:none; color:var(--fg);
+    border-bottom:1px solid var(--rule-strong); padding-bottom:1px;
+  }
+  .card-link:hover{border-color:var(--acc); color:var(--acc-ink);}
+
+  /* ---------- Secondary project grid ---------- */
+  .also-built-label{margin:40px 0 16px;}
+  .proj-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:1px;
+    background:var(--rule); border:1px solid var(--rule);
+  }
+  .card{
+    background:var(--surface); padding:22px; display:flex; flex-direction:column; gap:10px;
+    transition:background .15s;
+  }
+  .card:hover{background:var(--surface-2);}
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .card h3{font-size:1.02rem; font-weight:600; font-family:var(--font-body);}
+  .card p{margin:0; font-size:0.9rem; color:var(--fg-dim); flex:1;}
+
+  /* ---------- Skills ---------- */
+  .skill-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:28px;
+  }
+  .skill-group .eyebrow{margin-bottom:12px;}
+  .skill-list{display:flex; flex-wrap:wrap; gap:8px;}
+  .skill-chip{
+    font-size:0.86rem; padding:6px 12px; border:1px solid var(--rule);
+    background:var(--surface);
+  }
+
+  /* ---------- Achievements / education ---------- */
+  .two-col{display:grid; grid-template-columns:1.3fr 1fr; gap:48px;}
+  @media (max-width:760px){ .two-col{grid-template-columns:1fr;} }
+  .list-plain{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px;}
+  .list-plain li{padding-left:20px; position:relative; font-size:0.96rem; color:var(--fg-dim);}
+  .list-plain li::before{content:"—"; position:absolute; left:0; color:var(--acc);}
+  .edu-block{border:1px solid var(--rule); padding:20px;}
+  .edu-block .role-org{margin-bottom:0;}
+
+  /* ---------- Footer / contact ---------- */
+  footer{padding:70px 0 60px; border-top:1px solid var(--rule);}
+  .contact-head{font-size:clamp(1.8rem, 4vw, 2.6rem); max-width:16ch;}
+  .contact-links{display:flex; flex-wrap:wrap; gap:12px; margin-top:30px;}
+  .foot-meta{
+    margin-top:56px; padding-top:20px; border-top:1px solid var(--rule);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    font-family:var(--font-mono); font-size:0.72rem; color:var(--fg-dim);
+  }
+
+  ::selection{background:var(--acc-soft); color:var(--acc-ink);}
+</style>
+</head>
+<body>
+
+<div class="ruler"></div>
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-mark"><span class="dot"></span>M. AGRAWAL</div>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <span class="status-pill"><span class="dot-live"></span>Open to work</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="border-top:none;">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow hero-eyebrow">Software Developer — MERN · Backend · AI Automation</div>
+        <h1>Mayank<br><em>Agrawal.</em></h1>
+        <p class="hero-sub">I build scalable web applications and RESTful APIs, and wire AI into automation tools that remove busywork. Comfortable moving from database schema to production deploy.</p>
+        <div class="dim-line">
+          <span class="dim-label mono">AVAILABLE FOR NEW ROLES</span>
+          <div class="dim-bar"></div>
+        </div>
+        <div class="hero-links">
+          <a class="pill solid" href="mailto:agrawalmayank1111@gmail.com">✉ Email</a>
+          <a class="pill" href="https://github.com/Magraa" target="_blank" rel="noopener">GitHub ↗</a>
+          <a class="pill" href="https://linkedin.com/in/mayank-agrawal-532967192" target="_blank" rel="noopener">LinkedIn ↗</a>
+        </div>
+      </div>
+      <div class="titleblock">
+        <img class="avatar-img" src="https://github.com/Magraa.png" alt="Mayank Agrawal" loading="lazy">
+        <div class="tb-row"><div class="tb-k">NAME</div><div class="tb-v">Mayank Agrawal</div></div>
+        <div class="tb-row"><div class="tb-k">ROLE</div><div class="tb-v">Software Developer</div></div>
+        <div class="tb-row"><div class="tb-k">STATUS</div><div class="tb-v status-live"><span class="dot-live"></span>Open to work</div></div>
+        <div class="tb-row"><div class="tb-k">STACK</div><div class="tb-v">MERN · Python · AI</div></div>
+        <div class="tb-row"><div class="tb-k">REV</div><div class="tb-v">2026.08</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="reveal">
+    <div class="section-head"><h2>About</h2><span class="section-count mono">01</span></div>
+    <p class="about-body">
+      I'm a software developer with roughly two years building production systems on the <strong>MERN stack</strong>,
+      alongside backend work in <strong>Python</strong>. Most of my time is spent on the seam between
+      infrastructure and product: designing schemas and REST APIs that hold up under real usage, then wiring in
+      cloud services and AI-driven automation on top. I did my Integrated B.Tech + MBA in Information Technology at
+      <strong>ABV-IIITM Gwalior</strong>, and outside of client work I keep building tools that remove a specific,
+      annoying piece of manual work — from government paperwork to phone calls.
+    </p>
+  </section>
+
+  <section id="experience" class="reveal">
+    <div class="section-head"><h2>Experience</h2><span class="section-count mono">02</span></div>
+    <div class="ledger">
+      <div class="role">
+        <div class="role-date mono">APR 2024 —<br>DEC 2025</div>
+        <div>
+          <h3 class="role-title">Software Developer</h3>
+          <div class="role-org">Bittern Technologies — Remote</div>
+          <ul>
+            <li>Built and deployed scalable web applications on the MERN stack with cloud infrastructure.</li>
+            <li>Designed and optimized RESTful APIs to improve backend performance and efficiency.</li>
+            <li>Developed AI-driven automation tools in JavaScript and Python.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="role">
+        <div class="role-date mono">SEP 2023 —<br>DEC 2023</div>
+        <div>
+          <h3 class="role-title">Software Engineer Intern</h3>
+          <div class="role-org">Logical Analytics — Remote, Lucknow</div>
+          <ul>
+            <li>Built responsive dashboards with React.js and SCSS.</li>
+            <li>Designed backend schemas and APIs using Node.js and MongoDB.</li>
+            <li>Integrated Cloudinary for media uploads, cutting storage load by 30%.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="role">
+        <div class="role-date mono">NOV 2022 —<br>FEB 2023</div>
+        <div>
+          <h3 class="role-title">SaaS Developer</h3>
+          <div class="role-org">Blockchain Startup &amp; Clients — Remote</div>
+          <ul>
+            <li>Developed blockchain automation bots with Discord.py and the Clever API.</li>
+            <li>Built AI bots using Selenium and Minimax, with custom licensing systems.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="reveal">
+    <div class="section-head"><h2>Featured Projects</h2><span class="section-count mono">03</span></div>
+    <p class="section-intro">A pattern runs through most of these: find the most repetitive, manual part of a workflow, and build a system that removes the human from the loop.</p>
+
+    <div class="flagship-list">
+
+      <div class="flagship">
+        <div class="flagship-head">
+          <h3>SIMVox-AI <span class="alt">(CallVox AI)</span></h3>
+          <span class="status">Open Source</span>
+        </div>
+        <p class="flagship-desc">An autonomous AI voice agent that turns any Android phone into a real cellular receptionist — no Twilio, no VoIP fees, no SIP trunks. It bridges a PC straight to an Android handset over <strong>ADB and real hardware audio channels</strong>, routes live call audio through <strong>Google Gemini</strong> for reasoning and <strong>Microsoft Edge neural TTS</strong> for sub-second, natural-sounding replies, and auto-answers or places outbound calls entirely on its own — with a glassmorphic desktop dashboard showing live waveforms, transcripts, and a searchable call CRM.</p>
+        <div class="spec-strip">
+          <div class="spec"><span class="spec-k">Bridge</span><span class="spec-v">PC ↔ Android via ADB</span></div>
+          <div class="spec"><span class="spec-k">LLM</span><span class="spec-v">Google Gemini</span></div>
+          <div class="spec"><span class="spec-k">Voice</span><span class="spec-v">Edge Neural TTS</span></div>
+          <div class="spec"><span class="spec-k">Latency</span><span class="spec-v">Sub-second</span></div>
+        </div>
+        <div class="tags"><span class="tag">Python</span><span class="tag">Google Gemini</span><span class="tag">Edge-TTS</span><span class="tag">ADB</span><span class="tag">PyWebView</span><span class="tag">SQLite</span></div>
+        <a class="card-link" href="https://github.com/Magraa/SIMVox-AI" target="_blank" rel="noopener">Source ↗</a>
+      </div>
+
+      <div class="flagship">
+        <div class="flagship-head">
+          <h3>Mr. Proper — Loyalty, CRM &amp; ERP Platform</h3>
+          <span class="status live">Live</span>
+        </div>
+        <p class="flagship-desc">A full-stack operations platform for Mr. Proper's painter and contractor network — not just a customer-facing loyalty app, but a real backend management system underneath it. It runs a <strong>CRM</strong> for tracking contractor relationships, an <strong>ERP-style layer</strong> for coupon inventory, order processing and redemption tracking, and <strong>role-based dashboards</strong> so admins, distributors, and painters each see only what's relevant to them.</p>
+        <div class="spec-strip">
+          <div class="spec"><span class="spec-k">Backend</span><span class="spec-v">CRM + ERP-style ops</span></div>
+          <div class="spec"><span class="spec-k">Payments</span><span class="spec-v">Razorpay</span></div>
+          <div class="spec"><span class="spec-k">Maps</span><span class="spec-v">Google Maps API</span></div>
+          <div class="spec"><span class="spec-k">Dashboards</span><span class="spec-v">Role-based, 3 tiers</span></div>
+        </div>
+        <div class="tags"><span class="tag">Next.js</span><span class="tag">Supabase</span><span class="tag">TypeScript</span><span class="tag">Tailwind</span><span class="tag">Razorpay</span></div>
+        <a class="card-link" href="https://mrproper.in" target="_blank" rel="noopener">mrproper.in ↗</a>
+      </div>
+
+      <div class="flagship">
+        <div class="flagship-head">
+          <h3>Magra Tender Automation Panel</h3>
+          <span class="status">Private</span>
+        </div>
+        <p class="flagship-desc">Probably the clearest example of how I like to automate: government tender paperwork is slow and repetitive, so this turns "enter the tender details once" into a full document pipeline — auto-generating the public tender notice, quotations, supply orders, and firm bills, each rendered onto a firm-specific letterhead with a print-precise A4 layout engine. An <strong>AI drafting layer</strong> (with automatic fallback across four providers) writes procurement-grade language in <strong>Hindi or English</strong>, and every edit is versioned.</p>
+        <div class="spec-strip">
+          <div class="spec"><span class="spec-k">AI Providers</span><span class="spec-v">Gemini/OpenAI/Groq/NVIDIA</span></div>
+          <div class="spec"><span class="spec-k">Language</span><span class="spec-v">Hindi + English</span></div>
+          <div class="spec"><span class="spec-k">Output</span><span class="spec-v">Print-precise A4 / PDF</span></div>
+          <div class="spec"><span class="spec-k">Storage</span><span class="spec-v">Offline-first (IndexedDB)</span></div>
+        </div>
+        <div class="tags"><span class="tag">Next.js 15</span><span class="tag">TypeScript</span><span class="tag">TipTap</span><span class="tag">IndexedDB</span><span class="tag">Multi-provider AI</span></div>
+        <span class="card-link" style="opacity:.55; cursor:default; border-color:transparent;">Private repository</span>
+      </div>
+
+    </div>
+
+    <div class="also-built-label eyebrow">Also built</div>
+    <div class="proj-grid">
+
+      <div class="card">
+        <div class="card-top"><h3>ADB Developer Studio</h3><span class="status">Repo</span></div>
+        <p>Desktop suite for Android developers — one-click ADB wireless reconnect, a build watcher, instant screenshot-to-clipboard, and live log tailing.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">PyWebView</span></div>
+        <a class="card-link" href="https://github.com/Magraa/adb-developer-studio" target="_blank" rel="noopener">Source ↗</a>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><h3>Private ChatGPT</h3><span class="status">Tool</span></div>
+        <p>Privacy-focused AI chatbot for querying local files entirely offline, built on LangChain with GPT-3.5 and Llama-2 behind a Streamlit interface.</p>
+        <div class="tags"><span class="tag">LangChain</span><span class="tag">LLM</span><span class="tag">Streamlit</span></div>
+        <span class="card-link" style="opacity:.55; cursor:default; border-color:transparent;">Local / offline tool</span>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><h3>TIMEZONE Ecommerce</h3><span class="status">Repo</span></div>
+        <p>MERN full-stack ecommerce storefront with a complete admin panel for catalog, orders, and store management.</p>
+        <div class="tags"><span class="tag">MongoDB</span><span class="tag">Express</span><span class="tag">React</span><span class="tag">Node</span></div>
+        <a class="card-link" href="https://github.com/Magraa/TIMEZONE-An-ecommerce-website" target="_blank" rel="noopener">Source ↗</a>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><h3>Motion-Detection Security Camera</h3><span class="status">Repo</span></div>
+        <p>Python-based security camera system that detects motion in a video stream and fires real-time alerts.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">OpenCV</span></div>
+        <a class="card-link" href="https://github.com/Magraa/Security-Camera-with-Motion-Detection-alert-System" target="_blank" rel="noopener">Source ↗</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="skills" class="reveal">
+    <div class="section-head"><h2>Skills</h2><span class="section-count mono">04</span></div>
+    <div class="skill-grid">
+      <div class="skill-group">
+        <div class="eyebrow">Languages</div>
+        <div class="skill-list">
+          <span class="skill-chip">Python</span><span class="skill-chip">JavaScript</span><span class="skill-chip">C / C++</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="eyebrow">Web &amp; Backend</div>
+        <div class="skill-list">
+          <span class="skill-chip">React.js</span><span class="skill-chip">Node.js</span><span class="skill-chip">Express.js</span><span class="skill-chip">REST APIs</span><span class="skill-chip">MongoDB</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="eyebrow">Cloud &amp; Tools</div>
+        <div class="skill-list">
+          <span class="skill-chip">AWS</span><span class="skill-chip">Git / GitHub</span><span class="skill-chip">Docker</span><span class="skill-chip">Postman</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="eyebrow">Data &amp; AI</div>
+        <div class="skill-list">
+          <span class="skill-chip">LangChain</span><span class="skill-chip">Google Gemini</span><span class="skill-chip">Pandas</span><span class="skill-chip">NumPy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="more" class="reveal">
+    <div class="section-head"><h2>Achievements &amp; Education</h2><span class="section-count mono">05</span></div>
+    <div class="two-col">
+      <div>
+        <div class="eyebrow" style="margin-bottom:14px;">Achievements &amp; Certifications</div>
+        <ul class="list-plain">
+          <li>Solved 300+ DSA problems across multiple competitive platforms.</li>
+          <li>Pre-finalist, Hacksagon 2020.</li>
+          <li>Hacktoberfest contributor — 2019, 2021, 2022.</li>
+          <li>Complete 2023 Web Development Bootcamp — Dr. Angela Yu (Udemy).</li>
+          <li>HackerRank Certified — Python Programming.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:14px;">Education</div>
+        <div class="edu-block">
+          <h3 class="role-title" style="font-size:1rem;">Integrated B.Tech + MBA</h3>
+          <div class="role-org">Information Technology</div>
+          <p style="margin:10px 0 0; font-size:0.9rem; color:var(--fg-dim);">ABV‑IIITM Gwalior<br><span class="mono">2019 – 2024</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact" class="reveal">
+    <div class="eyebrow" style="margin-bottom:16px;">06 — Get in touch</div>
+    <h2 class="contact-head">Open to Software Developer roles — backend, APIs, or AI automation. Let's talk.</h2>
+    <div class="contact-links">
+      <a class="pill solid" href="mailto:agrawalmayank1111@gmail.com">✉ agrawalmayank1111@gmail.com</a>
+      <a class="pill" href="https://github.com/Magraa" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="pill" href="https://linkedin.com/in/mayank-agrawal-532967192" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+    <div class="foot-meta">
+      <span>Mayank Agrawal — Software Developer</span>
+      <span>Built with care, one commit at a time.</span>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  const items = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+    }, {threshold:0.12});
+    items.forEach(el=>io.observe(el));
+  } else {
+    items.forEach(el=>el.classList.add('in'));
+  }
+</script>
+</body>
+</html>
