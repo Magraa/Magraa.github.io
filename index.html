@@ -1740,19 +1740,58 @@
 
     <!-- Category Filter Bar -->
     <div class="project-filter-bar" role="tablist" aria-label="Project Categories">
-      <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">All Systems (9)</button>
-      <button class="filter-tab" data-filter="ai" role="tab" aria-selected="false">AI &amp; Vision (4)</button>
-      <button class="filter-tab" data-filter="fullstack" role="tab" aria-selected="false">Full-Stack &amp; Cloud (3)</button>
+      <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">All Systems (10)</button>
+      <button class="filter-tab" data-filter="ai" role="tab" aria-selected="false">AI &amp; Vision (5)</button>
+      <button class="filter-tab" data-filter="fullstack" role="tab" aria-selected="false">Full-Stack &amp; Cloud (4)</button>
       <button class="filter-tab" data-filter="mobile" role="tab" aria-selected="false">Mobile &amp; Tools (2)</button>
     </div>
 
     <div class="flagship-matrix" id="projectsContainer">
 
-      <!-- PROJECT 01: HISAB AI -->
+      <!-- PROJECT 01: SHOBOTI -->
       <article class="flagship-item" data-category="ai fullstack">
         <div class="item-meta">
-          <span class="item-coord mono">§ PROJ-01 // SHOWCASE &amp; DOCS</span>
-          <span class="item-status featured">Latest Launch · Architecture Showcase</span>
+          <span class="item-coord mono">§ PROJ-01 // PRODUCTION PLATFORM</span>
+          <span class="item-status featured">Latest Launch · Social Commerce</span>
+        </div>
+        <h3 class="flagship-title">Shoboti <span class="subtitle">— Social Video Commerce &amp; Direct Storefront Platform</span></h3>
+        <p class="flagship-summary">
+          An end-to-end social e-commerce engine built for video creators selling through Instagram Reels and direct messages. Automatically turns comments ("Price?", "Link?") into instant personalized DMs with rotating anti-spam protection, features a conversational shopping assistant trained on store policies with <strong>pgvector semantic product retrieval</strong>, and hosts a mobile-first shoppable video feed (<code>/@creator</code>) with real-time stock reservations and automated checkout—eliminating manual UPI payment screenshots and spreadsheet tracking.
+        </p>
+        <div class="spec-grid">
+          <div class="spec-cell"><span class="spec-lbl">Automation Engine</span><span class="spec-val">Reel Comment-to-DM Trigger</span></div>
+          <div class="spec-cell"><span class="spec-lbl">Catalog AI Vectors</span><span class="spec-val">Gemini + Llama 3 (pgvector)</span></div>
+          <div class="spec-cell"><span class="spec-lbl">Storefront Architecture</span><span class="spec-val">Shoppable Video Feed (/@creator)</span></div>
+          <div class="spec-cell"><span class="spec-lbl">Database &amp; ORM</span><span class="spec-val">PostgreSQL + Drizzle ORM</span></div>
+        </div>
+        <div class="tech-tags">
+          <span class="tech-tag">Next.js App Router</span>
+          <span class="tech-tag">React Server Components</span>
+          <span class="tech-tag">TypeScript</span>
+          <span class="tech-tag">Tailwind CSS</span>
+          <span class="tech-tag">PostgreSQL</span>
+          <span class="tech-tag">Drizzle ORM</span>
+          <span class="tech-tag">pgvector</span>
+          <span class="tech-tag">Google Gemini</span>
+          <span class="tech-tag">Social Graph APIs</span>
+        </div>
+        <div class="item-actions">
+          <button class="action-link blueprint-trigger" data-modal="shoboti">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>
+            <span>Inspect Architecture Blueprint ↗</span>
+          </button>
+          <a class="action-link" href="https://github.com/Magraa/shoboti-showcase" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            <span>GitHub Showcase ↗</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- PROJECT 02: HISAB AI -->
+      <article class="flagship-item" data-category="ai fullstack">
+        <div class="item-meta">
+          <span class="item-coord mono">§ PROJ-02 // SHOWCASE &amp; DOCS</span>
+          <span class="item-status live">Architecture Showcase</span>
         </div>
         <h3 class="flagship-title">Hisab AI <span class="subtitle">— AI-Powered Financial Notebook &amp; Bahi-Khata</span></h3>
         <p class="flagship-summary">
@@ -2227,6 +2266,7 @@ Type <span class="cy">'help'</span> to see all available commands.</div>
     </div>
     <ul class="cmd-list" id="cmdList">
       <li class="cmd-item" data-action="goto" data-target="#projects"><div class="cmd-item-left"><span class="cmd-tag">JUMP</span><span>Browse Featured Flagship Projects</span></div><span class="mono">#projects</span></li>
+      <li class="cmd-item" data-action="blueprint" data-target="shoboti"><div class="cmd-item-left"><span class="cmd-tag">SPEC</span><span>Shoboti Social Video Commerce Blueprint</span></div><span class="mono">Next.js + pgvector</span></li>
       <li class="cmd-item" data-action="blueprint" data-target="hisab"><div class="cmd-item-left"><span class="cmd-tag">SPEC</span><span>Hisab AI Architecture Blueprint</span></div><span class="mono">Gemini 2.0 Flash</span></li>
       <li class="cmd-item" data-action="blueprint" data-target="simvox"><div class="cmd-item-left"><span class="cmd-tag">SPEC</span><span>SIMVox AI Hardware Bridge Blueprint</span></div><span class="mono">Zero-VoIP ADB</span></li>
       <li class="cmd-item" data-action="blueprint" data-target="finaudit"><div class="cmd-item-left"><span class="cmd-tag">SPEC</span><span>FinAudit AI Platform Blueprint</span></div><span class="mono">Fraud Engine</span></li>
@@ -2388,6 +2428,34 @@ Type <span class="cy">'help'</span> to see all available commands.</div>
      6. ARCHITECTURE BLUEPRINT DATA & MODAL
      -------------------------------------------------------------------------- */
   const blueprintData = {
+    shoboti: {
+      title: "Shoboti // Social Video Commerce Architecture Blueprint",
+      source: "https://github.com/Magraa/shoboti-showcase",
+      html: `
+        <p><strong>Problem Statement:</strong> Video creators on Instagram Reels and WhatsApp lose substantial sales because interested buyers comment "Price?" or "Link?" and creators can't reply to hundreds of DMs manually. Collecting orders via manual UPI payment screenshots and maintaining inventory in spreadsheets leads to fraud, stockouts, and support chaos.</p>
+        
+        <div class="blueprint-diagram">
++------------------+     +------------------------+     +-------------------------+
+| Instagram Reel   | --> | Webhook Trigger Engine | --> | Anti-Spam Public Reply  |
+| "Price?" Comment |     | (Keyword &amp; Delay Gate) |     | (Rotating Variations)   |
++------------------+     +------------------------+     +-------------------------+
+                                                                     |
+                                                                     v
++------------------+     +------------------------+     +-------------------------+
+| Direct Checkout  | <-- | pgvector Catalog RAG   | <-- | Private DM Dispatch     |
+| Real-time Reserv |     | (Gemini &amp; Llama 3)     |     | (Tagged Products &amp; Buy) |
++------------------+     +------------------------+     +-------------------------+
+        </div>
+
+        <p><strong>Technical Highlights:</strong></p>
+        <ul>
+          <li><strong>Automated Comment-to-DM Pipeline:</strong> Listens for reel comments via Instagram Graph API webhooks, verifies optional follower gating rules, and dispatches direct message links within 2 seconds with natural delay throttling.</li>
+          <li><strong>Grounded Vector Catalog Assistant:</strong> Customers asking sizing or policy questions in DMs receive conversational guidance grounded strictly in pgvector product embeddings—zero hallucinations or false discounts.</li>
+          <li><strong>Shoppable Video Experience:</strong> Audience bio link opens a video-first web feed (<code>/@creator</code>) where clothing and items shown in the video can be added to cart and purchased directly.</li>
+          <li><strong>Centralized Creator Command Center:</strong> Tracks gross revenue, order fulfillment, low-stock variant alerts, and one-click shipping label generation.</li>
+        </ul>
+      `
+    },
     hisab: {
       title: "Hisab AI // Architecture & Multi-Modal Vision Blueprint",
       source: "https://github.com/Magraa/Hisab-AI-Showcase",
@@ -2633,12 +2701,13 @@ EXPERIENCE: 2+ Years in Production (MERN, Next.js, Python, AI)
 LOCATION: Bangalore, India | ALUMNI: ABV-IIITM Gwalior`,
 
     projects: () => `FLAGSHIP SYSTEMS:
-  1. Hisab AI        - Gemini 2.0 Flash Multimodal OCR Bahi-Khata PWA
-  2. SIMVox AI       - Zero-VoIP Cellular Voice Bridge over ADB (10★)
-  3. FinAudit AI     - Fraud Detection & Financial Intelligence Platform
-  4. TenderFlow AI   - 1-Click Autonomous Government Procurement Suite
-  5. Mr. Proper      - Production Contractor CRM, ERP & E-Commerce (mrproper.in)
-  6. ProperCoupons   - Cryptographic 300 DPI Duplex Token Generation Suite`,
+  1. Shoboti         - Social Video Commerce & Direct Storefront Platform (Next.js + pgvector)
+  2. Hisab AI        - Gemini 2.0 Flash Multimodal OCR Bahi-Khata PWA
+  3. SIMVox AI       - Zero-VoIP Cellular Voice Bridge over ADB (10★)
+  4. FinAudit AI     - Fraud Detection & Financial Intelligence Platform
+  5. TenderFlow AI   - 1-Click Autonomous Government Procurement Suite
+  6. Mr. Proper      - Production Contractor CRM, ERP & E-Commerce (mrproper.in)
+  7. ProperCoupons   - Cryptographic 300 DPI Duplex Token Generation Suite`,
 
     skills: () => `CORE COMPETENCIES:
   • Languages: Python, TypeScript, JavaScript, Kotlin, SQL, C/C++
