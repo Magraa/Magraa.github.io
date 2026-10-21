@@ -1,2854 +1,868 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="system">
+<!doctype html>
+<html lang="en" class="no-js">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mayank Agrawal — Full Stack, Backend &amp; AI Systems Engineer</title>
-<meta name="description" content="Portfolio of Mayank Agrawal — Software Developer specialized in Next.js, React, Node.js, Python, and Autonomous AI systems. ABV-IIITM Gwalior alumnus.">
-<meta name="author" content="Mayank Agrawal">
-<meta name="keywords" content="Mayank Agrawal, Software Developer, Full Stack Engineer, Backend Engineer, Next.js, React Native, Python, AI Automation, SIMVox AI, Hisab AI, TenderFlow AI, FinAudit AI, ABV-IIITM Gwalior">
-
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://magraa.github.io/">
-<meta property="og:title" content="Mayank Agrawal — Full Stack, Backend &amp; AI Systems Engineer">
-<meta property="og:description" content="Architecting scalable web applications, robust REST/WebSocket APIs, and autonomous AI automation pipelines. ABV-IIITM Gwalior graduate.">
-<meta property="og:image" content="https://github.com/Magraa.png">
-
-<!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://magraa.github.io/">
-<meta name="twitter:title" content="Mayank Agrawal — Full Stack, Backend &amp; AI Systems Engineer">
-<meta name="twitter:description" content="Architecting scalable web applications, robust REST/WebSocket APIs, and autonomous AI automation pipelines. ABV-IIITM Gwalior graduate.">
-<meta name="twitter:image" content="https://github.com/Magraa.png">
-
-<meta name="theme-color" content="#0b1219" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f7f6f0" media="(prefers-color-scheme: light)">
-
-<!-- Favicon -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b1219'/%3E%3Cpath d='M25 72V28h12l13 26 13-26h12v44h-10V42L51 68h-2L35 42v30H25z' fill='%23e0a24a'/%3E%3C/svg%3E">
-
-<!-- Typography -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-
-<!-- Structured Data -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Mayank Agrawal",
-  "alternateName": "Magraa",
-  "url": "https://magraa.github.io/",
-  "image": "https://github.com/Magraa.png",
-  "jobTitle": "Full Stack & Backend Developer · AI Systems Engineer",
-  "worksFor": {
-    "@type": "Organization",
-    "name": "Bittern Technologies"
-  },
-  "alumniOf": {
-    "@type": "CollegeOrUniversity",
-    "name": "ABV-IIITM Gwalior"
-  },
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Bangalore",
-    "addressCountry": "India"
-  },
-  "sameAs": [
-    "https://github.com/Magraa",
-    "https://linkedin.com/in/mayank-agrawal-532967192"
-  ]
-}
-</script>
-
-<style>
-  /* ==========================================================================
-     DESIGN SYSTEM TOKENS — ARCHITECTURAL BLUEPRINT & TECHNICAL DRAFTING
-     ========================================================================== */
-  :root {
-    /* Base Color Primitives */
-    --ink-950: #070d14;
-    --ink-900: #0b1219;
-    --ink-850: #0f1822;
-    --ink-800: #152230;
-    --ink-700: #1d2e40;
-    
-    --paper-100: #ffffff;
-    --paper-200: #f7f6f0;
-    --paper-300: #eeece2;
-    --paper-400: #e2dfcf;
-    
-    --line-light: #d4d6c8;
-    --line-light-strong: #a4a896;
-    --line-dark: #223344;
-    --line-dark-strong: #384e63;
-    
-    --gold-500: #b5651d;
-    --gold-400: #d67d28;
-    --gold-300: #e0a24a;
-    --gold-200: #f2c786;
-    --gold-glow: rgba(224, 162, 74, 0.15);
-
-    --emerald-500: #2e7d32;
-    --emerald-400: #3ecf8e;
-    --emerald-glow: rgba(62, 207, 142, 0.18);
-
-    --cyan-400: #38bdf8;
-    
-    /* Semantic Variables (Light Theme - Parchment Drafting Table) */
-    --bg: var(--paper-200);
-    --surface: var(--paper-100);
-    --surface-hover: var(--paper-300);
-    --surface-elevated: #ffffff;
-    --fg: #111827;
-    --fg-muted: #374151;
-    --fg-faint: #4b5563;
-    --rule: var(--line-light);
-    --rule-strong: var(--line-light-strong);
-    --accent: #994b0d;
-    --accent-tint: #b5651d;
-    --accent-soft: rgba(153, 75, 13, 0.12);
-    --accent-glow: var(--gold-glow);
-    --status-live: var(--emerald-500);
-    --status-live-bg: rgba(46, 125, 50, 0.10);
-    --code-bg: var(--paper-300);
-    --modal-backdrop: rgba(15, 23, 33, 0.65);
-
-    /* Fonts */
-    --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', serif;
-    --font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    --font-mono: 'IBM Plex Mono', SFMono-Regular, Consolas, 'Liberation Mono', monospace;
-
-    /* Transitions & Physics (Emil Kowalski Motion Principles) */
-    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-    --duration-snap: 160ms;
-    --duration-normal: 240ms;
-  }
-
-  /* Dark Theme Tokens (OLED Midnight Blueprint) */
-  :root[data-theme="dark"],
-  :root:not([data-theme="light"]) {
-    @media (prefers-color-scheme: dark) {
-      --bg: var(--ink-950);
-      --surface: var(--ink-900);
-      --surface-hover: var(--ink-850);
-      --surface-elevated: var(--ink-800);
-      --fg: #f3f6f9;
-      --fg-muted: #a0b2c6;
-      --fg-faint: #7d93a8;
-      --rule: var(--line-dark);
-      --rule-strong: var(--line-dark-strong);
-      --accent: var(--gold-300);
-      --accent-tint: var(--gold-200);
-      --accent-soft: rgba(224, 162, 74, 0.14);
-      --accent-glow: rgba(224, 162, 74, 0.25);
-      --status-live: var(--emerald-400);
-      --status-live-bg: rgba(62, 207, 142, 0.14);
-      --on-accent: #070d14;
-      --code-bg: var(--ink-850);
-      --modal-backdrop: rgba(3, 7, 12, 0.82);
-    }
-  }
-
-  :root[data-theme="dark"] {
-    --bg: var(--ink-950);
-    --surface: var(--ink-900);
-    --surface-hover: var(--ink-850);
-    --surface-elevated: var(--ink-800);
-    --fg: #f3f6f9;
-    --fg-muted: #a0b2c6;
-    --fg-faint: #7d93a8;
-    --rule: var(--line-dark);
-    --rule-strong: var(--line-dark-strong);
-    --accent: var(--gold-300);
-    --accent-tint: var(--gold-200);
-    --accent-soft: rgba(224, 162, 74, 0.14);
-    --accent-glow: rgba(224, 162, 74, 0.25);
-    --status-live: var(--emerald-400);
-    --status-live-bg: rgba(62, 207, 142, 0.14);
-    --on-accent: #070d14;
-    --code-bg: var(--ink-850);
-    --modal-backdrop: rgba(3, 7, 12, 0.82);
-  }
-
-  :root[data-theme="light"] {
-    --bg: var(--paper-200);
-    --surface: var(--paper-100);
-    --surface-hover: var(--paper-300);
-    --surface-elevated: #ffffff;
-    --fg: #111827;
-    --fg-muted: #374151;
-    --fg-faint: #4b5563;
-    --rule: var(--line-light);
-    --rule-strong: var(--line-light-strong);
-    --accent: #994b0d;
-    --accent-tint: #b5651d;
-    --accent-soft: rgba(153, 75, 13, 0.12);
-    --accent-glow: var(--gold-glow);
-    --status-live: var(--emerald-500);
-    --status-live-bg: rgba(46, 125, 50, 0.10);
-    --on-accent: #ffffff;
-    --code-bg: var(--paper-300);
-    --modal-backdrop: rgba(15, 23, 33, 0.65);
-  }
-
-  /* ==========================================================================
-     GLOBAL RESET & FOUNDATIONAL STYLES
-     ========================================================================== */
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
-
-  html {
-    scroll-behavior: smooth;
-    text-size-adjust: 100%;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--bg);
-    color: var(--fg);
-    font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.62;
-    background-image:
-      linear-gradient(var(--rule) 1px, transparent 1px),
-      linear-gradient(90deg, var(--rule) 1px, transparent 1px);
-    background-size: 48px 48px;
-    background-position: -1px -1px;
-    overflow-x: hidden;
-    transition: background-color var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out);
-  }
-
-  ::selection {
-    background: var(--accent-soft);
-    color: var(--accent);
-  }
-
-  :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.001ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.001ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-
-  /* Layout container */
-  .container {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-
-  /* Typography utilities */
-  h1, h2, h3, h4 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    text-wrap: balance;
-    margin: 0;
-    color: var(--fg);
-  }
-
-  p {
-    margin: 0 0 16px;
-    text-wrap: pretty;
-  }
-
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .mono {
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--fg-muted);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .eyebrow::before {
-    content: "§";
-    color: var(--accent);
-    font-weight: 700;
-  }
-
-  /* Millimeter Technical Ruler */
-  .ruler-strip {
-    height: 14px;
-    background-image: repeating-linear-gradient(to right, var(--rule-strong) 0 1px, transparent 1px 12px);
-    background-position: -1px 0;
-    opacity: 0.45;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  /* ==========================================================================
-     NAVIGATION HEADER
-     ========================================================================== */
-  header.nav {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: color-mix(in srgb, var(--bg) 90%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--rule);
-    transition: background-color var(--duration-normal) var(--ease-out), border-color var(--duration-normal) var(--ease-out);
-  }
-
-  .nav-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 0;
-    gap: 16px;
-  }
-
-  .nav-brand {
-    font-family: var(--font-mono);
-    font-weight: 600;
-    font-size: 0.88rem;
-    letter-spacing: 0.04em;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--fg);
-  }
-  .nav-brand .coord-box {
-    padding: 2px 6px;
-    border: 1px solid var(--rule-strong);
-    font-size: 0.68rem;
-    color: var(--accent);
-    background: var(--surface);
-  }
-
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .nav-links a {
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--fg-muted);
-    padding: 4px 0;
-    border-bottom: 1px solid transparent;
-    transition: color var(--duration-snap) var(--ease-out), border-color var(--duration-snap) var(--ease-out);
-  }
-  .nav-links a:hover, .nav-links a:focus-visible {
-    color: var(--fg);
-    border-color: var(--accent);
-  }
-
-  .nav-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.04em;
-    color: var(--status-live);
-    background: var(--status-live-bg);
-    border: 1px solid var(--status-live);
-    padding: 5px 12px;
-    border-radius: 9999px;
-    white-space: nowrap;
-  }
-
-  .status-beacon {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--status-live);
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--status-live) 60%, transparent);
-    animation: beacon 2s infinite var(--ease-in-out);
-  }
-
-  @keyframes beacon {
-    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--status-live) 60%, transparent); }
-    70% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--status-live) 0%, transparent); }
-    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--status-live) 0%, transparent); }
-  }
-
-  /* Utility & Theme Buttons */
-  .icon-btn {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    color: var(--fg-muted);
-    padding: 7px 11px;
-    border-radius: 4px;
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: transform var(--duration-snap) var(--ease-out), background-color var(--duration-snap) var(--ease-out), border-color var(--duration-snap) var(--ease-out), color var(--duration-snap) var(--ease-out);
-  }
-  .icon-btn:hover {
-    background: var(--surface-hover);
-    border-color: var(--accent);
-    color: var(--fg);
-  }
-  .icon-btn:active {
-    transform: scale(0.97);
-  }
-
-  .kbd-chip {
-    font-size: 0.64rem;
-    padding: 2px 5px;
-    border: 1px solid var(--rule-strong);
-    border-radius: 3px;
-    background: var(--code-bg);
-    color: var(--fg-faint);
-  }
-
-  @media (max-width: 820px) {
-    .nav-links { display: none; }
-    .status-badge span.status-text { display: none; }
-  }
-
-  /* ==========================================================================
-     HERO SECTION & TITLE BLOCK STAMP
-     ========================================================================== */
-  .hero {
-    padding: 68px 0 60px;
-    position: relative;
-  }
-
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 270px;
-    gap: 48px;
-    align-items: start;
-  }
-
-  .hero-left {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .hero-eyebrow {
-    margin-bottom: 24px;
-  }
-
-  .hero h1 {
-    font-size: clamp(2.8rem, 6.2vw, 4.6rem);
-    line-height: 1.02;
-    letter-spacing: -0.015em;
-    font-weight: 500;
-  }
-  .hero h1 em {
-    font-style: italic;
-    color: var(--accent);
-    font-weight: 400;
-  }
-
-  .hero-bio {
-    max-width: 58ch;
-    margin-top: 24px;
-    font-size: 1.06rem;
-    line-height: 1.65;
-    color: var(--fg-muted);
-  }
-  .hero-bio strong {
-    color: var(--fg);
-    font-weight: 600;
-  }
-
-  /* Dimension Line (Blueprint aesthetic) */
-  .dimension-line {
-    position: relative;
-    width: 320px;
-    max-width: 100%;
-    height: 38px;
-    margin: 24px 0 16px;
-  }
-  .dimension-label {
-    position: absolute;
-    top: 0;
-    left: 0;
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    color: var(--accent);
-    font-family: var(--font-mono);
-  }
-  .dimension-bar {
-    position: absolute;
-    bottom: 8px;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: var(--rule-strong);
-    transform-origin: left;
-    animation: drawLine 800ms var(--ease-out) both;
-  }
-  .dimension-bar::before, .dimension-bar::after {
-    content: "";
-    position: absolute;
-    top: -5px;
-    width: 1px;
-    height: 11px;
-    background: var(--rule-strong);
-  }
-  .dimension-bar::before { left: 0; }
-  .dimension-bar::after { right: 0; }
-
-  @keyframes drawLine {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
-  }
-
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 18px;
-  }
-
-  /* Interactive Pill Buttons (Emil Kowalski feedback rules) */
-  .pill-btn {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.03em;
-    border: 1px solid var(--rule-strong);
-    background: var(--surface);
-    color: var(--fg);
-    padding: 10px 18px;
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: transform var(--duration-snap) var(--ease-out), background-color var(--duration-snap) var(--ease-out), border-color var(--duration-snap) var(--ease-out), color var(--duration-snap) var(--ease-out);
-  }
-  .pill-btn:hover {
-    border-color: var(--accent);
-    background: var(--surface-hover);
-    transform: translateY(-1px);
-  }
-  .pill-btn:active {
-    transform: scale(0.97) translateY(0);
-  }
-
-  .pill-btn.solid {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--on-accent, #ffffff);
-    font-weight: 600;
-  }
-  .pill-btn.solid:hover {
-    background: var(--accent-tint);
-    border-color: var(--accent-tint);
-    color: var(--on-accent, #ffffff);
-  }
-
-  /* Corner Engineering Stamp Title Block */
-  .titleblock {
-    border: 1px solid var(--rule-strong);
-    background: var(--surface);
-    box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.06);
-    position: relative;
-    border-radius: 2px;
-  }
-  .titleblock-header {
-    background: var(--code-bg);
-    border-bottom: 1px solid var(--rule);
-    padding: 6px 10px;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    color: var(--fg-muted);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .avatar-wrap {
-    position: relative;
-    overflow: hidden;
-    background: var(--ink-950);
-  }
-  .avatar-img {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    display: block;
-    filter: contrast(102%) saturate(92%);
-    transition: filter var(--duration-normal) var(--ease-out);
-  }
-  .avatar-img:hover {
-    filter: contrast(105%) saturate(100%);
-  }
-
-  .tb-table {
-    display: flex;
-    flex-direction: column;
-  }
-  .tb-row {
-    display: grid;
-    grid-template-columns: 88px 1fr;
-    border-top: 1px solid var(--rule);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-  }
-  .tb-row:first-child { border-top: none; }
-  .tb-k {
-    padding: 7px 10px;
-    color: var(--fg-faint);
-    border-right: 1px solid var(--rule);
-    letter-spacing: 0.04em;
-    background: var(--surface-hover);
-  }
-  .tb-v {
-    padding: 7px 10px;
-    color: var(--fg);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .tb-v.live-metric {
-    color: var(--status-live);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 500;
-  }
-
-  @media (max-width: 820px) {
-    .hero-grid { grid-template-columns: 1fr; gap: 36px; }
-    .titleblock { max-width: 270px; }
-  }
-
-  /* ==========================================================================
-     SECTION SHELL & SECTION HEADERS
-     ========================================================================== */
-  section {
-    padding: 72px 0;
-    border-top: 1px solid var(--rule);
-  }
-
-  .section-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 32px;
-    flex-wrap: wrap;
-  }
-  .section-head h2 {
-    font-size: 1.85rem;
-    font-weight: 500;
-  }
-  .section-count {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--fg-faint);
-    letter-spacing: 0.1em;
-  }
-  .section-desc {
-    max-width: 66ch;
-    color: var(--fg-muted);
-    font-size: 1.02rem;
-    margin: -16px 0 36px;
-  }
-
-  /* ==========================================================================
-     ABOUT & ENGINEERING PRINCIPLES (SECTION 01)
-     ========================================================================== */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: 40px;
-    align-items: start;
-  }
-  .about-text {
-    font-size: 1.04rem;
-    color: var(--fg-muted);
-    line-height: 1.7;
-  }
-  .about-text strong {
-    color: var(--fg);
-    font-weight: 600;
-  }
-
-  .tenet-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .tenet-card {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    padding: 18px 20px;
-    border-radius: 4px;
-    transition: border-color var(--duration-snap) var(--ease-out), background var(--duration-snap) var(--ease-out);
-  }
-  .tenet-card:hover {
-    border-color: var(--accent);
-    background: var(--surface-hover);
-  }
-  .tenet-num {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--accent);
-    letter-spacing: 0.08em;
-    margin-bottom: 4px;
-  }
-  .tenet-title {
-    font-size: 0.98rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--fg);
-    font-family: var(--font-body);
-  }
-  .tenet-desc {
-    font-size: 0.88rem;
-    color: var(--fg-muted);
-    margin: 0;
-    line-height: 1.55;
-  }
-
-  @media (max-width: 768px) {
-    .about-grid { grid-template-columns: 1fr; }
-  }
-
-  /* ==========================================================================
-     WORK EXPERIENCE (SECTION 02)
-     ========================================================================== */
-  .ledger {
-    border-top: 1px solid var(--rule);
-  }
-  .role-entry {
-    display: grid;
-    grid-template-columns: 170px 1fr;
-    gap: 32px;
-    padding: 30px 0;
-    border-bottom: 1px solid var(--rule);
-  }
-  .role-entry:last-child { border-bottom: none; }
-  .role-time {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--fg-faint);
-    line-height: 1.5;
-    padding-top: 4px;
-  }
-  .role-content h3 {
-    font-size: 1.18rem;
-    font-family: var(--font-body);
-    font-weight: 600;
-    margin: 0 0 3px;
-  }
-  .role-company {
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--accent);
-    margin-bottom: 12px;
-  }
-  .role-points {
-    margin: 0;
-    padding-left: 20px;
-    color: var(--fg-muted);
-    font-size: 0.96rem;
-  }
-  .role-points li {
-    margin-bottom: 8px;
-    line-height: 1.55;
-  }
-  .role-points li:last-child { margin-bottom: 0; }
-
-  @media (max-width: 680px) {
-    .role-entry { grid-template-columns: 1fr; gap: 10px; }
-  }
-
-  /* ==========================================================================
-     PROJECTS MATRIX & FILTER (SECTION 03)
-     ========================================================================== */
-  .project-filter-bar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 28px;
-  }
-  .filter-tab {
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    letter-spacing: 0.04em;
-    padding: 7px 14px;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    color: var(--fg-muted);
-    cursor: pointer;
-    border-radius: 3px;
-    transition: all var(--duration-snap) var(--ease-out);
-  }
-  .filter-tab:hover {
-    color: var(--fg);
-    border-color: var(--rule-strong);
-  }
-  .filter-tab.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--on-accent, #ffffff);
-    font-weight: 600;
-  }
-
-  /* Flagship Project Stack */
-  .flagship-matrix {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  .flagship-item {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    padding: 32px 32px 28px;
-    position: relative;
-    transition: border-color var(--duration-snap) var(--ease-out), box-shadow var(--duration-snap) var(--ease-out), transform var(--duration-snap) var(--ease-out);
-  }
-  .flagship-item:hover {
-    border-color: var(--accent);
-    box-shadow: 0 6px 24px -6px rgba(0, 0, 0, 0.08);
-  }
-
-  .item-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-  }
-  .item-coord {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--fg-faint);
-    letter-spacing: 0.1em;
-  }
-  .item-status {
-    font-family: var(--font-mono);
-    font-size: 0.64rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border: 1px solid var(--rule-strong);
-    color: var(--fg-muted);
-    border-radius: 2px;
-    white-space: nowrap;
-    background: var(--surface-hover);
-  }
-  .item-status.live {
-    color: var(--status-live);
-    border-color: var(--status-live);
-    background: var(--status-live-bg);
-  }
-  .item-status.featured {
-    color: var(--accent);
-    border-color: var(--accent);
-    background: var(--accent-soft);
-  }
-
-  .flagship-title {
-    font-size: 1.45rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-    font-family: var(--font-body);
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .flagship-title .subtitle {
-    font-size: 0.88rem;
-    font-weight: 400;
-    color: var(--fg-faint);
-  }
-
-  .flagship-summary {
-    font-size: 1rem;
-    color: var(--fg-muted);
-    line-height: 1.65;
-    margin-bottom: 20px;
-    max-width: 82ch;
-  }
-  .flagship-summary strong {
-    color: var(--fg);
-    font-weight: 600;
-  }
-
-  /* Architectural Spec Strip */
-  .spec-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    border: 1px solid var(--rule);
-    background: var(--code-bg);
-    margin-bottom: 20px;
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .spec-cell {
-    padding: 10px 14px;
-    border-right: 1px solid var(--rule);
-  }
-  .spec-cell:last-child { border-right: none; }
-  .spec-lbl {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
-    color: var(--fg-faint);
-    text-transform: uppercase;
-  }
-  .spec-val {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--accent);
-    font-weight: 500;
-    margin-top: 3px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* Tech tags */
-  .tech-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    margin-bottom: 20px;
-  }
-  .tech-tag {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--fg-muted);
-    background: var(--surface-hover);
-    border: 1px solid var(--rule);
-    padding: 3px 9px;
-    border-radius: 3px;
-  }
-
-  .item-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    align-items: center;
-    border-top: 1px solid var(--rule);
-    padding-top: 16px;
-  }
-  .action-link {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--fg);
-    border-bottom: 1px solid var(--rule-strong);
-    padding-bottom: 2px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: color var(--duration-snap) var(--ease-out), border-color var(--duration-snap) var(--ease-out);
-  }
-  .action-link:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-  .action-link.blueprint-trigger {
-    color: var(--accent);
-    border-color: var(--accent);
-    cursor: pointer;
-    background: none;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  /* Secondary Grid for developer utilities */
-  .sub-grid-head {
-    margin: 50px 0 20px;
-  }
-  .utilities-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 16px;
-  }
-  .util-card {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    padding: 24px;
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: border-color var(--duration-snap) var(--ease-out), background-color var(--duration-snap) var(--ease-out);
-  }
-  .util-card:hover {
-    border-color: var(--accent);
-    background: var(--surface-hover);
-  }
-  .util-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-  .util-card h4 {
-    font-size: 1.08rem;
-    font-weight: 600;
-    font-family: var(--font-body);
-  }
-  .util-card p {
-    font-size: 0.9rem;
-    color: var(--fg-muted);
-    margin: 0 0 16px;
-    line-height: 1.55;
-    flex-grow: 1;
-  }
-
-  /* ==========================================================================
-     INTERACTIVE DEVELOPER TERMINAL / CONSOLE (SECTION 04)
-     ========================================================================== */
-  .terminal-box {
-    background: var(--ink-950);
-    border: 1px solid var(--rule-strong);
-    border-radius: 6px;
-    overflow: hidden;
-    color: #e2e8f0;
-    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.25);
-  }
-  .terminal-topbar {
-    background: var(--ink-900);
-    border-bottom: 1px solid var(--line-dark);
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .terminal-dots {
-    display: flex;
-    gap: 7px;
-  }
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-  .dot.red { background: #ef4444; }
-  .dot.yellow { background: #eab308; }
-  .dot.green { background: #22c55e; }
-  .terminal-title {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--fg-faint);
-    letter-spacing: 0.06em;
-  }
-
-  .terminal-body {
-    padding: 20px 22px;
-    font-family: var(--font-mono);
-    font-size: 0.84rem;
-    line-height: 1.65;
-    max-height: 380px;
-    overflow-y: auto;
-  }
-  .term-line {
-    margin-bottom: 8px;
-  }
-  .term-prompt {
-    color: var(--emerald-400);
-  }
-  .term-cmd {
-    color: #f8fafc;
-    font-weight: 600;
-  }
-  .term-res {
-    color: #94a3b8;
-    margin-left: 14px;
-    white-space: pre-wrap;
-  }
-  .term-res span.hi { color: var(--gold-300); }
-  .term-res span.gr { color: var(--emerald-400); }
-  .term-res span.cy { color: var(--cyan-400); }
-
-  .terminal-input-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 22px;
-    background: var(--ink-900);
-    border-top: 1px solid var(--line-dark);
-  }
-  .term-input {
-    background: transparent;
-    border: none;
-    color: #f8fafc;
-    font-family: var(--font-mono);
-    font-size: 0.84rem;
-    flex: 1;
-    outline: none;
-  }
-  .terminal-suggestions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 8px 22px 14px;
-    background: var(--ink-900);
-  }
-  .term-chip {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    padding: 3px 8px;
-    background: var(--ink-800);
-    border: 1px solid var(--line-dark);
-    color: var(--fg-faint);
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all var(--duration-snap) var(--ease-out);
-  }
-  .term-chip:hover {
-    color: #f8fafc;
-    border-color: var(--gold-300);
-    background: var(--ink-700);
-  }
-
-  /* ==========================================================================
-     TECHNICAL SKILLS MATRIX (SECTION 05)
-     ========================================================================== */
-  .skills-matrix {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-  }
-  .skill-cluster {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    padding: 24px;
-    border-radius: 4px;
-    transition: border-color var(--duration-snap) var(--ease-out);
-  }
-  .skill-cluster:hover {
-    border-color: var(--rule-strong);
-  }
-  .skill-cluster .eyebrow {
-    margin-bottom: 14px;
-  }
-  .chips-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .skill-badge {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    padding: 6px 12px;
-    background: var(--surface-hover);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    color: var(--fg);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .skill-badge .dot-accent {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-
-  /* ==========================================================================
-     EDUCATION & ACHIEVEMENTS (SECTION 06)
-     ========================================================================== */
-  .academics-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 40px;
-  }
-  .bullet-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .bullet-list li {
-    padding-left: 22px;
-    position: relative;
-    font-size: 0.98rem;
-    color: var(--fg-muted);
-    line-height: 1.6;
-  }
-  .bullet-list li::before {
-    content: "—";
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-weight: 600;
-  }
-  .bullet-list li strong {
-    color: var(--fg);
-  }
-
-  .edu-card {
-    border: 1px solid var(--rule);
-    background: var(--surface);
-    padding: 26px;
-    border-radius: 4px;
-    position: relative;
-  }
-  .edu-inst {
-    font-size: 1.12rem;
-    font-weight: 600;
-    margin: 0 0 4px;
-  }
-  .edu-degree {
-    font-family: var(--font-mono);
-    font-size: 0.84rem;
-    color: var(--accent);
-    margin-bottom: 12px;
-  }
-  .edu-meta {
-    font-size: 0.9rem;
-    color: var(--fg-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  @media (max-width: 768px) {
-    .academics-grid { grid-template-columns: 1fr; }
-  }
-
-  /* ==========================================================================
-     FOOTER & CONTACT DISPATCH (SECTION 07)
-     ========================================================================== */
-  footer.contact-zone {
-    padding: 78px 0 64px;
-    border-top: 1px solid var(--rule);
-  }
-  .contact-title {
-    font-size: clamp(2rem, 4.4vw, 3rem);
-    line-height: 1.15;
-    max-width: 22ch;
-    margin-bottom: 24px;
-  }
-  .contact-desc {
-    max-width: 62ch;
-    font-size: 1.05rem;
-    color: var(--fg-muted);
-    margin-bottom: 32px;
-  }
-
-  .contact-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .copy-status-tip {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--status-live);
-    opacity: 0;
-    transition: opacity var(--duration-snap) var(--ease-out);
-    margin-left: 8px;
-  }
-  .copy-status-tip.visible {
-    opacity: 1;
-  }
-
-  .footer-colophon {
-    margin-top: 64px;
-    padding-top: 24px;
-    border-top: 1px solid var(--rule);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 14px;
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    color: var(--fg-faint);
-  }
-
-  /* ==========================================================================
-     COMMAND PALETTE MODAL (CMD+K / CTRL+K)
-     ========================================================================== */
-  .cmd-backdrop {
-    position: fixed;
-    inset: 0;
-    background: var(--modal-backdrop);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: 100;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 12vh 20px 20px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--duration-snap) var(--ease-out);
-  }
-  .cmd-backdrop.active {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .cmd-palette {
-    width: 100%;
-    max-width: 580px;
-    background: var(--surface);
-    border: 1px solid var(--rule-strong);
-    border-radius: 8px;
-    box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.4);
-    overflow: hidden;
-    transform: scale(0.96) translateY(-8px);
-    transition: transform var(--duration-normal) var(--ease-out);
-  }
-  .cmd-backdrop.active .cmd-palette {
-    transform: scale(1) translateY(0);
-  }
-
-  .cmd-search-wrap {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--rule);
-  }
-  .cmd-search-input {
-    width: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-family: var(--font-mono);
-    font-size: 0.95rem;
-    color: var(--fg);
-  }
-  .cmd-list {
-    max-height: 340px;
-    overflow-y: auto;
-    padding: 8px;
-    list-style: none;
-    margin: 0;
-  }
-  .cmd-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--fg-muted);
-    transition: all var(--duration-snap) var(--ease-out);
-  }
-  .cmd-item:hover, .cmd-item.selected {
-    background: var(--surface-hover);
-    color: var(--fg);
-  }
-  .cmd-item-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .cmd-tag {
-    font-size: 0.65rem;
-    padding: 2px 6px;
-    background: var(--code-bg);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    color: var(--fg-faint);
-  }
-  .cmd-footer {
-    border-top: 1px solid var(--rule);
-    padding: 8px 16px;
-    background: var(--code-bg);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    color: var(--fg-faint);
-  }
-
-  /* ==========================================================================
-     ARCHITECTURAL BLUEPRINT MODAL
-     ========================================================================== */
-  .blueprint-backdrop {
-    position: fixed;
-    inset: 0;
-    background: var(--modal-backdrop);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    z-index: 110;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 20px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--duration-snap) var(--ease-out);
-  }
-  .blueprint-backdrop.active {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .blueprint-modal {
-    width: 100%;
-    max-width: 780px;
-    max-height: 88vh;
-    background: var(--surface);
-    border: 1px solid var(--rule-strong);
-    border-radius: 8px;
-    box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transform: scale(0.96);
-    transition: transform var(--duration-normal) var(--ease-out);
-  }
-  .blueprint-backdrop.active .blueprint-modal {
-    transform: scale(1);
-  }
-
-  .blueprint-head {
-    padding: 18px 24px;
-    border-bottom: 1px solid var(--rule);
-    background: var(--code-bg);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .blueprint-head h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-  }
-  .blueprint-body {
-    padding: 24px;
-    overflow-y: auto;
-    font-size: 0.95rem;
-    color: var(--fg-muted);
-    line-height: 1.65;
-  }
-  .blueprint-diagram {
-    background: var(--ink-950);
-    border: 1px solid var(--rule-strong);
-    border-radius: 6px;
-    padding: 20px;
-    margin: 18px 0;
-    font-family: var(--font-mono);
-    color: #e2e8f0;
-    font-size: 0.78rem;
-    line-height: 1.5;
-    overflow-x: auto;
-    white-space: pre;
-  }
-  .blueprint-foot {
-    padding: 14px 24px;
-    border-top: 1px solid var(--rule);
-    background: var(--surface-hover);
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-  }
-
-  /* Reveal on Scroll */
-  .reveal {
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
-  }
-  .reveal.in {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .reveal {
-      opacity: 1 !important;
-      transform: none !important;
-      transition: none !important;
-    }
-  }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.github.com; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <title>Mayank Agrawal — Full-Stack &amp; AI Systems Engineer</title>
+  <meta name="description" content="Mayank Agrawal is a full-stack and AI systems engineer in Bangalore. He builds production web platforms, backend APIs, and AI automation systems. IIIT Gwalior alumnus.">
+  <meta name="author" content="Mayank Agrawal">
+  <meta name="theme-color" content="#0b0b0c">
+  <link rel="canonical" href="https://magraa.github.io/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Mayank Agrawal — Full-Stack &amp; AI Systems Engineer">
+  <meta property="og:description" content="Production web platforms, backend APIs, and AI systems that remove manual work. Based in Bangalore, open to remote worldwide.">
+  <meta property="og:url" content="https://magraa.github.io/">
+  <meta property="og:image" content="https://magraa.github.io/assets/screens/shoboti-admin.webp">
+  <meta property="og:image:alt" content="Shoboti creator panel with net sales, orders, customers, products and a 7-day sales chart.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mayank Agrawal — Full-Stack &amp; AI Systems Engineer">
+  <meta name="twitter:description" content="Production web platforms, backend APIs, and AI systems that remove manual work. Based in Bangalore, open to remote worldwide.">
+  <meta name="twitter:image" content="https://magraa.github.io/assets/screens/shoboti-admin.webp">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Mayank Agrawal",
+    "url": "https://magraa.github.io/",
+    "jobTitle": "Full-Stack & AI Systems Engineer",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bangalore",
+      "addressCountry": "IN"
+    },
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "IIIT Gwalior"
+    },
+    "sameAs": [
+      "https://github.com/Magraa",
+      "https://www.linkedin.com/in/mayank-agrawal-532967192/"
+    ],
+    "knowsAbout": [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Python",
+      "PostgreSQL",
+      "AI systems",
+      "Offline-first web applications"
+    ]
+  }
+  </script>
 </head>
 <body>
+  <div class="page-grid" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-<!-- Millimeter Technical Ruler Top Accent -->
-<div class="ruler-strip" aria-hidden="true"></div>
-
-<!-- ==========================================================================
-     STICKY NAVIGATION
-     ========================================================================== -->
-<header class="nav" role="banner">
-  <div class="container nav-inner">
-    <a href="#" class="nav-brand" aria-label="M.A MAYANK AGRAWAL — Homepage">
-      <span class="coord-box mono">M.A</span>
-      <span>MAYANK AGRAWAL</span>
-    </a>
-
-    <nav aria-label="Primary Navigation">
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#terminal">Console</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-
-    <div class="nav-controls">
-      <div class="status-badge" title="Actively interviewing for Software Developer, Full-Stack, Backend & AI roles">
-        <span class="status-beacon" aria-hidden="true"></span>
-        <span class="status-text">Open to Work</span>
-      </div>
-
-      <!-- Quick Command Palette Button (Cmd+K) -->
-      <button id="cmdBtn" class="icon-btn" aria-label="⌘K Open Command Palette" title="Quick Search (Ctrl+K / Cmd+K)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <span class="kbd-chip mono">⌘K</span>
+  <header class="site-header" data-header>
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="MA Mayank Agrawal, back to top">
+        <span class="brand-mark" aria-hidden="true">MA</span>
+        <span class="brand-name">Mayank Agrawal</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#work">Work</a>
+        <a href="#systems">Systems</a>
+        <a href="#console">Console</a>
+        <a href="#about">About</a>
+        <a href="#experience">Experience</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="palette-trigger" type="button" data-palette-open aria-keyshortcuts="Control+K Meta+K">
+        <span class="palette-trigger__label">Commands</span>
+        <kbd class="palette-trigger__kbd" data-palette-kbd>Ctrl K</kbd>
+        <span class="sr-only">open the command palette</span>
       </button>
-
-      <!-- Theme Switcher Button -->
-      <button id="themeToggleBtn" class="icon-btn" aria-label="Toggle Color Theme" title="Toggle Light / Dark mode">
-        <svg id="themeIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="5"></circle>
-          <line x1="12" y1="1" x2="12" y2="3"></line>
-          <line x1="12" y1="21" x2="12" y2="23"></line>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-          <line x1="1" y1="12" x2="3" y2="12"></line>
-          <line x1="21" y1="12" x2="23" y2="12"></line>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        </svg>
-      </button>
+      <a class="header-cta" href="mailto:agrawalmayank1111@gmail.com">
+        Email me
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9M8.5 3.5 13 8l-4.5 4.5"/></svg>
+      </a>
     </div>
-  </div>
-</header>
+  </header>
 
-<main class="container">
-
-  <!-- ==========================================================================
-       HERO SECTION
-       ========================================================================== -->
-  <section class="hero" style="border-top:none;">
-    <div class="hero-grid">
-      <div class="hero-left">
-        <div class="eyebrow hero-eyebrow">FULL STACK &amp; BACKEND DEVELOPER · AI AUTOMATION ENGINEER</div>
-        <h1>Mayank<br><em>Agrawal.</em></h1>
-        
-        <p class="hero-bio">
-          I build high-performance web applications and scalable RESTful backends, and engineer autonomous AI pipelines that eliminate tedious manual workflows. Comfortable moving across the entire stack—from <strong>PostgreSQL schemas</strong> and <strong>high-throughput APIs</strong> to <strong>60fps React/React Native interfaces</strong> and <strong>production deployment</strong>. ABV-IIITM Gwalior alumnus.
-        </p>
-
-        <div class="dimension-line" aria-hidden="true">
-          <span class="dimension-label mono">SYSTEM ARCHITECTURE · FULL OWNERSHIP</span>
-          <div class="dimension-bar"></div>
-        </div>
-
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-copy" data-reveal>
+        <p class="eyebrow">Full-stack / AI systems / Bangalore</p>
+        <h1 id="hero-title">
+          <span class="hero-line">Mayank</span>
+          <span class="hero-line hero-line--accent">Agrawal</span>
+        </h1>
+        <p class="hero-lede">I build production web platforms, backend APIs, and AI systems that remove manual work from the businesses that use them.</p>
         <div class="hero-actions">
-          <button id="copyEmailHero" class="pill-btn solid" data-copy="agrawalmayank1111@gmail.com">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
-            <span>Email Me</span>
-          </button>
-          
-          <a class="pill-btn" href="Mayank_Agrawal_Resume.pdf" target="_blank" rel="noopener">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
-            <span>View Resume</span>
+          <a class="button button--primary" href="#work">
+            Selected work
+            <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9M8.5 3.5 13 8l-4.5 4.5"/></svg>
           </a>
-
-          <a class="pill-btn" href="https://github.com/Magraa" target="_blank" rel="noopener">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <span>GitHub ↗</span>
-          </a>
-
-          <a class="pill-btn" href="https://linkedin.com/in/mayank-agrawal-532967192" target="_blank" rel="noopener">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-            <span>LinkedIn ↗</span>
+          <a class="button button--ghost" href="mailto:agrawalmayank1111@gmail.com">Email me</a>
+          <a class="button button--quiet" href="https://www.linkedin.com/in/mayank-agrawal-532967192/" target="_blank" rel="noopener noreferrer">
+            LinkedIn
+            <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 11 11 5M6 5h5v5"/></svg>
           </a>
         </div>
+        <ul class="hero-meta" aria-label="Availability">
+          <li>Bangalore, India</li>
+          <li>IST / UTC+5:30</li>
+          <li>Open to remote worldwide</li>
+        </ul>
       </div>
 
-      <!-- Engineering Stamp / Corner Title Block -->
-      <aside class="titleblock" aria-label="Engineer Specification Stamp">
-        <div class="titleblock-header">
-          <span>SPEC SHEET // 01</span>
-          <span>SYSTEM VERIFIED</span>
+      <aside class="profile-card" aria-label="Profile summary" data-reveal>
+        <div class="profile-card__bar">
+          <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>profile.json</span>
         </div>
-        <div class="avatar-wrap">
-          <img class="avatar-img" src="https://github.com/Magraa.png" alt="Mayank Agrawal" loading="eager" width="270" height="270">
-        </div>
-        <div class="tb-table">
-          <div class="tb-row"><div class="tb-k">ENGINEER</div><div class="tb-v">Mayank Agrawal</div></div>
-          <div class="tb-row"><div class="tb-k">ROLE</div><div class="tb-v">Full Stack / Backend</div></div>
-          <div class="tb-row"><div class="tb-k">STATUS</div><div class="tb-v live-metric"><span class="status-beacon" aria-hidden="true"></span>Active / Open</div></div>
-          <div class="tb-row"><div class="tb-k">ALUMNI</div><div class="tb-v">ABV-IIITM Gwalior</div></div>
-          <div class="tb-row"><div class="tb-k">LOCATION</div><div class="tb-v">Bangalore, IN</div></div>
-          <div class="tb-row"><div class="tb-k">LOCAL TIME</div><div class="tb-v mono" id="liveClock">--:--:-- IST</div></div>
-          <div class="tb-row"><div class="tb-k">CORE STACK</div><div class="tb-v">React · Next · Node · Py</div></div>
-          <div class="tb-row"><div class="tb-k">REVISION</div><div class="tb-v mono">v2026.10</div></div>
+        <dl class="profile-card__list">
+          <div><dt>role</dt><dd>Full-stack + AI systems</dd></div>
+          <div><dt>based</dt><dd>Bengaluru, IN</dd></div>
+          <div><dt>study</dt><dd>IIIT Gwalior</dd></div>
+          <div><dt>stack</dt><dd>Next.js · Python · PostgreSQL</dd></div>
+          <div><dt>focus</dt><dd>AI automation, offline-first, low latency</dd></div>
+        </dl>
+        <div class="profile-card__foot">
+          <span class="status"><i aria-hidden="true"></i>Open to work</span>
+          <a href="#contact">Start a conversation <span aria-hidden="true">→</span></a>
         </div>
       </aside>
-    </div>
-  </section>
+    </section>
 
-  <!-- ==========================================================================
-       SECTION 01: ABOUT & ENGINEERING PRINCIPLES
-       ========================================================================== -->
-  <section id="about" class="reveal">
-    <div class="section-head">
-      <h2>About &amp; Principles</h2>
-      <span class="section-count mono">§ 01</span>
-    </div>
-    
-    <div class="about-grid">
-      <div class="about-text">
-        <p>
-          I am a software developer with over two years of hands-on production experience architecting web and mobile platforms on the <strong>MERN / Next.js stack</strong>, alongside high-concurrency backend services in <strong>Python</strong>.
-        </p>
-        <p>
-          I completed my <strong>Integrated B.Tech + MBA in Information Technology</strong> from <strong>ABV-IIITM Gwalior</strong>. Having both an engineering foundation and product-management training means I don't build software in a vacuum—I design schemas, API boundaries, and workflows around the fundamental business bottlenecks they exist to solve.
-        </p>
-        <p>
-          Outside of production sprints, my obsession is eliminating tedious manual overhead. Whether it's bridging cellular Android voice calls over ADB, parsing non-standard bank statements with multimodal LLMs, or automating government procurement paperwork down to 1-click A4 PDFs, I build deterministic systems that remove human error and save hundreds of operational hours.
-        </p>
-      </div>
+    <section class="proof-strip" aria-label="Career highlights" data-reveal>
+      <div><strong>2+</strong><span>years in production</span></div>
+      <div><strong>10+</strong><span>shipped projects</span></div>
+      <div><strong>3</strong><span>live products</span></div>
+      <div><strong>95+</strong><span>Lighthouse score</span></div>
+    </section>
 
-      <div class="tenet-list">
-        <div class="tenet-card">
-          <div class="tenet-num">TENET I</div>
-          <div class="tenet-title">Zero-Busywork Engineering</div>
-          <p class="tenet-desc">If humans are repeatedly copying numbers, generating identical procurement letters, or dialing repetitive calls, we can build a deterministic, automated system to do it faster and without errors.</p>
-        </div>
-
-        <div class="tenet-card">
-          <div class="tenet-num">TENET II</div>
-          <div class="tenet-title">Local-First &amp; Network Resilience</div>
-          <p class="tenet-desc">Network latency spikes and connections drop; mission-critical operations shouldn't. Systems should cache proactively, leverage IndexedDB / SQLite, and support offline-first continuity.</p>
-        </div>
-
-        <div class="tenet-card">
-          <div class="tenet-num">TENET III</div>
-          <div class="tenet-title">Tactile Polish &amp; Sub-200ms Response</div>
-          <p class="tenet-desc">APIs are profiled for low latency, databases are indexed intentionally, and interfaces must feel responsive on hardware—active states scale, animations stay under 200ms, and frames hit 60fps.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       SECTION 02: WORK EXPERIENCE
-       ========================================================================== -->
-  <section id="experience" class="reveal">
-    <div class="section-head">
-      <h2>Work Experience</h2>
-      <span class="section-count mono">§ 02</span>
-    </div>
-    <p class="section-desc">Engineering production software across enterprise applications, customer-facing interfaces, and high-volume data pipelines.</p>
-
-    <div class="ledger">
-      <article class="role-entry">
-        <div class="role-time mono">APR 2024 —<br>PRESENT</div>
-        <div class="role-content">
-          <h3>Full Stack &amp; Mobile Developer</h3>
-          <div class="role-company">Bittern Technologies — Remote</div>
-          <ul class="role-points">
-            <li>Architected and shipped scalable frontend modules and cross-platform UI flows using <strong>React, React Native, TypeScript, and Next.js</strong>.</li>
-            <li>Engineered and optimized high-performance <strong>RESTful APIs and Node.js microservices</strong>, cutting database roundtrip latency by <strong>35%</strong>.</li>
-            <li>Built offline-first state synchronization and reactive store layers, guaranteeing fluid <strong>60fps UI transitions</strong> across Android and iOS viewports.</li>
-            <li>Took complete end-to-end technical ownership: collaborated on functional specifications, designed schema architectures, and managed CI/CD production releases.</li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="role-entry">
-        <div class="role-time mono">SEP 2023 —<br>DEC 2023</div>
-        <div class="role-content">
-          <h3>Software Engineer Intern</h3>
-          <div class="role-company">Logical Analytics — Remote, Lucknow</div>
-          <ul class="role-points">
-            <li>Built responsive analytics dashboards and reusable UI design libraries using <strong>React.js and SCSS</strong>.</li>
-            <li>Designed clean MongoDB collections and RESTful backend endpoints in <strong>Node.js &amp; Express</strong>.</li>
-            <li>Integrated Cloudinary media transformation pipelines, cutting server asset bandwidth and storage consumption by <strong>30%</strong>.</li>
-            <li>Conducted systematic code reviews, fixed layout regressions across viewport breakpoints, and elevated core web vital metrics.</li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="role-entry">
-        <div class="role-time mono">NOV 2022 —<br>FEB 2023</div>
-        <div class="role-content">
-          <h3>Software &amp; Automation Developer</h3>
-          <div class="role-company">Blockchain &amp; Automation Clients — Remote</div>
-          <ul class="role-points">
-            <li>Engineered custom automation bots and web scrapers in <strong>Python, Discord.py, and Selenium</strong>.</li>
-            <li>Designed and deployed secure licensing validation systems and real-time transaction event listeners.</li>
-            <li>Wrote automated integration test suites to prevent race conditions and duplicate client order executions.</li>
-          </ul>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       SECTION 03: FEATURED FLAGSHIP PROJECTS
-       ========================================================================== -->
-  <section id="projects" class="reveal">
-    <div class="section-head">
-      <h2>Flagship Systems &amp; Projects</h2>
-      <span class="section-count mono">§ 03</span>
-    </div>
-    <p class="section-desc">Production systems, autonomous AI agents, and high-utility platforms built to solve acute operational bottlenecks.</p>
-
-    <!-- Category Filter Bar -->
-    <div class="project-filter-bar" role="tablist" aria-label="Project Categories">
-      <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">All Systems (10)</button>
-      <button class="filter-tab" data-filter="ai" role="tab" aria-selected="false">AI &amp; Vision (5)</button>
-      <button class="filter-tab" data-filter="fullstack" role="tab" aria-selected="false">Full-Stack &amp; Cloud (4)</button>
-      <button class="filter-tab" data-filter="mobile" role="tab" aria-selected="false">Mobile &amp; Tools (2)</button>
-    </div>
-
-    <div class="flagship-matrix" id="projectsContainer">
-
-      <!-- PROJECT 01: SHOBOTI -->
-      <article class="flagship-item" data-category="ai fullstack">
-        <div class="item-meta">
-          <span class="item-coord mono">§ PROJ-01 // PRODUCTION PLATFORM</span>
-          <span class="item-status live">Live in Production · shoboti.com</span>
-        </div>
-        <h3 class="flagship-title">Shoboti <span class="subtitle">— Social Video Commerce &amp; Direct Storefront Platform</span></h3>
-        <p class="flagship-summary">
-          An end-to-end social e-commerce engine built for video creators selling through Instagram Reels and direct messages. Automatically turns comments ("Price?", "Link?") into instant personalized DMs with rotating anti-spam protection, features a conversational shopping assistant trained on store policies with <strong>pgvector semantic product retrieval</strong>, and powers live mobile storefronts (such as <a href="https://aria.shoboti.com" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">aria.shoboti.com</a>) featuring shoppable video reels, size variants, and frictionless checkout—eliminating manual UPI payment screenshots and spreadsheet tracking.
-        </p>
-        <div class="spec-grid">
-          <div class="spec-cell"><span class="spec-lbl">Live Platform</span><span class="spec-val">shoboti.com</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Demo Storefront</span><span class="spec-val">aria.shoboti.com</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Catalog AI Vectors</span><span class="spec-val">Gemini + Llama 3 (pgvector)</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Database &amp; ORM</span><span class="spec-val">PostgreSQL + Drizzle ORM</span></div>
-        </div>
-        <div class="tech-tags">
-          <span class="tech-tag">Next.js App Router</span>
-          <span class="tech-tag">React Server Components</span>
-          <span class="tech-tag">TypeScript</span>
-          <span class="tech-tag">Tailwind CSS</span>
-          <span class="tech-tag">PostgreSQL</span>
-          <span class="tech-tag">Drizzle ORM</span>
-          <span class="tech-tag">pgvector</span>
-          <span class="tech-tag">Google Gemini</span>
-          <span class="tech-tag">Social Graph APIs</span>
-        </div>
-        <div class="item-actions">
-          <a class="action-link" href="https://shoboti.com" target="_blank" rel="noopener">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg>
-            <span>Live Platform (shoboti.com) ↗</span>
-          </a>
-          <a class="action-link" href="https://aria.shoboti.com" target="_blank" rel="noopener">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-            <span>Demo Store (aria.shoboti.com) ↗</span>
-          </a>
-          <button class="action-link blueprint-trigger" data-modal="shoboti">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>
-            <span>Inspect Blueprint ↗</span>
-          </button>
-          <a class="action-link" href="https://github.com/Magraa/shoboti-showcase" target="_blank" rel="noopener">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <span>GitHub Showcase ↗</span>
-          </a>
-        </div>
-      </article>
-
-      <!-- PROJECT 02: HISAB AI -->
-      <article class="flagship-item" data-category="ai fullstack">
-        <div class="item-meta">
-          <span class="item-coord mono">§ PROJ-02 // PRODUCTION PWA</span>
-          <span class="item-status live">Live in Production · hisab-ai-livid.vercel.app</span>
-        </div>
-        <h3 class="flagship-title">Hisab AI <span class="subtitle">— AI-Powered Financial Notebook &amp; Bahi-Khata</span></h3>
-        <p class="flagship-summary">
-          An offline-capable PWA financial ledger built for Indian MSMEs and freelancers. Ingests crumpled physical receipts and handwritten diaries via <strong>Google Gemini 2.0 Flash multimodal OCR</strong>, categorizes vernacular expenses using an instant local regex/phonetic normalizer, and maintains dual-mode synchronization between <strong>Supabase PostgreSQL (Row-Level Security)</strong> and local encrypted storage. Features 1-tap client-side vector PDF generation with Rupee formatting and direct WhatsApp dispatch.
-        </p>
-        <div class="spec-grid">
-          <div class="spec-cell"><span class="spec-lbl">Live Web App</span><span class="spec-val">hisab-ai-livid.vercel.app</span></div>
-          <div class="spec-cell"><span class="spec-lbl">AI Vision Engine</span><span class="spec-val">Gemini 2.0 Flash OCR</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Offline Continuity</span><span class="spec-val">PWA Service Worker + Cache</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Database Security</span><span class="spec-val">Postgres RLS (auth.uid())</span></div>
-        </div>
-        <div class="tech-tags">
-          <span class="tech-tag">Next.js 15</span>
-          <span class="tech-tag">React 19</span>
-          <span class="tech-tag">TypeScript</span>
-          <span class="tech-tag">Google Gemini 2.0</span>
-          <span class="tech-tag">Supabase RLS</span>
-          <span class="tech-tag">Tailwind CSS v4</span>
-          <span class="tech-tag">Motion</span>
-          <span class="tech-tag">PWA</span>
-        </div>
-        <div class="item-actions">
-          <a class="action-link" href="https://hisab-ai-livid.vercel.app" target="_blank" rel="noopener">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg>
-            <span>Visit Live App (hisab-ai-livid.vercel.app) ↗</span>
-          </a>
-          <button class="action-link blueprint-trigger" data-modal="hisab">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>
-            <span>Inspect Blueprint ↗</span>
-          </button>
-          <a class="action-link" href="https://github.com/Magraa/Hisab-AI-Showcase" target="_blank" rel="noopener">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <span>GitHub Showcase ↗</span>
-          </a>
-        </div>
-      </article>
-
-      <!-- PROJECT 03: SIMVOX AI -->
-      <article class="flagship-item" data-category="ai mobile">
-        <div class="item-meta">
-          <span class="item-coord mono">§ PROJ-03 // OPEN SOURCE</span>
-          <span class="item-status live">10★ Stars · 4 Forks</span>
-        </div>
-        <h3 class="flagship-title">SIMVox-AI <span class="subtitle">— Zero-VoIP Autonomous Cellular AI Voice Agent</span></h3>
-        <p class="flagship-summary">
-          An autonomous cellular AI voice calling system that converts an ordinary Android handset into a real cellular receptionist—with <strong>zero Twilio fees, zero SIP trunks, and zero per-minute VoIP tolls</strong>. It bridges a PC straight to Android cellular hardware over <strong>ADB and native audio loops</strong>, pipes incoming call audio to <strong>Google Gemini LLM</strong> for context reasoning, and synthesizes answers via <strong>Microsoft Edge Neural TTS</strong> with sub-second latency. Includes a desktop dashboard featuring real-time waveforms and an integrated call CRM.
-        </p>
-        <div class="spec-grid">
-          <div class="spec-cell"><span class="spec-lbl">Hardware Bridge</span><span class="spec-val">Zero-VoIP over ADB</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Conversational LLM</span><span class="spec-val">Google Gemini</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Neural Voice</span><span class="spec-val">Edge Neural TTS</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Turnaround Latency</span><span class="spec-val">Sub-second turnaround</span></div>
-        </div>
-        <div class="tech-tags">
-          <span class="tech-tag">Python</span>
-          <span class="tech-tag">Google Gemini API</span>
-          <span class="tech-tag">Edge-TTS</span>
-          <span class="tech-tag">ADB Automation</span>
-          <span class="tech-tag">PyWebView</span>
-          <span class="tech-tag">Audio Streams</span>
-          <span class="tech-tag">SQLite</span>
-        </div>
-        <div class="item-actions">
-          <button class="action-link blueprint-trigger" data-modal="simvox">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>
-            <span>Inspect Architecture Blueprint ↗</span>
-          </button>
-          <a class="action-link" href="https://github.com/Magraa/SIMVox-AI" target="_blank" rel="noopener">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <span>GitHub Repository ↗</span>
-          </a>
-        </div>
-      </article>
-
-      <!-- PROJECT 04: FINAUDIT AI -->
-      <article class="flagship-item" data-category="ai fullstack">
-        <div class="item-meta">
-          <span class="item-coord mono">§ PROJ-04 // SYSTEM DESIGN</span>
-          <span class="item-status live">Architecture Showcase</span>
-        </div>
-        <h3 class="flagship-title">FinAudit AI <span class="subtitle">— Financial Intelligence &amp; Fraud Audit Platform</span></h3>
-        <p class="flagship-summary">
-          A high-volume financial intelligence engine built for high-throughput P2P transaction desks and merchant networks. Ingests receipt screenshots and multi-bank statements via WhatsApp and direct uploads, runs OCR extraction paired with <strong>Gemini and Groq Llama 3</strong> for structured field parsing, and executes <strong>cryptographic duplicate hash detection</strong> to instantly flag fraudulent duplicate claims, doctored receipts, and reconciliation mismatches.
-        </p>
-        <div class="spec-grid">
-          <div class="spec-cell"><span class="spec-lbl">Document Ingestion</span><span class="spec-val">OCR + Multimodal LLM</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Statement Parsing</span><span class="spec-val">Multi-Bank PDF &amp; CSV</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Fraud Detection</span><span class="spec-val">Duplicate Hash &amp; OCR Triage</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Frontend Stack</span><span class="spec-val">Next.js 15 · Supabase</span></div>
-        </div>
-        <div class="tech-tags">
-          <span class="tech-tag">Next.js 15</span>
-          <span class="tech-tag">Python</span>
-          <span class="tech-tag">Gemini Vision</span>
-          <span class="tech-tag">Groq Llama 3</span>
-          <span class="tech-tag">Supabase</span>
-          <span class="tech-tag">Tailwind CSS</span>
-        </div>
-        <div class="item-actions">
-          <button class="action-link blueprint-trigger" data-modal="finaudit">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>
-            <span>Inspect Architecture Blueprint ↗</span>
-          </button>
-          <a class="action-link" href="https://github.com/Magraa/FinAudit-AI" target="_blank" rel="noopener">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <span>GitHub Repository ↗</span>
-          </a>
-        </div>
-      </article>
-
-      <!-- PROJECT 05: TENDERFLOW AI -->
-      <article class="flagship-item" data-category="ai fullstack">
-        <div class="item-meta">
-          <span class="item-coord mono">§ PROJ-05 // PRODUCTION SUITE</span>
-          <span class="item-status live">Commercial Platform</span>
-        </div>
-        <h3 class="flagship-title">TenderFlow AI <span class="subtitle">— Autonomous Procurement &amp; A4 Document Pipeline</span></h3>
-        <p class="flagship-summary">
-          An autonomous public procurement suite for enterprise contractors participating in Indian e-tenders (GeM &amp; MP Tenders). Replaces tedious manual paperwork with a <strong>1-click synchronized 5-document pipeline</strong>: auto-generating the Vigyapti (NIT), Main Quotation (L1), Alternate Rate Bids (L2/L3), Supply Orders, and GST Tax Bills. Powered by a multi-LLM drafting engine (Gemini/Groq) for procurement-grade legal text in <strong>Hindi and English</strong>, plus a print-precise dynamic DOM-height A4 letterhead engine.
-        </p>
-        <div class="spec-grid">
-          <div class="spec-cell"><span class="spec-lbl">Document Pipeline</span><span class="spec-val">1-Click 5-Doc Synchronizer</span></div>
-          <div class="spec-cell"><span class="spec-lbl">AI Drafting Engine</span><span class="spec-val">Bilingual Hindi/English Multi-LLM</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Print Engine</span><span class="spec-val">Dynamic DOM-Height A4 PDF</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Storage Architecture</span><span class="spec-val">IndexedDB + Cloud Sync</span></div>
-        </div>
-        <div class="tech-tags">
-          <span class="tech-tag">Next.js 15</span>
-          <span class="tech-tag">TypeScript</span>
-          <span class="tech-tag">TipTap Editor</span>
-          <span class="tech-tag">Gemini 2.5</span>
-          <span class="tech-tag">Groq Llama 3</span>
-          <span class="tech-tag">Tailwind CSS</span>
-          <span class="tech-tag">IndexedDB</span>
-        </div>
-        <div class="item-actions">
-          <button class="action-link blueprint-trigger" data-modal="tenderflow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>
-            <span>Inspect Architecture Blueprint ↗</span>
-          </button>
-          <a class="action-link" href="https://github.com/Magraa/TenderFlow-AI-Showcase" target="_blank" rel="noopener">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <span>Architecture Docs ↗</span>
-          </a>
-        </div>
-      </article>
-
-      <!-- PROJECT 06: MR PROPER -->
-      <article class="flagship-item" data-category="fullstack">
-        <div class="item-meta">
-          <span class="item-coord mono">§ PROJ-06 // PRODUCTION PLATFORM</span>
-          <span class="item-status live">Live in Production · mrproper.in</span>
-        </div>
-        <h3 class="flagship-title">Mr. Proper Platform <span class="subtitle">— E-Commerce, Contractor CRM &amp; Manufacturing ERP</span></h3>
-        <p class="flagship-summary">
-          An end-to-end commercial operations platform running for Mr. Proper. Powers a public retail e-commerce storefront, a B2B contractor loyalty portal, a field CRM tracking painter relationships, GPS-logged site visits, and digital proof-of-delivery (POD) signatures. Underneath, an ERP manufacturing console automates formula chemical batching and raw stock inventory deduction. Integrated with Razorpay payments; benchmarked at 95+ Lighthouse performance.
-        </p>
-        <div class="spec-grid">
-          <div class="spec-cell"><span class="spec-lbl">Production Stack</span><span class="spec-val">Next.js 14 · Supabase · TS</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Field Operations</span><span class="spec-val">GPS Visit Logs &amp; Digital POD</span></div>
-          <div class="spec-cell"><span class="spec-lbl">ERP Console</span><span class="spec-val">Formula Batching &amp; Inventory</span></div>
-          <div class="spec-cell"><span class="spec-lbl">Payment Gateway</span><span class="spec-val">Razorpay Production API</span></div>
-        </div>
-        <div class="tech-tags">
-          <span class="tech-tag">Next.js 14</span>
-          <span class="tech-tag">Supabase</span>
-          <span class="tech-tag">TypeScript</span>
-          <span class="tech-tag">Tailwind CSS</span>
-          <span class="tech-tag">Razorpay</span>
-          <span class="tech-tag">Google Maps API</span>
-          <span class="tech-tag">Firebase</span>
-        </div>
-        <div class="item-actions">
-          <a class="action-link" href="https://mrproper.in" target="_blank" rel="noopener">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-            <span>Visit Live Platform (mrproper.in) ↗</span>
-          </a>
-          <a class="action-link" href="https://github.com/Magraa/Mr-Proper-Website" target="_blank" rel="noopener">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <span>GitHub Repository ↗</span>
-          </a>
-        </div>
-      </article>
-
-    </div>
-
-    <!-- Secondary Utilities & Developer Tools -->
-    <div class="sub-grid-head">
-      <div class="eyebrow">ADDITIONAL PRODUCTION TOOLS &amp; REPOSITORIES</div>
-    </div>
-    
-    <div class="utilities-grid">
-      <!-- ProperCoupons -->
-      <div class="util-card" data-category="fullstack">
-        <div>
-          <div class="util-head">
-            <h4>ProperCoupons</h4>
-            <span class="item-status">Python / Supabase</span>
-          </div>
-          <p>Enterprise batch loyalty coupon generator with cryptographic CSPRNG engine, 300 DPI duplex print PDF sheets, Supabase cloud sync, and mobile redemption portal.</p>
-        </div>
-        <div>
-          <div class="tech-tags"><span class="tech-tag">Python</span><span class="tech-tag">Streamlit</span><span class="tech-tag">Supabase</span><span class="tech-tag">ReportLab 300DPI</span></div>
-          <a class="action-link" href="https://github.com/Magraa/ProperCoupons" target="_blank" rel="noopener">View Repository ↗</a>
-        </div>
-      </div>
-
-      <!-- Couple Trust -->
-      <div class="util-card" data-category="mobile">
-        <div>
-          <div class="util-head">
-            <h4>Couple Trust</h4>
-            <span class="item-status">Native Android</span>
-          </div>
-          <p>Privacy-first Android application built with Clean Architecture, MVVM, 100% Kotlin, and Jetpack Compose for mutual transparency with revocable security consent.</p>
-        </div>
-        <div>
-          <div class="tech-tags"><span class="tech-tag">Kotlin</span><span class="tech-tag">Jetpack Compose</span><span class="tech-tag">MVVM</span><span class="tech-tag">Firestore</span></div>
-          <a class="action-link" href="https://github.com/Magraa/coupletrust-app" target="_blank" rel="noopener">View Repository ↗</a>
-        </div>
-      </div>
-
-      <!-- Interactive UI Prototype Viewer -->
-      <div class="util-card" data-category="mobile fullstack">
-        <div>
-          <div class="util-head">
-            <h4>Interactive Prototype Studio</h4>
-            <span class="item-status">Offline Web Tool</span>
-          </div>
-          <p>A lightweight, offline-first web tool turning static UI screenshot exports into interactive clickable prototypes with device frames and hotspot transitions.</p>
-        </div>
-        <div>
-          <div class="tech-tags"><span class="tech-tag">JavaScript</span><span class="tech-tag">Canvas</span><span class="tech-tag">DOM Hotspots</span></div>
-          <a class="action-link" href="https://github.com/Magraa/interactive-ui-prototype-viewer" target="_blank" rel="noopener">View Repository ↗</a>
-        </div>
-      </div>
-
-      <!-- ADB Developer Studio -->
-      <div class="util-card" data-category="mobile">
-        <div>
-          <div class="util-head">
-            <h4>ADB Developer Studio</h4>
-            <span class="item-status">Desktop Suite</span>
-          </div>
-          <p>Desktop suite for Android engineers: one-click wireless ADB pairing &amp; auto-reconnect, build watcher, instant screenshot-to-clipboard, and live logcat tailing.</p>
-        </div>
-        <div>
-          <div class="tech-tags"><span class="tech-tag">Python</span><span class="tech-tag">PyWebView</span><span class="tech-tag">ADB Subprocesses</span></div>
-          <a class="action-link" href="https://github.com/Magraa/adb-developer-studio" target="_blank" rel="noopener">View Repository ↗</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       SECTION 04: INTERACTIVE DEVELOPER CONSOLE (TERMINAL)
-       ========================================================================== -->
-  <section id="terminal" class="reveal">
-    <div class="section-head">
-      <h2>Interactive Developer Console</h2>
-      <span class="section-count mono">§ 04</span>
-    </div>
-    <p class="section-desc">Inspect system telemetry, query my bio, or test command routing directly from this terminal emulator.</p>
-
-    <div class="terminal-box" role="region" aria-label="Interactive Developer Terminal">
-      <div class="terminal-topbar">
-        <div class="terminal-dots" aria-hidden="true">
-          <span class="dot red"></span>
-          <span class="dot yellow"></span>
-          <span class="dot green"></span>
-        </div>
-        <div class="terminal-title mono">mayank@workstation: ~/portfolio (zsh)</div>
-        <div class="mono" style="font-size:0.68rem; color:#94a3b8;">TTY1 · READY</div>
-      </div>
-
-      <div class="terminal-body" id="termOutput" aria-live="polite">
-        <div class="term-line"><span class="term-prompt">mayank@workstation:~$ </span><span class="term-cmd">system-status</span></div>
-        <div class="term-res">NAME: Mayank Agrawal | ROLE: Software Developer (Full Stack &amp; Backend)
-LOCATION: Bangalore, India | STATUS: <span class="gr">🟢 Open to Opportunities</span>
-EDUCATION: Integrated B.Tech + MBA (IT) · ABV-IIITM Gwalior
-STACK: <span class="hi">React · Next.js · Node.js · TypeScript · Python · Supabase · Docker</span>
-Type <span class="cy">'help'</span> to see all available commands.</div>
-      </div>
-
-      <div class="terminal-input-row">
-        <span class="term-prompt mono" aria-hidden="true">mayank@workstation:~$ </span>
-        <input type="text" id="termInput" class="term-input" placeholder="Type a command (e.g. 'projects', 'skills', 'contact', 'help')..." autocomplete="off" spellcheck="false" aria-label="Terminal Command Input">
-      </div>
-
-      <div class="terminal-suggestions">
-        <span class="term-chip" data-cmd="help">help</span>
-        <span class="term-chip" data-cmd="projects">projects</span>
-        <span class="term-chip" data-cmd="shoboti">shoboti</span>
-        <span class="term-chip" data-cmd="hisab">hisab</span>
-        <span class="term-chip" data-cmd="skills">skills</span>
-        <span class="term-chip" data-cmd="contact">contact</span>
-        <span class="term-chip" data-cmd="resume">resume</span>
-        <span class="term-chip" data-cmd="clear">clear</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       SECTION 05: TECHNICAL SKILLS MATRIX
-       ========================================================================== -->
-  <section id="skills" class="reveal">
-    <div class="section-head">
-      <h2>Technical Skills Matrix</h2>
-      <span class="section-count mono">§ 05</span>
-    </div>
-    <p class="section-desc">Core languages, frameworks, cloud infrastructure, and AI engineering tools used in production environments.</p>
-
-    <div class="skills-matrix">
-      <div class="skill-cluster">
-        <div class="eyebrow">LANGUAGES</div>
-        <div class="chips-container">
-          <span class="skill-badge"><span class="dot-accent"></span>Python</span>
-          <span class="skill-badge"><span class="dot-accent"></span>TypeScript</span>
-          <span class="skill-badge"><span class="dot-accent"></span>JavaScript (ES6+)</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Kotlin (Android)</span>
-          <span class="skill-badge"><span class="dot-accent"></span>SQL (PostgreSQL)</span>
-          <span class="skill-badge"><span class="dot-accent"></span>C / C++</span>
-        </div>
-      </div>
-
-      <div class="skill-cluster">
-        <div class="eyebrow">WEB &amp; FRONTEND</div>
-        <div class="chips-container">
-          <span class="skill-badge"><span class="dot-accent"></span>React.js</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Next.js 15 (App Router)</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Tailwind CSS v4</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Framer Motion / Motion</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Zustand / Redux</span>
-          <span class="skill-badge"><span class="dot-accent"></span>TipTap Rich Editor</span>
-        </div>
-      </div>
-
-      <div class="skill-cluster">
-        <div class="eyebrow">BACKEND &amp; APIS</div>
-        <div class="chips-container">
-          <span class="skill-badge"><span class="dot-accent"></span>Node.js</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Express.js</span>
-          <span class="skill-badge"><span class="dot-accent"></span>RESTful API Design</span>
-          <span class="skill-badge"><span class="dot-accent"></span>WebSockets</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Fastify</span>
-          <span class="skill-badge"><span class="dot-accent"></span>PyWebView Desktop</span>
-        </div>
-      </div>
-
-      <div class="skill-cluster">
-        <div class="eyebrow">DATABASES &amp; CLOUD</div>
-        <div class="chips-container">
-          <span class="skill-badge"><span class="dot-accent"></span>PostgreSQL</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Supabase (RLS &amp; Sync)</span>
-          <span class="skill-badge"><span class="dot-accent"></span>MongoDB</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Firebase / Firestore</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Docker</span>
-          <span class="skill-badge"><span class="dot-accent"></span>AWS (EC2 / S3)</span>
-        </div>
-      </div>
-
-      <div class="skill-cluster">
-        <div class="eyebrow">AI &amp; AUTOMATION</div>
-        <div class="chips-container">
-          <span class="skill-badge"><span class="dot-accent"></span>Google Gemini 2.0/Flash</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Multimodal OCR Vision</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Edge Neural TTS</span>
-          <span class="skill-badge"><span class="dot-accent"></span>ADB Bridge Automation</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Multi-LLM Orchestration</span>
-          <span class="skill-badge"><span class="dot-accent"></span>LangChain / RAG</span>
-        </div>
-      </div>
-
-      <div class="skill-cluster">
-        <div class="eyebrow">SYSTEM ENGINEERING</div>
-        <div class="chips-container">
-          <span class="skill-badge"><span class="dot-accent"></span>Clean Architecture / MVVM</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Offline-First (IndexedDB)</span>
-          <span class="skill-badge"><span class="dot-accent"></span>CSPRNG Cryptography</span>
-          <span class="skill-badge"><span class="dot-accent"></span>DOM-Height A4 PDF Engine</span>
-          <span class="skill-badge"><span class="dot-accent"></span>Git &amp; GitHub Actions</span>
-          <span class="skill-badge"><span class="dot-accent"></span>CI/CD Pipelines</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       SECTION 06: EDUCATION & ACHIEVEMENTS
-       ========================================================================== -->
-  <section id="academics" class="reveal">
-    <div class="section-head">
-      <h2>Education &amp; Credentials</h2>
-      <span class="section-count mono">§ 06</span>
-    </div>
-
-    <div class="academics-grid">
-      <div>
-        <div class="eyebrow" style="margin-bottom:16px;">ACHIEVEMENTS &amp; VERIFIED METRICS</div>
-        <ul class="bullet-list">
-          <li><strong>Competitive Programming:</strong> Solved 300+ Data Structures &amp; Algorithms problems across LeetCode, CodeChef, and HackerRank.</li>
-          <li><strong>Hackathons:</strong> Pre-finalist at Hacksagon 2020 national hackathon.</li>
-          <li><strong>Open Source Stewardship:</strong> Active contributor across Hacktoberfest 2019, 2021, and 2022. Author of open-source projects including SIMVox AI (10★).</li>
-          <li><strong>Professional Certifications:</strong> HackerRank Certified in Python Programming; completed Dr. Angela Yu's Complete Web Development Bootcamp.</li>
+    <div class="skill-marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <ul class="marquee-group">
+          <li>TypeScript</li><li>Next.js</li><li>React</li><li>Node.js</li><li>Python</li><li>PostgreSQL</li><li>Gemini</li><li>pgvector</li><li>Docker</li><li>AWS</li><li>React Native</li>
+        </ul>
+        <ul class="marquee-group">
+          <li>TypeScript</li><li>Next.js</li><li>React</li><li>Node.js</li><li>Python</li><li>PostgreSQL</li><li>Gemini</li><li>pgvector</li><li>Docker</li><li>AWS</li><li>React Native</li>
         </ul>
       </div>
+    </div>
 
-      <div>
-        <div class="eyebrow" style="margin-bottom:16px;">ACADEMIC PEDIGREE</div>
-        <div class="edu-card">
-          <h3 class="edu-inst">ABV-IIITM Gwalior</h3>
-          <div class="edu-degree">Institute of National Importance</div>
-          <p class="edu-meta">
-            <strong>Integrated B.Tech + MBA in Information Technology</strong><br>
-            <span class="mono">2019 — 2024</span><br>
-            Curriculum focused on Distributed Systems, Advanced Database Architectures, Product Management, and Financial Analysis.
-          </p>
+    <section class="section" id="work" aria-labelledby="work-title">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="kicker">01 / Selected work</p>
+          <h2 id="work-title">Real screens.<br><em>Real constraints.</em></h2>
         </div>
+        <p class="section-note">Five products shown with their actual interfaces. Expand any screen to inspect the flows behind the case study.</p>
+      </div>
+
+      <nav class="work-index" aria-label="Project index" data-reveal>
+        <a href="#project-shoboti"><span class="work-index__num">01</span><span class="work-index__name">Shoboti</span><span class="work-index__cat">Social commerce</span></a>
+        <a href="#project-hisab"><span class="work-index__num">02</span><span class="work-index__name">Hisab AI</span><span class="work-index__cat">Fintech PWA</span></a>
+        <a href="#project-simvox"><span class="work-index__num">03</span><span class="work-index__name">SIMVox-AI</span><span class="work-index__cat">Voice AI</span></a>
+        <a href="#project-mrproper"><span class="work-index__num">04</span><span class="work-index__name">Mr. Proper</span><span class="work-index__cat">Commerce + ERP</span></a>
+        <a href="#project-tenderiq"><span class="work-index__num">05</span><span class="work-index__name">TenderIQ</span><span class="work-index__cat">Procurement AI</span></a>
+      </nav>
+
+      <article class="case" id="project-shoboti" aria-labelledby="case-shoboti">
+        <header class="case__header" data-reveal>
+          <div class="case__title">
+            <p class="kicker">01 / Social commerce · Multi-tenant SaaS</p>
+            <h3 id="case-shoboti">Shoboti</h3>
+            <p class="case__role">Lead full-stack architect</p>
+          </div>
+          <div class="case__intro">
+            <p>A social commerce platform where Instagram comments and DMs become product conversations, orders, direct UPI payments, and thermal shipping labels. The AI sits on top of a deterministic checkout state machine.</p>
+            <ul class="metrics" aria-label="Shoboti outcomes">
+              <li><strong>7.8s</strong><span>first response</span></li>
+              <li><strong>3.52×</strong><span>comment-to-buy</span></li>
+              <li><strong>₹0</strong><span>gateway fee on UPI</span></li>
+            </ul>
+          </div>
+        </header>
+
+        <div class="case-stage case-stage--copper" data-stage data-reveal>
+          <span class="stage-index" aria-hidden="true">01</span>
+          <div class="stage-topline">
+            <span class="stage-status"><i aria-hidden="true"></i>Production</span>
+            <span class="stage-count">3 screens · expand</span>
+          </div>
+
+          <div class="browser-frame">
+            <div class="browser-bar" aria-hidden="true">
+              <span class="terminal-dots"><i></i><i></i><i></i></span>
+              <span class="browser-url">shoboti.com/admin</span>
+              <span class="browser-badge">Creator</span>
+            </div>
+            <button class="screen-open screen-open--browser" type="button" data-full="assets/screens/shoboti-admin.webp" data-caption="Shoboti creator panel — net sales, orders, customers and live inventory alerts." aria-label="Expand the Shoboti creator panel screenshot" aria-haspopup="dialog">
+              <img src="assets/screens/shoboti-admin.webp" alt="Shoboti creator panel showing net sales of ₹20,790, 8 orders, 3 customers and 14 products above a 7-day sales chart, an attention list and recent orders." width="1024" height="715" loading="lazy" decoding="async">
+              <span class="screen-open__hint">Expand screen <span aria-hidden="true">↗</span></span>
+            </button>
+          </div>
+
+          <div class="stage-phones">
+            <div class="phone phone--back">
+              <button class="screen-open screen-open--phone" type="button" data-full="assets/screens/shoboti-checkout.webp" data-caption="Shoboti mobile checkout — cart, promo code, and order summary." aria-label="Expand the Shoboti checkout screenshot" aria-haspopup="dialog">
+                <img src="assets/screens/shoboti-checkout.webp" alt="Shoboti mobile checkout with cart items, promo code, and order summary." width="720" height="1440" loading="lazy" decoding="async">
+              </button>
+              <span class="phone-label">Checkout</span>
+            </div>
+            <div class="phone phone--front">
+              <button class="screen-open screen-open--phone" type="button" data-full="assets/screens/shoboti-reels.webp" data-caption="Shoboti mobile storefront — shoppable reels and product trays." aria-label="Expand the Shoboti reels storefront screenshot" aria-haspopup="dialog">
+                <img src="assets/screens/shoboti-reels.webp" alt="Shoboti mobile storefront showing a grid of shoppable fashion reels." width="720" height="1440" loading="lazy" decoding="async">
+              </button>
+              <span class="phone-label">Reels storefront</span>
+            </div>
+          </div>
+
+          <div class="stage-meta">
+            <p class="stage-note"><i aria-hidden="true"></i><strong>7.8s</strong><span>first response</span></p>
+            <p class="stage-caption">comment → DM → order</p>
+          </div>
+          <div class="stage-spotlight" aria-hidden="true"></div>
+        </div>
+
+        <footer class="case__footer" data-reveal>
+          <ul class="tags" aria-label="Shoboti technologies">
+            <li>Next.js 15</li><li>TypeScript</li><li>PostgreSQL</li><li>Drizzle</li><li>pgvector</li><li>Gemini</li><li>Meta APIs</li>
+          </ul>
+          <div class="case__links">
+            <a class="text-link" href="https://shoboti.com" target="_blank" rel="noopener noreferrer" aria-label="Shoboti live site, opens in a new tab">Live site <span aria-hidden="true">↗</span></a>
+            <a class="text-link" href="https://aria.shoboti.com" target="_blank" rel="noopener noreferrer" aria-label="Shoboti demo storefront, opens in a new tab">Demo store <span aria-hidden="true">↗</span></a>
+            <a class="text-link" href="https://github.com/Magraa/shoboti-showcase" target="_blank" rel="noopener noreferrer" aria-label="Showcase repo on GitHub, opens in a new tab">Showcase repo <span aria-hidden="true">↗</span></a>
+          </div>
+        </footer>
+      </article>
+
+      <article class="case" id="project-hisab" aria-labelledby="case-hisab">
+        <header class="case__header" data-reveal>
+          <div class="case__title">
+            <p class="kicker">02 / Fintech · Offline-first PWA</p>
+            <h3 id="case-hisab">Hisab AI</h3>
+            <p class="case__role">Lead full-stack architect</p>
+          </div>
+          <div class="case__intro">
+            <p>A Hinglish-first ledger for Indian shopkeepers. A local parser resolves most entries in under two milliseconds; cloud models only see the ambiguous cases. Offline writes replay in strict order.</p>
+            <ul class="metrics" aria-label="Hisab AI outcomes">
+              <li><strong>&lt;2ms</strong><span>local parse</span></li>
+              <li><strong>88%</strong><span>lower AI cost</span></li>
+              <li><strong>95.4%</strong><span>OCR accuracy</span></li>
+            </ul>
+          </div>
+        </header>
+
+        <div class="case-stage case-stage--mint" data-stage data-reveal>
+          <span class="stage-index" aria-hidden="true">02</span>
+          <div class="stage-topline">
+            <span class="stage-status"><i aria-hidden="true"></i>Live app</span>
+            <span class="stage-count">3 screens · expand</span>
+          </div>
+
+          <div class="browser-frame">
+            <div class="browser-bar" aria-hidden="true">
+              <span class="terminal-dots"><i></i><i></i><i></i></span>
+              <span class="browser-url">hisab-ai-livid.vercel.app</span>
+              <span class="browser-badge">Live</span>
+            </div>
+            <button class="screen-open screen-open--browser" type="button" data-full="assets/screens/hisab-desktop.webp" data-caption="Hisab AI desktop dashboard — natural-language entry, spend overview, and daily ledger." aria-label="Expand the Hisab AI desktop dashboard screenshot" aria-haspopup="dialog">
+              <img src="assets/screens/hisab-desktop.webp" alt="Hisab AI desktop dashboard with daily spend, quick insight, and recent ledger entries." width="1536" height="1024" loading="lazy" decoding="async">
+              <span class="screen-open__hint">Expand screen <span aria-hidden="true">↗</span></span>
+            </button>
+          </div>
+
+          <div class="stage-phones">
+            <div class="phone phone--back">
+              <button class="screen-open screen-open--phone" type="button" data-full="assets/screens/hisab-insights.webp" data-caption="Hisab AI insights — spending trends, categories, and AI summaries." aria-label="Expand the Hisab AI insights screenshot" aria-haspopup="dialog">
+                <img src="assets/screens/hisab-insights.webp" alt="Hisab AI mobile insights screen with spend trends, category chart, and AI summaries." width="720" height="1518" loading="lazy" decoding="async">
+              </button>
+              <span class="phone-label">Insights</span>
+            </div>
+            <div class="phone phone--front">
+              <button class="screen-open screen-open--phone" type="button" data-full="assets/screens/hisab-home.webp" data-caption="Hisab AI mobile home — natural-language entry and today's ledger." aria-label="Expand the Hisab AI mobile home screenshot" aria-haspopup="dialog">
+                <img src="assets/screens/hisab-home.webp" alt="Hisab AI mobile home screen with a natural-language entry field and today's expenses." width="720" height="1520" loading="lazy" decoding="async">
+              </button>
+              <span class="phone-label">Home</span>
+            </div>
+          </div>
+
+          <div class="stage-meta">
+            <p class="stage-note"><i aria-hidden="true"></i><strong>&lt;2ms</strong><span>local parse</span></p>
+            <p class="stage-caption">voice → parse → ledger</p>
+          </div>
+          <div class="stage-spotlight" aria-hidden="true"></div>
+        </div>
+
+        <footer class="case__footer" data-reveal>
+          <ul class="tags" aria-label="Hisab AI technologies">
+            <li>Next.js</li><li>React 19</li><li>Supabase</li><li>Gemini</li><li>Groq</li><li>IndexedDB</li><li>PWA</li>
+          </ul>
+          <div class="case__links">
+            <a class="text-link" href="https://hisab-ai-livid.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Hisab AI live app, opens in a new tab">Live app <span aria-hidden="true">↗</span></a>
+            <a class="text-link" href="https://github.com/Magraa/Hisab-AI-Showcase" target="_blank" rel="noopener noreferrer" aria-label="Showcase repo on GitHub, opens in a new tab">Showcase repo <span aria-hidden="true">↗</span></a>
+          </div>
+        </footer>
+      </article>
+
+      <article class="case" id="project-simvox" aria-labelledby="case-simvox">
+        <header class="case__header" data-reveal>
+          <div class="case__title">
+            <p class="kicker">03 / Voice AI · Telephony</p>
+            <h3 id="case-simvox">SIMVox-AI</h3>
+            <p class="case__role">Creator &amp; lead systems architect</p>
+          </div>
+          <div class="case__intro">
+            <p>An open-source voice receptionist that runs on an ordinary Android phone and a domestic SIM. Call audio crosses Bluetooth HFP into Windows, Gemini handles the conversation, and barge-in stops playback in under 50ms.</p>
+            <ul class="metrics" aria-label="SIMVox-AI outcomes">
+              <li><strong>&lt;800ms</strong><span>voice loop</span></li>
+              <li><strong>$0</strong><span>telephony cost</span></li>
+              <li><strong>10★</strong><span>on GitHub</span></li>
+            </ul>
+          </div>
+        </header>
+
+        <div class="case-stage case-stage--blue case-stage--proof" data-stage data-reveal>
+          <span class="stage-index" aria-hidden="true">03</span>
+          <div class="stage-topline">
+            <span class="stage-status"><i aria-hidden="true"></i>Open source</span>
+            <span class="stage-count">2 screens · expand</span>
+          </div>
+
+          <div class="browser-frame">
+            <div class="browser-bar" aria-hidden="true">
+              <span class="terminal-dots"><i></i><i></i><i></i></span>
+              <span class="browser-url">AI Calling · Control Panel</span>
+              <span class="browser-badge">Desktop</span>
+            </div>
+            <button class="screen-open screen-open--browser" type="button" data-full="assets/screens/simvox-ui.webp" data-caption="SIMVox-AI control panel — live call studio, dialer, and dialogue stream." aria-label="Expand the SIMVox-AI control panel screenshot" aria-haspopup="dialog">
+              <img src="assets/screens/simvox-ui.webp" alt="SIMVox-AI control panel with live call studio, outbound phone dialer, and live dialogue stream." width="1440" height="1000" loading="lazy" decoding="async">
+              <span class="screen-open__hint">Expand screen <span aria-hidden="true">↗</span></span>
+            </button>
+          </div>
+
+          <button class="stage-proof" type="button" data-full="assets/screens/simvox-github.webp" data-caption="SIMVox-AI on GitHub — 10 stars, 4 forks, MIT licence." aria-haspopup="dialog">
+            <img src="assets/screens/simvox-github-strip.webp" alt="" width="1100" height="260" loading="lazy" decoding="async">
+            <span class="stage-proof__label">Open source · 10 stars · 4 forks <span aria-hidden="true">↗</span><span class="sr-only"> SIMVox-AI GitHub repository screenshot. Expand preview.</span></span>
+          </button>
+
+          <div class="stage-meta">
+            <p class="stage-note"><i aria-hidden="true"></i><strong>&lt;800ms</strong><span>voice loop</span></p>
+            <p class="stage-caption">HFP bridge → Gemini → TTS</p>
+          </div>
+          <div class="stage-spotlight" aria-hidden="true"></div>
+        </div>
+
+        <footer class="case__footer" data-reveal>
+          <ul class="tags" aria-label="SIMVox-AI technologies">
+            <li>Python</li><li>Gemini</li><li>Edge TTS</li><li>WASAPI</li><li>ADB</li><li>PyWebView</li>
+          </ul>
+          <div class="case__links">
+            <a class="text-link" href="https://github.com/Magraa/SIMVox-AI" target="_blank" rel="noopener noreferrer" aria-label="SIMVox-AI GitHub repository, opens in a new tab">GitHub <span aria-hidden="true">↗</span></a>
+          </div>
+        </footer>
+      </article>
+
+      <article class="case" id="project-mrproper" aria-labelledby="case-mrproper">
+        <header class="case__header" data-reveal>
+          <div class="case__title">
+            <p class="kicker">04 / D2C · B2B · Manufacturing ERP</p>
+            <h3 id="case-mrproper">Mr. Proper</h3>
+            <p class="case__role">Lead full-stack architect</p>
+          </div>
+          <div class="case__intro">
+            <p>One codebase for a cleaning-products brand: consumer storefront, institutional ordering, a six-tier loyalty system, field-sales CRM, and a chemical manufacturing ERP.</p>
+            <ul class="metrics" aria-label="Mr. Proper outcomes">
+              <li><strong>95+</strong><span>Lighthouse</span></li>
+              <li><strong>4</strong><span>systems unified</span></li>
+              <li><strong>Live</strong><span>in production</span></li>
+            </ul>
+          </div>
+        </header>
+
+        <div class="case-stage case-stage--amber" data-stage data-reveal>
+          <span class="stage-index" aria-hidden="true">04</span>
+          <div class="stage-topline">
+            <span class="stage-status"><i aria-hidden="true"></i>Live</span>
+            <span class="stage-count">2 screens · expand</span>
+          </div>
+
+          <div class="browser-frame">
+            <div class="browser-bar" aria-hidden="true">
+              <span class="terminal-dots"><i></i><i></i><i></i></span>
+              <span class="browser-url">mrproper.in</span>
+              <span class="browser-badge">Live</span>
+            </div>
+            <button class="screen-open screen-open--browser" type="button" data-full="assets/screens/mrproper-desktop.webp" data-caption="Mr. Proper storefront — category navigation, hero, and room-freshener collection." aria-label="Expand the Mr. Proper desktop storefront screenshot" aria-haspopup="dialog">
+              <img src="assets/screens/mrproper-desktop.webp" alt="Mr. Proper desktop storefront with cleaning product categories, a heavy-duty cleaning hero, and room fresheners." width="1440" height="1000" loading="lazy" decoding="async">
+              <span class="screen-open__hint">Expand screen <span aria-hidden="true">↗</span></span>
+            </button>
+          </div>
+
+          <div class="stage-phones stage-phones--single">
+            <div class="phone phone--front">
+              <button class="screen-open screen-open--phone" type="button" data-full="assets/screens/mrproper-mobile.webp" data-caption="Mr. Proper mobile storefront — category rail and product feed." aria-label="Expand the Mr. Proper mobile storefront screenshot" aria-haspopup="dialog">
+                <img src="assets/screens/mrproper-mobile.webp" alt="Mr. Proper mobile storefront with cleaning categories, hero, and product cards." width="720" height="1558" loading="lazy" decoding="async">
+              </button>
+              <span class="phone-label">Storefront</span>
+            </div>
+          </div>
+
+          <div class="stage-meta">
+            <p class="stage-note"><i aria-hidden="true"></i><strong>95+</strong><span>Lighthouse</span></p>
+            <p class="stage-caption">storefront · B2B · ERP</p>
+          </div>
+          <div class="stage-spotlight" aria-hidden="true"></div>
+        </div>
+
+        <footer class="case__footer" data-reveal>
+          <ul class="tags" aria-label="Mr. Proper technologies">
+            <li>Next.js 14</li><li>TypeScript</li><li>Firebase</li><li>Razorpay</li><li>Google Maps</li><li>FCM</li>
+          </ul>
+          <div class="case__links">
+            <a class="text-link" href="https://www.mrproper.in/" target="_blank" rel="noopener noreferrer" aria-label="Mr. Proper live site, opens in a new tab">Live site <span aria-hidden="true">↗</span></a>
+            <span class="case__note">No public repository</span>
+          </div>
+        </footer>
+      </article>
+
+      <article class="case" id="project-tenderiq" aria-labelledby="case-tenderiq">
+        <header class="case__header" data-reveal>
+          <div class="case__title">
+            <p class="kicker">05 / Procurement intelligence · Multi-portal ingestion</p>
+            <h3 id="case-tenderiq">TenderIQ</h3>
+            <p class="case__role">Lead full-stack architect</p>
+          </div>
+          <div class="case__intro">
+            <p>Government bids in India sit across GeM and 32 state and central eProcurement portals, and every one of them puts a distorted captcha in front of its own search results. TenderIQ pulls those sources into a single workspace, reads the 80-page tender PDFs, and returns the clauses that decide whether a company should bid at all.</p>
+            <p>The model does the reading. The queue, the credit ledger, and the per-portal rate limits stay deterministic.</p>
+            <ul class="metrics" aria-label="TenderIQ outcomes">
+              <li><strong>33</strong><span>portals, one search</span></li>
+              <li><strong>180s</strong><span>worker job lease</span></li>
+              <li><strong>1</strong><span>credit per brief</span></li>
+            </ul>
+          </div>
+        </header>
+
+        <div class="case-stage case-stage--indigo" data-stage data-reveal>
+          <span class="stage-index" aria-hidden="true">05</span>
+          <div class="stage-topline">
+            <span class="stage-status"><i aria-hidden="true"></i>Local build</span>
+            <span class="stage-count">2 screens · expand</span>
+          </div>
+
+          <div class="browser-frame">
+            <div class="browser-bar" aria-hidden="true">
+              <span class="terminal-dots"><i></i><i></i><i></i></span>
+              <span class="browser-url">TenderIQ · Discover tenders</span>
+              <span class="browser-badge">Demo set</span>
+            </div>
+            <button class="screen-open screen-open--browser" type="button" data-full="assets/screens/tenderiq-discovery.webp" data-caption="TenderIQ discovery workspace: 33 portals behind one search, faceted by source, state, and town. Running against the in-browser demo dataset." aria-label="Expand the TenderIQ discovery workspace screenshot" aria-haspopup="dialog">
+              <img src="assets/screens/tenderiq-discovery.webp" alt="TenderIQ discovery workspace showing 33 connected portals, source and location filters, and a list of matching tenders with bid identifiers, departments, values and closing dates." width="1440" height="900" loading="lazy" decoding="async">
+              <span class="screen-open__hint">Expand screen <span aria-hidden="true">↗</span></span>
+            </button>
+          </div>
+
+          <div class="stage-phones stage-phones--single">
+            <div class="phone phone--front">
+              <button class="screen-open screen-open--phone" type="button" data-full="assets/screens/tenderiq-mobile.webp" data-caption="Tender detail on a phone. Analysis costs one credit; saving to the pipeline costs nothing." aria-label="Expand the TenderIQ mobile tender detail screenshot" aria-haspopup="dialog">
+                <img src="assets/screens/tenderiq-mobile.webp" alt="TenderIQ tender detail on a phone, showing the buying department, bid identifier, a saved-to-pipeline state, an analyze button priced at one credit, and tabs for overview, documents and AI analysis." width="720" height="1558" loading="lazy" decoding="async">
+              </button>
+              <span class="phone-label">Tender detail</span>
+            </div>
+          </div>
+
+          <div class="stage-meta">
+            <p class="stage-note"><i aria-hidden="true"></i><strong>45s</strong><span>lease heartbeat</span></p>
+            <p class="stage-caption">portal → queue → brief</p>
+          </div>
+          <div class="stage-spotlight" aria-hidden="true"></div>
+        </div>
+
+        <footer class="case__footer" data-reveal>
+          <ul class="tags" aria-label="TenderIQ technologies">
+            <li>Next.js 15</li><li>TypeScript</li><li>Gemini Vision</li><li>Typesense</li><li>Firestore</li><li>Node workers</li><li>jsPDF</li>
+          </ul>
+          <div class="case__links">
+            <a class="text-link" href="https://github.com/Magraa/TenderFlow-AI-Showcase" target="_blank" rel="noopener noreferrer" aria-label="Architecture showcase on GitHub, opens in a new tab">Architecture showcase <span aria-hidden="true">↗</span></a>
+            <span class="case__note">Not publicly deployed</span>
+          </div>
+        </footer>
+      </article>
+
+      <div class="more-work" data-reveal>
+        <p class="kicker">Also built</p>
+        <div class="more-work__row">
+          <a href="https://github.com/Magraa/FinAudit-AI-Showcase" target="_blank" rel="noopener noreferrer"><strong>FinAudit AI</strong><span>Bank reconciliation and fraud audit pipeline</span></a>
+          <a href="https://github.com/Magraa/ProperCoupons" target="_blank" rel="noopener noreferrer"><strong>ProperCoupons</strong><span>Cryptographic coupon generator for a D2C brand</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="systems" aria-labelledby="systems-title">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="kicker">02 / Under the surface</p>
+          <h2 id="systems-title">The interface is<br><em>the shallow end.</em></h2>
+        </div>
+        <p class="section-note">Three working parts of this page: an X-ray over a real screen, the order state machine that screen sits on, and whatever the GitHub API reports while you read it.</p>
+      </div>
+
+      <div class="panel" data-reveal>
+        <div class="panel__head">
+          <p class="kicker">X-ray</p>
+          <h3>Move the light across the creator panel</h3>
+          <p>Move the cursor across the screen to look through it. The drawing underneath is the schema and the guards that answer each click. Pick a marker to read what sits there. On a phone, or with reduced motion, the two layers sit side by side instead.</p>
+        </div>
+
+        <div class="xray" data-xray>
+          <div class="xray__stack">
+            <div class="xray__blue" aria-hidden="true">
+              <img src="assets/screens/shoboti-admin.webp" alt="" width="1024" height="715" loading="lazy" decoding="async">
+            </div>
+            <img class="xray__photo" src="assets/screens/shoboti-admin.webp" alt="Shoboti creator panel showing net sales, orders, customers and products above a sales chart, an attention list and recent orders." width="1024" height="715" loading="lazy" decoding="async">
+            <ol class="xray__spots">
+              <li class="xray__spot-wrap" style="--spot-x:28.2%;--spot-y:29.7%"><button class="xray__spot" id="xray-spot-1" type="button" aria-expanded="false" aria-controls="xray-note-1">1</button></li>
+              <li class="xray__spot-wrap" style="--spot-x:38.1%;--spot-y:52.4%"><button class="xray__spot" id="xray-spot-2" type="button" aria-expanded="false" aria-controls="xray-note-2">2</button></li>
+              <li class="xray__spot-wrap" style="--spot-x:84.6%;--spot-y:50.1%"><button class="xray__spot" id="xray-spot-3" type="button" aria-expanded="false" aria-controls="xray-note-3">3</button></li>
+              <li class="xray__spot-wrap" style="--spot-x:38.1%;--spot-y:88.1%"><button class="xray__spot" id="xray-spot-4" type="button" aria-expanded="false" aria-controls="xray-note-4">4</button></li>
+              <li class="xray__spot-wrap" style="--spot-x:59.3%;--spot-y:3.6%"><button class="xray__spot" id="xray-spot-5" type="button" aria-expanded="false" aria-controls="xray-note-5">5</button></li>
+              <li class="xray__spot-wrap" style="--spot-x:7%;--spot-y:40%"><button class="xray__spot" id="xray-spot-6" type="button" aria-expanded="false" aria-controls="xray-note-6">6</button></li>
+            </ol>
+
+            <div class="xray__notes">
+              <div class="xray__pop" id="xray-note-1" style="--spot-x:28.2%;--spot-y:29.7%" data-place="right" role="group" aria-labelledby="xray-spot-1">
+                <h4>The four counters</h4>
+                <p>Net sales, orders, customers and products resolve against <code>orders</code>, <code>payments</code> and <code>inventory</code> rows. Stock is bounded by database checks, <code>available &gt;= 0</code> and <code>reserved &lt;= available</code>, so an oversell fails in Postgres before it fails in the UI.</p>
+              </div>
+              <div class="xray__pop" id="xray-note-2" style="--spot-x:38.1%;--spot-y:52.4%" data-place="right" role="group" aria-labelledby="xray-spot-2">
+                <h4>Revenue attributed, not estimated</h4>
+                <p>The seven-day chart is built from <code>analytics_events</code> joined through <code>content_products</code>, which is what lets a reel claim the money it earned instead of a number someone guessed at.</p>
+              </div>
+              <div class="xray__pop" id="xray-note-3" style="--spot-x:84.6%;--spot-y:50.1%" data-place="left" role="group" aria-labelledby="xray-spot-3">
+                <h4>The attention queue</h4>
+                <p>Three lists a creator acts on: orders to fulfil, variants running low, and setup steps left. They read the same <code>orders.status</code> and <code>inventory</code> rows as the counters, so the panel cannot call a store healthy while it is out of stock.</p>
+              </div>
+              <div class="xray__pop" id="xray-note-4" style="--spot-x:38.1%;--spot-y:88.1%" data-place="above" role="group" aria-labelledby="xray-spot-4">
+                <h4>Recent orders</h4>
+                <p>Each row is an <code>orders</code> record with its <code>order_items</code> and <code>payments</code> row. Status changes append to <code>order_activity_log</code>, so a disputed order can be replayed instead of argued about.</p>
+              </div>
+              <div class="xray__pop" id="xray-note-5" style="--spot-x:59.3%;--spot-y:3.6%" data-place="below" role="group" aria-labelledby="xray-spot-5">
+                <h4>One search box</h4>
+                <p>Products, orders and customers from a single field, because a creator looking for a customer should not have to know which table they live in.</p>
+              </div>
+              <div class="xray__pop" id="xray-note-6" style="--spot-x:7%;--spot-y:40%" data-place="right" role="group" aria-labelledby="xray-spot-6">
+                <h4>Two separate worlds</h4>
+                <p>Creator identity lives in <code>platform_users</code> and <code>creator_settings</code>. Staff identity lives in <code>platform_staff_members</code> and <code>platform_staff_sessions</code>. A creator credential and a staff credential are never the same row.</p>
+              </div>
+            </div>
+
+            <span class="xray__beam" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" data-reveal>
+        <div class="panel__head">
+          <p class="kicker">State machine</p>
+          <h3>How an order survives</h3>
+          <p>Eleven states, sixteen legal moves. Pick one. The wires below are drawn from the same transition table the API enforces, so an assistant tool call and a human click pass the same guard.</p>
+        </div>
+
+        <div class="flow" data-flow>
+          <ul class="flow__nodes">
+            <li class="flow__cell" style="--c:1;--r:1"><button class="flow__node" type="button" data-id="pending_payment" data-next="paid cancelled" aria-pressed="false" aria-controls="flow-detail"><span class="flow__node-id">PENDING_PAYMENT</span><span class="flow__node-out">2 exits</span></button></li>
+            <li class="flow__cell" style="--c:2;--r:1"><button class="flow__node" type="button" data-id="paid" data-next="processing cancelled refunded" aria-pressed="false" aria-controls="flow-detail"><span class="flow__node-id">PAID</span><span class="flow__node-out">3 exits</span></button></li>
+            <li class="flow__cell" style="--c:3;--r:1"><button class="flow__node" type="button" data-id="processing" data-next="packed cancelled refunded" aria-pressed="false" aria-controls="flow-detail"><span class="flow__node-id">PROCESSING</span><span class="flow__node-out">3 exits</span></button></li>
+            <li class="flow__cell" style="--c:4;--r:1"><button class="flow__node" type="button" data-id="packed" data-next="shipped cancelled" aria-pressed="false" aria-controls="flow-detail"><span class="flow__node-id">PACKED</span><span class="flow__node-out">2 exits</span></button></li>
+            <li class="flow__cell" style="--c:5;--r:1"><button class="flow__node" type="button" data-id="shipped" data-next="out_for_delivery return_requested" aria-pressed="false" aria-controls="flow-detail"><span class="flow__node-id">SHIPPED</span><span class="flow__node-out">2 exits</span></button></li>
+            <li class="flow__cell" style="--c:6;--r:1"><button class="flow__node" type="button" data-id="out_for_delivery" data-next="delivered" aria-pressed="false" aria-controls="flow-detail"><span class="flow__node-id">OUT_FOR_DELIVERY</span><span class="flow__node-out">1 exit</span></button></li>
+            <li class="flow__cell" style="--c:7;--r:1"><button class="flow__node" type="button" data-id="delivered" data-next="return_requested" aria-pressed="false" aria-controls="flow-detail"><span class="flow__node-id">DELIVERED</span><span class="flow__node-out">1 exit</span></button></li>
+            <li class="flow__cell" style="--c:2;--r:2"><button class="flow__node flow__node--stop" type="button" data-id="cancelled" data-next="" aria-pressed="false" aria-controls="flow-detail"><span class="flow__node-id">CANCELLED</span><span class="flow__node-out">terminal</span></button></li>
+            <li class="flow__cell" style="--c:6;--r:2"><button class="flow__node" type="button" data-id="return_requested" data-next="returned" aria-pressed="false" aria-controls="flow-detail"><span class="flow__node-id">RETURN_REQUESTED</span><span class="flow__node-out">1 exit</span></button></li>
+            <li class="flow__cell" style="--c:6;--r:3"><button class="flow__node" type="button" data-id="returned" data-next="refunded" aria-pressed="false" aria-controls="flow-detail"><span class="flow__node-id">RETURNED</span><span class="flow__node-out">1 exit</span></button></li>
+            <li class="flow__cell" style="--c:3;--r:3"><button class="flow__node flow__node--stop" type="button" data-id="refunded" data-next="" aria-pressed="false" aria-controls="flow-detail"><span class="flow__node-id">REFUNDED</span><span class="flow__node-out">terminal</span></button></li>
+          </ul>
+          <svg class="flow__wires" aria-hidden="true" focusable="false"></svg>
+        </div>
+
+        <div class="flow__detail" id="flow-detail" aria-live="polite">
+          <ul class="flow__docs">
+            <li data-doc="pending_payment"><h4>PENDING_PAYMENT</h4><p>An order exists and the stock question is settled, but no money has moved. Two doors out: <code>PAID</code> or <code>CANCELLED</code>. Nothing on this path can print a label.</p></li>
+            <li data-doc="paid"><h4>PAID</h4><p>Set inside one function. It takes a transaction-scoped advisory lock plus a row lock, returns <code>ALREADY_CONFIRMED</code> on a second call, and rejects anything where the captured amount does not equal <code>orders.total_minor</code>. A valid signature only proves the payment id was real; the amount check is what proves the money matches the order.</p></li>
+            <li data-doc="processing"><h4>PROCESSING</h4><p>Creator-side work begins. Still reversible: <code>CANCELLED</code> and <code>REFUNDED</code> both remain legal, because a packed order can be stopped and a paid one can be walked back.</p></li>
+            <li data-doc="packed"><h4>PACKED</h4><p>The last state a creator can still cancel from. After this the parcel is the carrier's problem, and the only exits are <code>SHIPPED</code> or a cancellation that the model refuses.</p></li>
+            <li data-doc="shipped"><h4>SHIPPED</h4><p>A <code>shipments</code> row carries the provider and tracking code, which is what the thermal label printed from. Forward moves are delivery or a return request; there is no route back to <code>CANCELLED</code>.</p></li>
+            <li data-doc="out_for_delivery"><h4>OUT_FOR_DELIVERY</h4><p>One exit and no branches. The last ambiguous stretch of an order's life is deliberately the narrowest.</p></li>
+            <li data-doc="delivered"><h4>DELIVERED</h4><p>Terminal for the seller's obligations. The customer's only remaining door is <code>RETURN_REQUESTED</code>.</p></li>
+            <li data-doc="cancelled"><h4>CANCELLED</h4><p>No exits. Four states can reach it, and each arrival is checked against this table rather than against a form field.</p></li>
+            <li data-doc="return_requested"><h4>RETURN_REQUESTED</h4><p>Customer intent, not a refund. Reaching <code>REFUNDED</code> requires the parcel to come back through <code>RETURNED</code> first.</p></li>
+            <li data-doc="returned"><h4>RETURNED</h4><p>Goods are back with the creator. <code>REFUNDED</code> is the only way out, which is what keeps a return from becoming a discount.</p></li>
+            <li data-doc="refunded"><h4>REFUNDED</h4><p>No exits. The money trail sits in <code>refunds</code> and the ledger entries behind it, so a refund can be reconciled against the payout that funded it.</p></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" data-reveal>
+        <div class="panel__head">
+          <p class="kicker">Live</p>
+          <h3>What GitHub says right now</h3>
+          <p id="repos-source">This list is a snapshot from 21 October 2026. If the request below succeeds, it is replaced with live numbers from the public API and cached for the rest of your visit.</p>
+        </div>
+        <ul class="repos" data-repos>
+          <li><a href="https://github.com/Magraa/FinAudit-AI-Showcase" target="_blank" rel="noopener noreferrer"><span class="repos__name">FinAudit-AI-Showcase</span><span class="repos__meta">Bank reconciliation pipeline</span></a><span class="repos__stat" data-repo="FinAudit-AI-Showcase">pushed 4 days ago</span></li>
+          <li><a href="https://github.com/Magraa/shoboti-showcase" target="_blank" rel="noopener noreferrer"><span class="repos__name">shoboti-showcase</span><span class="repos__meta">Social commerce architecture and docs</span></a><span class="repos__stat" data-repo="shoboti-showcase">pushed 5 days ago</span></li>
+          <li><a href="https://github.com/Magraa/Magraa.github.io" target="_blank" rel="noopener noreferrer"><span class="repos__name">Magraa.github.io</span><span class="repos__meta">This page</span></a><span class="repos__stat" data-repo="Magraa.github.io">HTML · 2 stars</span></li>
+          <li><a href="https://github.com/Magraa/Hisab-AI-Showcase" target="_blank" rel="noopener noreferrer"><span class="repos__name">Hisab-AI-Showcase</span><span class="repos__meta">Offline-first ledger PWA</span></a><span class="repos__stat" data-repo="Hisab-AI-Showcase">JavaScript</span></li>
+          <li><a href="https://github.com/Magraa/TenderFlow-AI-Showcase" target="_blank" rel="noopener noreferrer"><span class="repos__name">TenderFlow-AI-Showcase</span><span class="repos__meta">Tender analysis and document automation</span></a><span class="repos__stat" data-repo="TenderFlow-AI-Showcase">1 star</span></li>
+          <li><a href="https://github.com/Magraa/BillPulse-Showcase" target="_blank" rel="noopener noreferrer"><span class="repos__name">BillPulse-Showcase</span><span class="repos__meta">Billing architecture showcase</span></a><span class="repos__stat" data-repo="BillPulse-Showcase">1 star</span></li>
+          <li><a href="https://github.com/Magraa/SIMVox-AI" target="_blank" rel="noopener noreferrer"><span class="repos__name">SIMVox-AI</span><span class="repos__meta">Voice receptionist on a normal SIM</span></a><span class="repos__stat" data-repo="SIMVox-AI">Python · 10 stars</span></li>
+          <li><a href="https://github.com/Magraa/ProperCoupons" target="_blank" rel="noopener noreferrer"><span class="repos__name">ProperCoupons</span><span class="repos__meta">Cryptographic coupon generation</span></a><span class="repos__stat" data-repo="ProperCoupons">Python · 1 star</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="console" aria-labelledby="console-title">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="kicker">03 / Console</p>
+          <h2 id="console-title">Ask the page<br><em>directly.</em></h2>
+        </div>
+        <p class="section-note">A shell wired to this document. Every answer is read back out of the same data the page already renders, so it cannot tell you something the rest of the site contradicts.</p>
+      </div>
+
+      <div class="shell" data-shell data-reveal>
+        <div class="shell__bar">
+          <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="shell__title">mayank@bengaluru &mdash; zsh</span>
+          <span class="shell__state" data-shell-state>ready</span>
+        </div>
+
+        <div class="shell__out" id="shell-output" role="log" tabindex="0" aria-label="Console output"></div>
+
+        <form class="shell__form" data-shell-form autocomplete="off">
+          <label class="sr-only" for="shell-input">Console command</label>
+          <span class="shell__prompt" aria-hidden="true">~&nbsp;%</span>
+          <input class="shell__input" id="shell-input" name="command" type="text" placeholder="help" spellcheck="false" autocapitalize="none" autocomplete="off" aria-describedby="shell-hints" />
+          <button class="shell__run" type="submit">Run<span class="sr-only"> command</span></button>
+        </form>
+
+        <div class="shell__hints" id="shell-hints">
+          <p class="shell__hint-label">Commands</p>
+          <ul class="shell__chips" data-shell-chips></ul>
+          <p class="shell__meta"><kbd>Tab</kbd> complete<span aria-hidden="true"> · </span><kbd>↑</kbd><kbd>↓</kbd> history<span aria-hidden="true"> · </span><kbd>Enter</kbd> run</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="kicker">04 / About</p>
+          <h2 id="about-title">I like removing<br><em>the manual step.</em></h2>
+        </div>
+        <p class="section-note">The work I keep coming back to: make a repeated task disappear, then make the replacement reliable enough to trust.</p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-copy" data-reveal>
+          <p>I'm a software engineer based in Bangalore. I've spent the last two years building production platforms on Next.js and the MERN stack, plus Python services and AI pipelines. I studied Integrated B.Tech + MBA at IIIT Gwalior, so I tend to start with the workflow that's costing someone time, then work back to the schema, API, and interface.</p>
+          <p>Most of my work sits in the unglamorous middle: parsing messy Hinglish, keeping an offline ledger in order, stopping an LLM from inventing a price, making a UPI intent survive a character limit. I like systems that still work when the network drops and the person using them is in a hurry.</p>
+        </div>
+
+        <aside class="about-side" aria-label="Education and achievements" data-reveal>
+          <div class="fact-card">
+            <p class="kicker">Education</p>
+            <h3>IIIT Gwalior</h3>
+            <p>Integrated B.Tech + MBA (Information Technology)<br>2019 – 2024</p>
+          </div>
+          <div class="fact-card">
+            <p class="kicker">Signals</p>
+            <ul class="fact-list">
+              <li><span>300+</span> DSA problems solved</li>
+              <li><span>2020</span> Hacksagon pre-finalist</li>
+              <li><span>3×</span> Hacktoberfest contributor</li>
+              <li><span>10★</span> SIMVox-AI on GitHub</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      <div class="process" data-reveal>
+        <p class="kicker">The way I work</p>
+        <ol class="process-steps">
+          <li><span class="process-num">01</span><h3>Watch the work</h3><p>Find the step someone repeats every day, then measure where it hurts.</p></li>
+          <li><span class="process-num">02</span><h3>Model the state</h3><p>Define the schema, permissions, and failure modes before the interface.</p></li>
+          <li><span class="process-num">03</span><h3>Put AI in its lane</h3><p>Use models for language and messy input. Keep money, stock, and state transitions deterministic.</p></li>
+          <li><span class="process-num">04</span><h3>Ship the edge cases</h3><p>Offline writes, retries, timeouts, and the unhappy path are part of the product.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="experience" aria-labelledby="experience-title">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="kicker">05 / Experience</p>
+          <h2 id="experience-title">Two years of<br>shipping in production.</h2>
+        </div>
+        <p class="section-note">Full-stack ownership across web, mobile, APIs, databases, and deployment.</p>
+      </div>
+
+      <ol class="timeline">
+        <li data-reveal>
+          <div class="timeline__meta"><span>Apr 2024 – Dec 2025</span><span>Remote</span></div>
+          <div class="timeline__body">
+            <h3>Software Developer</h3>
+            <p class="timeline__company">Bittern Technologies</p>
+            <ul>
+              <li>Cut database round-trip latency by 35% with query indexing, connection pooling, and smaller payloads.</li>
+              <li>Built full-stack portals and AI automation scripts on Next.js, the MERN stack, and Python.</li>
+              <li>Shipped offline-first React Native state sync with 60fps transitions across Android and iOS.</li>
+              <li>Owned PostgreSQL and MongoDB schemas plus CI/CD on Vercel and AWS.</li>
+            </ul>
+          </div>
+        </li>
+        <li data-reveal>
+          <div class="timeline__meta"><span>Sep 2023 – Dec 2023</span><span>Remote, Lucknow</span></div>
+          <div class="timeline__body">
+            <h3>Software Engineer Intern</h3>
+            <p class="timeline__company">Logical Analytics</p>
+            <ul>
+              <li>Built responsive analytics dashboards and reusable React/SCSS components.</li>
+              <li>Designed MongoDB collections and Node/Express endpoints for internal data products.</li>
+              <li>Cut asset storage and bandwidth by 30% with Cloudinary transformation pipelines.</li>
+              <li>Raised Core Web Vitals across mobile, tablet, and desktop breakpoints.</li>
+            </ul>
+          </div>
+        </li>
+        <li data-reveal>
+          <div class="timeline__meta"><span>Nov 2022 – Feb 2023</span><span>Remote</span></div>
+          <div class="timeline__body">
+            <h3>SaaS &amp; Automation Developer</h3>
+            <p class="timeline__company">Blockchain startup &amp; automation clients</p>
+            <ul>
+              <li>Built blockchain automation bots and real-time transaction listeners in Python and Discord.py.</li>
+              <li>Built Selenium scrapers and web automation bots with license validation.</li>
+              <li>Added queue locks and integration tests to prevent duplicate client order execution.</li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section" id="skills" aria-labelledby="skills-title">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="kicker">06 / Toolkit</p>
+          <h2 id="skills-title">The stack I reach for.</h2>
+        </div>
+        <p class="section-note">Production-proficient tools, plus the working knowledge that fills the gaps between them.</p>
+      </div>
+
+      <div class="skills-grid" data-reveal>
+        <div class="skill-card">
+          <h3>Languages</h3>
+          <ul><li>TypeScript</li><li>JavaScript</li><li>Python</li><li>SQL</li><li>C/C++</li><li>Kotlin</li></ul>
+        </div>
+        <div class="skill-card">
+          <h3>Frontend &amp; mobile</h3>
+          <ul><li>React</li><li>Next.js</li><li>React Native</li><li>Tailwind CSS</li><li>Zustand</li><li>Redux Toolkit</li><li>Framer Motion</li></ul>
+        </div>
+        <div class="skill-card">
+          <h3>Backend &amp; data</h3>
+          <ul><li>Node.js</li><li>Express</li><li>FastAPI</li><li>PostgreSQL</li><li>Supabase</li><li>MongoDB</li><li>Drizzle</li><li>Prisma</li><li>Redis</li><li>WebSockets</li></ul>
+        </div>
+        <div class="skill-card">
+          <h3>AI &amp; infrastructure</h3>
+          <ul><li>Gemini</li><li>OpenAI</li><li>LangChain</li><li>RAG</li><li>AWS</li><li>Docker</li><li>Vercel</li><li>GitHub Actions</li><li>Firebase</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <div class="contact-panel" data-reveal>
+        <div>
+          <p class="kicker">07 / Contact</p>
+          <h2 id="contact-title">Have a role or a system that needs building?</h2>
+          <p class="contact-lede">I'm open to full-time remote roles, hybrid work in Bangalore, and relocation with sponsorship. Immediate notice.</p>
+          <div class="hero-actions">
+            <a class="button button--primary" href="mailto:agrawalmayank1111@gmail.com?subject=Hello%20Mayank">
+              Email me
+              <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9M8.5 3.5 13 8l-4.5 4.5"/></svg>
+            </a>
+            <a class="button button--ghost" href="https://www.linkedin.com/in/mayank-agrawal-532967192/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+            <a class="button button--quiet" href="https://github.com/Magraa" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <ul class="contact-list">
+          <li><span>Email</span><a href="mailto:agrawalmayank1111@gmail.com">agrawalmayank1111@gmail.com</a></li>
+          <li><span>Phone</span><a href="tel:+919340861338">+91 9340861338</a></li>
+          <li><span>Location</span><span>Bangalore, India · IST</span></li>
+          <li><span>Local time</span><span data-local-time>—</span></li>
+          <li><span>Portfolio</span><a href="https://magraa.github.io/" target="_blank" rel="noopener noreferrer">magraa.github.io <span aria-hidden="true">↗</span></a></li>
+          <li><span>Résumé</span><a href="mailto:agrawalmayank1111@gmail.com?subject=R%C3%A9sum%C3%A9%20request">Available on request</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <section class="colophon" id="colophon" aria-labelledby="colophon-title">
+    <div class="colophon__inner">
+      <div class="colophon__head">
+        <p class="kicker">Colophon</p>
+        <h2 id="colophon-title">How this page is built</h2>
+        <p>The meta of it, because the constraints are the interesting part.</p>
+      </div>
+      <dl class="colophon__facts">
+        <div><dt>Runtime</dt><dd>No framework, no build step. HTML, CSS, one script.</dd></div>
+        <div><dt>Weight</dt><dd>42 KB of JavaScript and 78 KB of CSS as they sit in the repository, plus 850 KB of WebP screens across thirteen images that load only as you reach them.</dd></div>
+        <div><dt>Type</dt><dd>Fraunces for display, IBM Plex Sans for body, IBM Plex Mono for labels.</dd></div>
+        <div><dt>Motion</dt><dd>Reveals move on transform only, so nothing is ever hidden from a crawler or a reader. <code>prefers-reduced-motion</code> is honoured, and you can also switch motion off yourself.</dd></div>
+        <div><dt>Data</dt><dd>The repository list above is one unauthenticated call to the public GitHub API, cached in <code>sessionStorage</code> for an hour. Everything else on this page is static.</dd></div>
+        <div><dt>Hosting</dt><dd>GitHub Pages at <code>magraa.github.io</code>, deployed on push.</dd></div>
+      </dl>
+      <div class="colophon__actions">
+        <button class="button button--ghost" type="button" data-palette-open>Open the command palette <kbd data-palette-kbd>Ctrl K</kbd></button>
+        <button class="button button--ghost" type="button" data-motion-toggle aria-pressed="false">Turn motion off</button>
       </div>
     </div>
   </section>
 
-  <!-- ==========================================================================
-       SECTION 07: CONTACT & DISPATCH
-       ========================================================================== -->
-  <footer id="contact" class="contact-zone reveal">
-    <div class="eyebrow" style="margin-bottom:20px;">§ 07 // DISPATCH &amp; GET IN TOUCH</div>
-    <h2 class="contact-title">Ready to build high-performance software. Let's start the conversation.</h2>
-    <p class="contact-desc">
-      I am open to full-time <strong>Software Developer, Full-Stack, Backend, and AI Automation</strong> roles. Based in <strong>Bangalore, India</strong>—available for on-site, hybrid, or remote positions worldwide.
-    </p>
-
-    <div class="contact-bar">
-      <button id="copyEmailFoot" class="pill-btn solid" data-copy="agrawalmayank1111@gmail.com">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
-        <span>agrawalmayank1111@gmail.com</span>
-      </button>
-
-      <a class="pill-btn" href="tel:+919340861338">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-        <span>+91 9340861338</span>
-      </a>
-
-      <a class="pill-btn" href="Mayank_Agrawal_Resume.pdf" target="_blank" rel="noopener">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        <span>Download Resume (PDF)</span>
-      </a>
-
-      <a class="pill-btn" href="https://github.com/Magraa" target="_blank" rel="noopener">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-        <span>GitHub (@Magraa)</span>
-      </a>
-
-      <a class="pill-btn" href="https://linkedin.com/in/mayank-agrawal-532967192" target="_blank" rel="noopener">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-        <span>LinkedIn</span>
-      </a>
-
-      <span id="copyToast" class="copy-status-tip" aria-live="polite">✓ Copied to clipboard</span>
-    </div>
-
-    <div class="footer-colophon">
-      <div>© 2026 Mayank Agrawal · Architected with precision</div>
-      <div class="mono">SYSTEM LATENCY: &lt;100ms // 0% RUNTIME SLOP</div>
-    </div>
+  <footer class="site-footer">
+    <p>Mayank Agrawal · Bangalore, India</p>
+    <p>Updated October 2026 · Built with HTML &amp; CSS</p>
+    <p>© <span data-year>2026</span> Mayank Agrawal</p>
   </footer>
 
-</main>
+  <dialog class="screen-dialog" id="screen-dialog" tabindex="-1" aria-labelledby="screen-dialog-caption">
+    <form method="dialog" class="screen-dialog__close-form">
+      <button class="screen-dialog__close" type="submit" aria-label="Close screen preview">×</button>
+    </form>
+    <figure>
+      <img id="screen-dialog-image" alt="">
+      <figcaption id="screen-dialog-caption"></figcaption>
+    </figure>
+  </dialog>
 
-<!-- ==========================================================================
-     COMMAND PALETTE MODAL (CMD+K / CTRL+K)
-     ========================================================================== -->
-<div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Command Palette">
-  <div class="cmd-palette">
-    <div class="cmd-search-wrap">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="cmdSearch" class="cmd-search-input" placeholder="Jump to section, project, or command..." autocomplete="off">
+  <dialog class="palette" id="palette" aria-label="Command palette">
+    <div class="palette__box">
+      <div class="palette__row">
+        <svg class="icon palette__icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="7" cy="7" r="4.5"/><path d="M10.6 10.6 14 14"/></svg>
+        <label class="sr-only" for="palette-input">Search sections and actions</label>
+        <input id="palette-input" class="palette__input" type="text" placeholder="Jump to a section, copy my email, switch motion…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true" aria-controls="palette-list" aria-autocomplete="list">
+      </div>
+      <ul class="palette__list" id="palette-list" role="listbox" aria-label="Commands"></ul>
+      <p class="palette__foot"><span>↑↓ move</span><span>↵ run</span><span>Esc close</span></p>
     </div>
-    <ul class="cmd-list" id="cmdList">
-      <li class="cmd-item" data-action="goto" data-target="#projects"><div class="cmd-item-left"><span class="cmd-tag">JUMP</span><span>Browse Featured Flagship Projects</span></div><span class="mono">#projects</span></li>
-      <li class="cmd-item" data-action="url" data-target="https://shoboti.com"><div class="cmd-item-left"><span class="cmd-tag">LIVE</span><span>Shoboti Social Video Commerce Platform</span></div><span class="mono">shoboti.com</span></li>
-      <li class="cmd-item" data-action="url" data-target="https://aria.shoboti.com"><div class="cmd-item-left"><span class="cmd-tag">DEMO</span><span>Aria Chen Shoppable Reels Storefront</span></div><span class="mono">aria.shoboti.com</span></li>
-      <li class="cmd-item" data-action="url" data-target="https://hisab-ai-livid.vercel.app"><div class="cmd-item-left"><span class="cmd-tag">LIVE</span><span>Hisab AI Bahi-Khata PWA Web App</span></div><span class="mono">hisab-ai.vercel.app</span></li>
-      <li class="cmd-item" data-action="blueprint" data-target="shoboti"><div class="cmd-item-left"><span class="cmd-tag">SPEC</span><span>Shoboti Social Video Commerce Blueprint</span></div><span class="mono">Next.js + pgvector</span></li>
-      <li class="cmd-item" data-action="blueprint" data-target="hisab"><div class="cmd-item-left"><span class="cmd-tag">SPEC</span><span>Hisab AI Architecture Blueprint</span></div><span class="mono">Gemini 2.0 Flash</span></li>
-      <li class="cmd-item" data-action="blueprint" data-target="simvox"><div class="cmd-item-left"><span class="cmd-tag">SPEC</span><span>SIMVox AI Hardware Bridge Blueprint</span></div><span class="mono">Zero-VoIP ADB</span></li>
-      <li class="cmd-item" data-action="blueprint" data-target="finaudit"><div class="cmd-item-left"><span class="cmd-tag">SPEC</span><span>FinAudit AI Platform Blueprint</span></div><span class="mono">Fraud Engine</span></li>
-      <li class="cmd-item" data-action="blueprint" data-target="tenderflow"><div class="cmd-item-left"><span class="cmd-tag">SPEC</span><span>TenderFlow AI Procurement Pipeline</span></div><span class="mono">5-Doc A4 Engine</span></li>
-      <li class="cmd-item" data-action="goto" data-target="#terminal"><div class="cmd-item-left"><span class="cmd-tag">TOOL</span><span>Interactive Developer Console</span></div><span class="mono">#terminal</span></li>
-      <li class="cmd-item" data-action="goto" data-target="#experience"><div class="cmd-item-left"><span class="cmd-tag">JUMP</span><span>Work Experience Ledger</span></div><span class="mono">#experience</span></li>
-      <li class="cmd-item" data-action="goto" data-target="#skills"><div class="cmd-item-left"><span class="cmd-tag">JUMP</span><span>Technical Skills Matrix</span></div><span class="mono">#skills</span></li>
-      <li class="cmd-item" data-action="copy" data-val="agrawalmayank1111@gmail.com"><div class="cmd-item-left"><span class="cmd-tag">ACTION</span><span>Copy Email Address</span></div><span class="mono">Clipboard</span></li>
-      <li class="cmd-item" data-action="copy" data-val="+919340861338"><div class="cmd-item-left"><span class="cmd-tag">ACTION</span><span>Copy Phone (+91 9340861338)</span></div><span class="mono">Clipboard</span></li>
-      <li class="cmd-item" data-action="resume"><div class="cmd-item-left"><span class="cmd-tag">DOWNLOAD</span><span>Open Mayank's Resume (PDF)</span></div><span class="mono">PDF File</span></li>
-      <li class="cmd-item" data-action="toggle-theme"><div class="cmd-item-left"><span class="cmd-tag">THEME</span><span>Toggle Color Theme (Light / Dark)</span></div><span class="mono">Theme</span></li>
-    </ul>
-    <div class="cmd-footer">
-      <span>Navigation: ↑ ↓ Enter</span>
-      <span>Close: Escape</span>
-    </div>
-  </div>
-</div>
+  </dialog>
 
-<!-- ==========================================================================
-     ARCHITECTURAL BLUEPRINT MODAL
-     ========================================================================== -->
-<div id="blueprintModal" class="blueprint-backdrop" role="dialog" aria-modal="true" aria-label="Architecture Blueprint">
-  <div class="blueprint-modal">
-    <div class="blueprint-head">
-      <h3 id="bpTitle">Architecture Blueprint</h3>
-      <button id="closeBpBtn" class="icon-btn" aria-label="Close Blueprint Modal">✕</button>
-    </div>
-    <div class="blueprint-body" id="bpBody">
-      <!-- Injected via JavaScript -->
-    </div>
-    <div class="blueprint-foot">
-      <div id="bpActions" style="display:flex;flex-wrap:wrap;gap:10px;margin-right:auto;"></div>
-      <button id="bpDismissBtn" class="pill-btn">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- ==========================================================================
-     SCRIPTS & INTERACTIVE ENGINES
-     ========================================================================== -->
-<script>
-  /* --------------------------------------------------------------------------
-     1. THEME MANAGEMENT & PERSISTENCE
-     -------------------------------------------------------------------------- */
-  const themeToggleBtn = document.getElementById('themeToggleBtn');
-  const root = document.documentElement;
-
-  function getPreferredTheme() {
-    const saved = localStorage.getItem('theme');
-    if (saved) return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-
-  function applyTheme(theme) {
-    root.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }
-
-  applyTheme(getPreferredTheme());
-
-  themeToggleBtn.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme') || getPreferredTheme();
-    const next = current === 'dark' ? 'light' : 'dark';
-    applyTheme(next);
-  });
-
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    if (!localStorage.getItem('theme')) {
-      applyTheme(e.matches ? 'dark' : 'light');
-    }
-  });
-
-  /* --------------------------------------------------------------------------
-     2. LIVE BANGALORE / IST CLOCK (SYSTEM STAMP)
-     -------------------------------------------------------------------------- */
-  const liveClockEl = document.getElementById('liveClock');
-  function updateClock() {
-    if (!liveClockEl) return;
-    const now = new Date();
-    const options = { timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-    liveClockEl.textContent = now.toLocaleTimeString('en-GB', options) + ' IST';
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
-
-  /* --------------------------------------------------------------------------
-     3. REVEAL ANIMATIONS (INTERSECTION OBSERVER)
-     -------------------------------------------------------------------------- */
-  const revealItems = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.05, rootMargin: '0px 0px 80px 0px' });
-    revealItems.forEach(el => observer.observe(el));
-  } else {
-    revealItems.forEach(el => el.classList.add('in'));
-  }
-  // Safety timeout ensuring full visibility for headless crawlers or instant scrolling
-  setTimeout(() => {
-    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
-  }, 750);
-
-  /* --------------------------------------------------------------------------
-     4. CLIPBOARD COPY UTILITY WITH TOAST
-     -------------------------------------------------------------------------- */
-  const toastEl = document.getElementById('copyToast');
-  function copyTextToClipboard(text, customLabel) {
-    if (!navigator.clipboard) return;
-    navigator.clipboard.writeText(text).then(() => {
-      if (toastEl) {
-        toastEl.textContent = customLabel || '✓ Copied ' + text;
-        toastEl.classList.add('visible');
-        setTimeout(() => toastEl.classList.remove('visible'), 2400);
-      }
-    });
-  }
-
-  document.querySelectorAll('[data-copy]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const val = btn.getAttribute('data-copy');
-      copyTextToClipboard(val, '✓ Copied ' + val);
-    });
-  });
-
-  /* --------------------------------------------------------------------------
-     5. PROJECT CATEGORY FILTER TABS
-     -------------------------------------------------------------------------- */
-  const filterTabs = document.querySelectorAll('.filter-tab');
-  const projectItems = document.querySelectorAll('.flagship-item, .util-card');
-
-  filterTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      filterTabs.forEach(t => {
-        t.classList.remove('active');
-        t.setAttribute('aria-selected', 'false');
-      });
-      tab.classList.add('active');
-      tab.setAttribute('aria-selected', 'true');
-
-      const filter = tab.getAttribute('data-filter');
-      projectItems.forEach(item => {
-        const cats = item.getAttribute('data-category') || '';
-        if (filter === 'all' || cats.includes(filter)) {
-          item.style.display = '';
-        } else {
-          item.style.display = 'none';
-        }
-      });
-    });
-  });
-
-  /* --------------------------------------------------------------------------
-     6. ARCHITECTURE BLUEPRINT DATA & MODAL
-     -------------------------------------------------------------------------- */
-  const blueprintData = {
-    shoboti: {
-      title: "Shoboti // Social Video Commerce Architecture Blueprint",
-      links: [
-        { label: "Visit Platform (shoboti.com) ↗", href: "https://shoboti.com", solid: true },
-        { label: "Aria Demo Store (aria.shoboti.com) ↗", href: "https://aria.shoboti.com", solid: false },
-        { label: "GitHub Showcase ↗", href: "https://github.com/Magraa/shoboti-showcase", solid: false }
-      ],
-      html: `
-        <p><strong>Problem Statement:</strong> Video creators on Instagram Reels and WhatsApp lose substantial sales because interested buyers comment "Price?" or "Link?" and creators can't reply to hundreds of DMs manually. Collecting orders via manual UPI payment screenshots and maintaining inventory in spreadsheets leads to fraud, stockouts, and support chaos.</p>
-        
-        <div class="blueprint-diagram">
-+------------------+     +------------------------+     +-------------------------+
-| Instagram Reel   | --> | Webhook Trigger Engine | --> | Anti-Spam Public Reply  |
-| "Price?" Comment |     | (Keyword &amp; Delay Gate) |     | (Rotating Variations)   |
-+------------------+     +------------------------+     +-------------------------+
-                                                                     |
-                                                                     v
-+------------------+     +------------------------+     +-------------------------+
-| Direct Checkout  | <-- | pgvector Catalog RAG   | <-- | Private DM Dispatch     |
-| Real-time Reserv |     | (Gemini &amp; Llama 3)     |     | (Tagged Products &amp; Buy) |
-+------------------+     +------------------------+     +-------------------------+
-        </div>
-
-        <p><strong>Live Deployments:</strong></p>
-        <ul>
-          <li><strong>Platform Home:</strong> <a href="https://shoboti.com" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">shoboti.com ↗</a> — Creator acquisition, feature overview &amp; architecture walkthrough.</li>
-          <li><strong>Production Demo Storefront:</strong> <a href="https://aria.shoboti.com" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">aria.shoboti.com ↗</a> — Live creator store (Aria Chen) featuring interactive shoppable Reels, INR pricing, variant selection &amp; cart checkout.</li>
-        </ul>
-
-        <p><strong>Technical Highlights:</strong></p>
-        <ul>
-          <li><strong>Automated Comment-to-DM Pipeline:</strong> Listens for reel comments via Instagram Graph API webhooks, verifies optional follower gating rules, and dispatches direct message links within 2 seconds with natural delay throttling.</li>
-          <li><strong>Grounded Vector Catalog Assistant:</strong> Customers asking sizing or policy questions in DMs receive conversational guidance grounded strictly in pgvector product embeddings—zero hallucinations or false discounts.</li>
-          <li><strong>Shoppable Video Experience:</strong> Audience bio link opens a video-first web feed (<code>/@creator</code>) where clothing and items shown in the video can be added to cart and purchased directly.</li>
-          <li><strong>Centralized Creator Command Center:</strong> Tracks gross revenue, order fulfillment, low-stock variant alerts, and one-click shipping label generation.</li>
-        </ul>
-      `
-    },
-    hisab: {
-      title: "Hisab AI // Architecture & Multi-Modal Vision Blueprint",
-      links: [
-        { label: "Visit Web App (hisab-ai-livid.vercel.app) ↗", href: "https://hisab-ai-livid.vercel.app", solid: true },
-        { label: "GitHub Showcase ↗", href: "https://github.com/Magraa/Hisab-AI-Showcase", solid: false }
-      ],
-      html: `
-        <p><strong>Problem Statement:</strong> Traditional accounting software is bloated for Indian MSMEs, shopkeepers, and independent contractors who manage transactions via paper registers, handwritten chits, and WhatsApp receipts. Typing amounts manually is slow and error-prone.</p>
-        
-        <div class="blueprint-diagram">
-+------------------+     +------------------------+     +-------------------------+
-| Receipt / Diary  | --> | Gemini 2.0 Flash OCR   | --> | Local NLP / Normalizer  |
-| Image Ingestion  |     | (JSON Structured Extr) |     | (Phonetic / Auto-Cat)   |
-+------------------+     +------------------------+     +-------------------------+
-                                                                     |
-                                                                     v
-+------------------+     +------------------------+     +-------------------------+
-| Vector PDF / WA  | <-- | Supabase PostgreSQL    | <-- | Client Dual-Store Layer |
-| 1-Click Dispatch |     | (Row-Level Security)   |     | (Encrypted Local / PWA) |
-+------------------+     +------------------------+     +-------------------------+
-        </div>
-
-        <p><strong>Live Deployment:</strong></p>
-        <ul>
-          <li><strong>Live Web App:</strong> <a href="https://hisab-ai-livid.vercel.app" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">hisab-ai-livid.vercel.app ↗</a> — PWA installed directly on mobile home screens with camera OCR and offline storage.</li>
-        </ul>
-
-        <p><strong>Technical Highlights:</strong></p>
-        <ul>
-          <li><strong>Multimodal Ingestion:</strong> Evaluated OCR engines before opting for Gemini 2.0 Flash vision for its zero-latency ability to decipher complex Hindi-English bilingual handwriting, crumpled thermal prints, and incomplete bills.</li>
-          <li><strong>Dual-Mode State Continuity:</strong> 100% functional locally with encrypted browser storage; seamlessly syncs with Supabase PostgreSQL when user authenticates via Google OAuth.</li>
-          <li><strong>Postgres Row-Level Security:</strong> Strict RLS policies restrict all table access strictly to <code>auth.uid() = user_id</code> with zero leakage risk.</li>
-          <li><strong>Client-Side Statement Engine:</strong> Auto-formats PDF ledgers with official Indian Rupee currency symbols, party balances, and automatic WhatsApp sharing payloads.</li>
-        </ul>
-      `
-    },
-    simvox: {
-      title: "SIMVox AI // Zero-VoIP Cellular Voice Bridge Blueprint",
-      links: [
-        { label: "GitHub Repository ↗", href: "https://github.com/Magraa/SIMVox-AI", solid: true }
-      ],
-      html: `
-        <p><strong>Problem Statement:</strong> Deploying automated voice agents normally demands costly Twilio numbers, SIP trunks, and per-minute telephony surcharges that make small-scale or localized automated reception cost-prohibitive.</p>
-        
-        <div class="blueprint-diagram">
-+------------------+     +------------------------+     +-------------------------+
-| Inbound Cellular | --> | ADB Hardware Daemon    | --> | Voice Activity Detect   |
-| Call on Android  |     | (Baseband Audio Stream)|     | (VAD &amp; PyAudio Loop)|
-+------------------+     +------------------------+     +-------------------------+
-                                                                     |
-                                                                     v
-+------------------+     +------------------------+     +-------------------------+
-| Live PyWebView   | <-- | Edge Neural TTS Engine | <-- | Google Gemini LLM       |
-| Waveform &amp; CRM |     | (Sub-second Audio Out) |     | (Context Reasoning Turn)|
-+------------------+     +------------------------+     +-------------------------+
-        </div>
-
-        <p><strong>Technical Highlights:</strong></p>
-        <ul>
-          <li><strong>Zero-VoIP Hardware Routing:</strong> Taps directly into the physical handset via ADB and native loopback audio pipes, routing cellular carrier voice without intermediate SIP toll fees.</li>
-          <li><strong>Sub-Second Conversational Turn:</strong> Streaming chunks from Google Gemini are piped directly into Microsoft Edge Neural TTS, producing lifelike human responses without unnatural robotic hesitations.</li>
-          <li><strong>Desktop Control Plane:</strong> PyWebView application rendering live canvas audio waveforms, real-time speech-to-text transcripts, and SQLite call contact ledgers.</li>
-        </ul>
-      `
-    },
-    finaudit: {
-      title: "FinAudit AI // Financial Intelligence & Fraud Audit Blueprint",
-      links: [
-        { label: "GitHub Repository ↗", href: "https://github.com/Magraa/FinAudit-AI", solid: true }
-      ],
-      html: `
-        <p><strong>Problem Statement:</strong> High-volume P2P desks and digital payment operators receive thousands of transaction screenshots daily, leading to fraudulent duplicate claims, modified screenshot receipts, and heavy manual review backlogs.</p>
-        
-        <div class="blueprint-diagram">
-+------------------+     +------------------------+     +-------------------------+
-| Screenshot / CSV | --> | Ingestion &amp; OCR Engine| --> | Multi-LLM Verification  |
-| Statements Ingest|     | (Tesseract / Vision)   |     | (Gemini &amp; Groq Llama) |
-+------------------+     +------------------------+     +-------------------------+
-                                                                     |
-                                                                     v
-+------------------+     +------------------------+     +-------------------------+
-| Dispute Triage   | <-- | Audit &amp; Risk Scorer   | <-- | Duplicate Hash Matcher  |
-| &amp; Reporting Dash|     | (Ranking Dashboard)    |     | (CSPRNG &amp; Timestamp)|
-+------------------+     +------------------------+     +-------------------------+
-        </div>
-
-        <p><strong>Technical Highlights:</strong></p>
-        <ul>
-          <li><strong>Multi-Bank Statement Parser:</strong> Automatically normalizes varying column schemas, date conventions, and transaction markers across different banks.</li>
-          <li><strong>Duplicate Claim Detection:</strong> Generates perceptual and cryptographic hashes of incoming receipts to detect re-submissions and modified amounts.</li>
-          <li><strong>Next.js 15 &amp; Supabase Analytics:</strong> Real-time dashboard to triage flagged transactions, view evidence side-by-side, and export compliance reports.</li>
-        </ul>
-      `
-    },
-    tenderflow: {
-      title: "TenderFlow AI // Autonomous Procurement Pipeline Blueprint",
-      links: [
-        { label: "Architecture Showcase ↗", href: "https://github.com/Magraa/TenderFlow-AI-Showcase", solid: true }
-      ],
-      html: `
-        <p><strong>Problem Statement:</strong> Government procurement requires contractors to prepare multiple statutory documents (NITs, comparative quotes, supply orders, bills) adhering to strict legal templates. Manual data re-entry causes costly calculation and formatting discrepancies.</p>
-        
-        <div class="blueprint-diagram">
-+------------------+     +------------------------+     +-------------------------+
-| Ingested Tender  | --> | Core Orchestrator      | --> | 1. Vigyapti / NIT       |
-| Specs &amp; Line Item|     | (Bilingual Rule Engine)|     | 2. Main Quotation (L1)  |
-+------------------+     +------------------------+     | 3. Alternate Quotes     |
-                                     |                  | 4. Supply Order         |
-                                     v                  | 5. GST Tax Bill         |
-                         +------------------------+     +-------------------------+
-                         | Multi-LLM Engine       |                  |
-                         | (Gemini / Groq Legal)  |                  v
-                         +------------------------+     +-------------------------+
-                                                        | DOM-Height A4 PDF Engine|
-                                                        | (Print-Safe Letterheads)|
-                                                        +-------------------------+
-        </div>
-
-        <p><strong>Technical Highlights:</strong></p>
-        <ul>
-          <li><strong>1-Click Synchronized Document Pipeline:</strong> Generates all 5 mandatory statutory documents from a single data entry step, eliminating mismatched sums and dates.</li>
-          <li><strong>DOM-Height Pagination Engine:</strong> Computes real-time DOM heights of rich TipTap text blocks, placing clean page breaks to prevent clipped clauses and orphan headers.</li>
-          <li><strong>Bilingual Multi-LLM Drafting:</strong> Uses Gemini and Groq fallback pipelines to generate legally precise tender text in Hindi and English with firm letterheads.</li>
-        </ul>
-      `
-    }
-  };
-
-  const bpModal = document.getElementById('blueprintModal');
-  const bpTitle = document.getElementById('bpTitle');
-  const bpBody = document.getElementById('bpBody');
-  const bpActions = document.getElementById('bpActions');
-  const closeBpBtn = document.getElementById('closeBpBtn');
-  const bpDismissBtn = document.getElementById('bpDismissBtn');
-
-  function openBlueprint(key) {
-    const data = blueprintData[key];
-    if (!data) return;
-    bpTitle.textContent = data.title;
-    bpBody.innerHTML = data.html;
-    if (bpActions) {
-      bpActions.innerHTML = '';
-      if (data.links && data.links.length > 0) {
-        data.links.forEach(l => {
-          const a = document.createElement('a');
-          a.className = l.solid ? 'pill-btn solid' : 'pill-btn';
-          a.href = l.href;
-          a.target = '_blank';
-          a.rel = 'noopener';
-          a.textContent = l.label;
-          bpActions.appendChild(a);
-        });
-      }
-    }
-    bpModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeBlueprint() {
-    bpModal.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  document.querySelectorAll('.blueprint-trigger').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const modalKey = btn.getAttribute('data-modal');
-      openBlueprint(modalKey);
-    });
-  });
-
-  [closeBpBtn, bpDismissBtn].forEach(b => b.addEventListener('click', closeBlueprint));
-  bpModal.addEventListener('click', (e) => {
-    if (e.target === bpModal) closeBlueprint();
-  });
-
-  /* --------------------------------------------------------------------------
-     7. COMMAND PALETTE (CMD+K / CTRL+K)
-     -------------------------------------------------------------------------- */
-  const cmdModal = document.getElementById('cmdModal');
-  const cmdBtn = document.getElementById('cmdBtn');
-  const cmdSearch = document.getElementById('cmdSearch');
-  const cmdList = document.getElementById('cmdList');
-  const cmdItems = cmdList.querySelectorAll('.cmd-item');
-
-  function openCmd() {
-    cmdModal.classList.add('active');
-    cmdSearch.value = '';
-    filterCmdItems('');
-    cmdSearch.focus();
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeCmd() {
-    cmdModal.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  function filterCmdItems(query) {
-    const q = query.toLowerCase().trim();
-    cmdItems.forEach(item => {
-      const text = item.textContent.toLowerCase();
-      item.style.display = text.includes(q) ? '' : 'none';
-    });
-  }
-
-  cmdBtn.addEventListener('click', openCmd);
-  cmdModal.addEventListener('click', (e) => {
-    if (e.target === cmdModal) closeCmd();
-  });
-
-  cmdSearch.addEventListener('input', (e) => filterCmdItems(e.target.value));
-
-  cmdItems.forEach(item => {
-    item.addEventListener('click', () => {
-      const action = item.getAttribute('data-action');
-      const target = item.getAttribute('data-target');
-      const val = item.getAttribute('data-val');
-
-      closeCmd();
-
-      if (action === 'goto') {
-        const el = document.querySelector(target);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      } else if (action === 'url') {
-        window.open(target, '_blank', 'noopener,noreferrer');
-      } else if (action === 'blueprint') {
-        setTimeout(() => openBlueprint(target), 120);
-      } else if (action === 'copy') {
-        copyTextToClipboard(val, '✓ Copied ' + val);
-      } else if (action === 'resume') {
-        window.open('Mayank_Agrawal_Resume.pdf', '_blank');
-      } else if (action === 'toggle-theme') {
-        const current = root.getAttribute('data-theme') || getPreferredTheme();
-        applyTheme(current === 'dark' ? 'light' : 'dark');
-      }
-    });
-  });
-
-  /* Global Keyboard Shortcuts */
-  window.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-      e.preventDefault();
-      if (cmdModal.classList.contains('active')) {
-        closeCmd();
-      } else {
-        openCmd();
-      }
-    }
-    if (e.key === 'Escape') {
-      if (cmdModal.classList.contains('active')) closeCmd();
-      if (bpModal.classList.contains('active')) closeBlueprint();
-    }
-  });
-
-  /* --------------------------------------------------------------------------
-     8. INTERACTIVE DEVELOPER CONSOLE (TERMINAL EMULATOR)
-     -------------------------------------------------------------------------- */
-  const termInput = document.getElementById('termInput');
-  const termOutput = document.getElementById('termOutput');
-
-  const termCommands = {
-    help: () => `AVAILABLE COMMANDS:
-  system-status    - Display current role, status & telemetry
-  projects         - List featured flagship software systems
-  shoboti          - Live video commerce platform & Aria demo store
-  hisab            - Live Gemini 2.0 Flash bahi-khata PWA
-  skills           - Print full technical competencies
-  contact          - Output email, phone & social profiles
-  resume           - Direct link to download Mayank's resume
-  clear            - Wipe terminal buffer`,
-    
-    'system-status': () => `NAME: Mayank Agrawal | STATUS: 🟢 Available for full-time roles
-EXPERIENCE: 2+ Years in Production (MERN, Next.js, Python, AI)
-LOCATION: Bangalore, India | ALUMNI: ABV-IIITM Gwalior`,
-
-    shoboti: () => `PROJECT 01: SHOBOTI — Social Video Commerce & Direct Storefront Platform
-  • Live Platform: https://shoboti.com
-  • Demo Storefront: https://aria.shoboti.com (Aria Chen's Shoppable Edit)
-  • GitHub Showcase: https://github.com/Magraa/shoboti-showcase
-  • Stack: Next.js App Router, React Server Components, Drizzle ORM, pgvector, Gemini/Llama 3
-  • Highlights: Comment-to-DM trigger autopilot, conversational shopping agent, 1-tap checkout.`,
-
-    hisab: () => `PROJECT 02: HISAB AI — AI-Powered Financial Notebook & Bahi-Khata PWA
-  • Live Web App: https://hisab-ai-livid.vercel.app
-  • GitHub Showcase: https://github.com/Magraa/Hisab-AI-Showcase
-  • Stack: Next.js 15, React 19, Gemini 2.0 Flash Multimodal OCR, Supabase RLS, Tailwind v4
-  • Highlights: Multimodal receipt/diary parsing, local-first offline PWA, vector PDF ledger.`,
-
-    projects: () => `FLAGSHIP SYSTEMS:
-  1. Shoboti         - Social Video Commerce (Live: https://shoboti.com | Demo: https://aria.shoboti.com)
-  2. Hisab AI        - Multimodal OCR Bahi-Khata (Live: https://hisab-ai-livid.vercel.app)
-  3. SIMVox AI       - Zero-VoIP Cellular Voice Bridge over ADB (10★: github.com/Magraa/SIMVox-AI)
-  4. FinAudit AI     - Fraud Detection & Financial Intelligence (github.com/Magraa/FinAudit-AI)
-  5. TenderFlow AI   - 1-Click Government Procurement Pipeline (github.com/Magraa/TenderFlow-AI-Showcase)
-  6. Mr. Proper      - Contractor CRM, ERP & E-Commerce (Live: https://mrproper.in)
-  7. ProperCoupons   - Cryptographic 300 DPI Duplex Token Generation (github.com/Magraa/ProperCoupons)`,
-
-    skills: () => `CORE COMPETENCIES:
-  • Languages: Python, TypeScript, JavaScript, Kotlin, SQL, C/C++
-  • Web: React.js, Next.js 15, Tailwind CSS v4, Motion, Zustand, Redux
-  • Backend: Node.js, Express, REST APIs, WebSockets, Fastify
-  • Data/Cloud: PostgreSQL, Supabase (RLS), MongoDB, Docker, AWS S3/EC2
-  • AI: Google Gemini 2.0/Flash, Multimodal OCR, Edge-TTS, LangChain`,
-
-    contact: () => `DIRECT CHANNELS:
-  • Email: agrawalmayank1111@gmail.com
-  • Phone: +91 9340861338
-  • GitHub: https://github.com/Magraa
-  • LinkedIn: https://linkedin.com/in/mayank-agrawal-532967192`,
-
-    resume: () => {
-      window.open('Mayank_Agrawal_Resume.pdf', '_blank');
-      return `Opening Mayank_Agrawal_Resume.pdf in new tab...`;
-    },
-
-    clear: () => {
-      termOutput.innerHTML = '';
-      return null;
-    }
-  };
-
-  function executeCommand(raw) {
-    const cmd = raw.trim().toLowerCase();
-    if (!cmd) return;
-
-    // Render Prompt Line
-    const promptLine = document.createElement('div');
-    promptLine.className = 'term-line';
-    promptLine.innerHTML = `<span class="term-prompt">mayank@workstation:~$ </span><span class="term-cmd">${raw}</span>`;
-    termOutput.appendChild(promptLine);
-
-    if (cmd in termCommands) {
-      const res = termCommands[cmd]();
-      if (res) {
-        const resLine = document.createElement('div');
-        resLine.className = 'term-res';
-        resLine.textContent = res;
-        termOutput.appendChild(resLine);
-      }
-    } else {
-      const errLine = document.createElement('div');
-      errLine.className = 'term-res';
-      errLine.textContent = `zsh: command not found: ${raw}. Type 'help' for available commands.`;
-      termOutput.appendChild(errLine);
-    }
-
-    termOutput.scrollTop = termOutput.scrollHeight;
-  }
-
-  if (termInput) {
-    termInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const val = termInput.value;
-        termInput.value = '';
-        executeCommand(val);
-      }
-    });
-  }
-
-  document.querySelectorAll('.term-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      const cmd = chip.getAttribute('data-cmd');
-      executeCommand(cmd);
-    });
-  });
-</script>
-
+  <script src="script.js" defer></script>
 </body>
 </html>
