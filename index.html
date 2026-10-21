@@ -211,14 +211,14 @@
 
           <div class="stage-phones">
             <div class="phone phone--back">
-              <button class="screen-open screen-open--phone" type="button" data-full="assets/screens/shoboti-checkout.webp" data-caption="Shoboti mobile checkout — cart, promo code, and order summary." aria-label="Expand the Shoboti checkout screenshot" aria-haspopup="dialog">
-                <img src="assets/screens/shoboti-checkout.webp" alt="Shoboti mobile checkout with cart items, promo code, and order summary." width="720" height="1440" loading="lazy" decoding="async">
+              <button class="screen-open screen-open--phone" type="button" data-full="assets/screens/shoboti-checkout.webp" data-caption="Shoboti mobile cart — line items with quantity steppers, a promo field, cross-sell, and the order summary before checkout." aria-label="Expand the Shoboti checkout screenshot" aria-haspopup="dialog">
+                <img src="assets/screens/shoboti-checkout.webp" alt="Shoboti mobile cart showing three items with prices and quantity steppers, a promo code field, a You may also like row, and an order summary totalling ₹4,167 including tax." width="720" height="1527" loading="lazy" decoding="async">
               </button>
               <span class="phone-label">Checkout</span>
             </div>
             <div class="phone phone--front">
-              <button class="screen-open screen-open--phone" type="button" data-full="assets/screens/shoboti-reels.webp" data-caption="Shoboti mobile storefront — shoppable reels and product trays." aria-label="Expand the Shoboti reels storefront screenshot" aria-haspopup="dialog">
-                <img src="assets/screens/shoboti-reels.webp" alt="Shoboti mobile storefront showing a grid of shoppable fashion reels." width="720" height="1440" loading="lazy" decoding="async">
+              <button class="screen-open screen-open--phone" type="button" data-full="assets/screens/shoboti-reels.webp" data-caption="Shoboti reels storefront — a creator's reel grid, each card carrying its view count and product tray." aria-label="Expand the Shoboti reels storefront screenshot" aria-haspopup="dialog">
+                <img src="assets/screens/shoboti-reels.webp" alt="Shoboti reels storefront on a phone showing a grid of fashion reels, each with a view count and a badge naming how many products it carries." width="720" height="1522" loading="lazy" decoding="async">
               </button>
               <span class="phone-label">Reels storefront</span>
             </div>
@@ -348,10 +348,21 @@
             </button>
           </div>
 
-          <button class="stage-proof" type="button" data-full="assets/screens/simvox-github.webp" data-caption="SIMVox-AI on GitHub — 10 stars, 4 forks, MIT licence." aria-haspopup="dialog">
-            <img src="assets/screens/simvox-github-strip.webp" alt="" width="1100" height="260" loading="lazy" decoding="async">
-            <span class="stage-proof__label">Open source · 10 stars · 4 forks <span aria-hidden="true">↗</span><span class="sr-only"> SIMVox-AI GitHub repository screenshot. Expand preview.</span></span>
-          </button>
+          <div class="browser-frame browser-frame--proof">
+            <div class="browser-bar" aria-hidden="true">
+              <span class="terminal-dots"><i></i><i></i><i></i></span>
+              <span class="browser-url">github.com/Magraa/SIMVox-AI</span>
+              <span class="browser-badge">Repository</span>
+            </div>
+            <button class="screen-open screen-open--browser" type="button" data-full="assets/screens/simvox-github.webp" data-caption="SIMVox-AI on GitHub — 10 stars, 4 forks, MIT licence." aria-label="Expand the SIMVox-AI GitHub repository screenshot" aria-haspopup="dialog">
+              <img src="assets/screens/simvox-github.webp" alt="SIMVox-AI GitHub repository screenshot showing 10 stars, 4 forks, and MIT license." width="1200" height="833" loading="lazy" decoding="async">
+              <span class="screen-open__hint">Expand screen <span aria-hidden="true">↗</span></span>
+            </button>
+            <div class="stage-proof__label">
+              <span>Open source · 10 stars · 4 forks</span>
+              <span aria-hidden="true">↗</span>
+            </div>
+          </div>
 
           <div class="stage-meta">
             <p class="stage-note"><i aria-hidden="true"></i><strong>&lt;800ms</strong><span>voice loop</span></p>
@@ -822,7 +833,7 @@
       </div>
       <dl class="colophon__facts">
         <div><dt>Runtime</dt><dd>No framework, no build step. HTML, CSS, one script.</dd></div>
-        <div><dt>Weight</dt><dd>42 KB of JavaScript and 78 KB of CSS as they sit in the repository, plus 850 KB of WebP screens across thirteen images that load only as you reach them.</dd></div>
+        <div><dt>Weight</dt><dd>42 KB of JavaScript and 83 KB of CSS as they sit in the repository, plus 853 KB of WebP screens across thirteen images that load only as you reach them.</dd></div>
         <div><dt>Type</dt><dd>Fraunces for display, IBM Plex Sans for body, IBM Plex Mono for labels.</dd></div>
         <div><dt>Motion</dt><dd>Reveals move on transform only, so nothing is ever hidden from a crawler or a reader. <code>prefers-reduced-motion</code> is honoured, and you can also switch motion off yourself.</dd></div>
         <div><dt>Data</dt><dd>The repository list above is one unauthenticated call to the public GitHub API, cached in <code>sessionStorage</code> for an hour. Everything else on this page is static.</dd></div>

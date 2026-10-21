@@ -2148,23 +2148,48 @@ main,
   transform: rotate(3deg);
 }
 
+.browser-frame--proof {
+  position: absolute;
+  top: auto;
+  left: auto;
+  right: 4%;
+  bottom: 56px;
+  z-index: 3;
+  width: 34%;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: var(--bg-elevated);
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.55);
+  transform: translate3d(calc(var(--mx) * -6px), calc(var(--my) * -4px), 0) rotate(1.5deg);
+  transition: transform 350ms var(--ease), border-color 250ms var(--ease-soft), box-shadow 350ms var(--ease);
+}
+
+#project-simvox .browser-frame:not(.browser-frame--proof) {
+  width: 62%;
+}
+
 .stage-proof {
   position: absolute;
+  top: auto;
+  left: auto;
   right: 4%;
-  bottom: 58px;
+  bottom: 56px;
   z-index: 3;
-  width: 31%;
+  width: 34%;
   padding: 0;
   overflow: hidden;
   border: 1px solid var(--line-strong);
   border-radius: 14px;
   background: var(--bg-elevated);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
-  cursor: zoom-in;
-  transition: transform 350ms var(--ease), border-color 250ms var(--ease-soft);
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+  transform: translate3d(calc(var(--mx) * -6px), calc(var(--my) * -4px), 0) rotate(1.5deg);
+  transition: transform 350ms var(--ease), border-color 250ms var(--ease-soft), box-shadow 350ms var(--ease);
 }
 
-.stage-proof img {
+.stage-proof img,
+.browser-frame--proof img {
   display: block;
   width: 100%;
   height: auto;
@@ -2175,20 +2200,27 @@ main,
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 9px 11px;
+  padding: 9px 12px;
   border-top: 1px solid var(--line);
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 8px;
+  font-size: 8.5px;
   letter-spacing: 0.04em;
   line-height: 1.5;
   text-align: left;
   text-transform: uppercase;
+  background: var(--bg-elevated);
 }
 
+.stage-proof__label span:last-child {
+  color: var(--copper);
+}
+
+.browser-frame--proof:hover,
 .stage-proof:hover {
   border-color: var(--copper-soft);
-  transform: translateY(-3px);
+  box-shadow: 0 45px 95px rgba(0, 0, 0, 0.68);
+  transform: translate3d(calc(var(--mx) * -6px), calc(var(--my) * -4px), 0) rotate(1.5deg) translateY(-4px);
 }
 
 .stage-meta {
@@ -2433,6 +2465,7 @@ body.dialog-open {
   }
 
   .browser-frame,
+  .browser-frame--proof,
   .case-stage--proof .browser-frame {
     position: static;
     width: 100%;
@@ -2467,9 +2500,12 @@ body.dialog-open {
     justify-content: end;
   }
 
-  .stage-proof {
+  .stage-proof,
+  .browser-frame--proof {
     position: static;
     width: 100%;
+    margin-top: 14px;
+    transform: none;
   }
 
   .stage-index,
@@ -2528,6 +2564,7 @@ body.dialog-open {
 
 @media (prefers-reduced-motion: reduce) {
   .browser-frame,
+  .browser-frame--proof,
   .phone--back,
   .phone--front {
     transform: none;
@@ -2541,7 +2578,8 @@ body.dialog-open {
     opacity: 0;
   }
 
-  .stage-proof:hover {
+  .stage-proof:hover,
+  .browser-frame--proof:hover {
     transform: none;
   }
 }
@@ -2829,7 +2867,7 @@ body.dialog-open {
 
 .xray:hover,
 .xray:focus-within {
-  --xray-hole: 250px;
+  --xray-hole: 118px;
 }
 
 .xray__stack {
@@ -2878,8 +2916,8 @@ body.dialog-open {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  -webkit-mask-image: radial-gradient(circle at var(--bx) var(--by), transparent 0, transparent calc(var(--xray-hole) - 120px), #000 var(--xray-hole));
-  mask-image: radial-gradient(circle at var(--bx) var(--by), transparent 0, transparent calc(var(--xray-hole) - 120px), #000 var(--xray-hole));
+  -webkit-mask-image: radial-gradient(circle at var(--bx) var(--by), transparent 0, transparent calc(var(--xray-hole) - 58px), #000 var(--xray-hole));
+  mask-image: radial-gradient(circle at var(--bx) var(--by), transparent 0, transparent calc(var(--xray-hole) - 58px), #000 var(--xray-hole));
 }
 
 .xray__beam {
@@ -2888,7 +2926,7 @@ body.dialog-open {
   z-index: 2;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(circle at var(--bx) var(--by), rgba(255, 255, 255, 0.55) 0, rgba(255, 255, 255, 0.34) calc(var(--xray-hole) * 0.5), rgba(255, 255, 255, 0.16) calc(var(--xray-hole) - 10px), rgba(255, 255, 255, 0.88) calc(var(--xray-hole) - 1px), rgba(255, 255, 255, 0) calc(var(--xray-hole) + 24px), rgba(8, 12, 14, 0.15) calc(var(--xray-hole) + 160px), rgba(8, 12, 14, 0) 130%);
+  background: radial-gradient(circle at var(--bx) var(--by), rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.12) calc(var(--xray-hole) * 0.5), rgba(255, 255, 255, 0.06) calc(var(--xray-hole) - 16px), rgba(255, 255, 255, 0.26) calc(var(--xray-hole) - 5px), rgba(255, 255, 255, 0) calc(var(--xray-hole) + 14px), rgba(8, 12, 14, 0.07) calc(var(--xray-hole) + 96px), rgba(8, 12, 14, 0) 128%);
   transition: opacity 300ms var(--ease-soft);
 }
 
@@ -3495,7 +3533,6 @@ html[data-motion="off"] .marquee-track {
 .more-work__row a,
 .repos li,
 .flow__node,
-.stage-proof,
 .screen-dialog__close,
 .palette__item {
   position: relative;
