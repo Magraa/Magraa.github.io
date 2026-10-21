@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.github.com; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.github.com http://localhost:4747 http://127.0.0.1:4747 ws://localhost:4747 ws://127.0.0.1:4747; base-uri 'self'; form-action 'self'; object-src 'none'">
   <title>Mayank Agrawal — Full-Stack &amp; AI Systems Engineer</title>
   <meta name="description" content="Mayank Agrawal is a full-stack and AI systems engineer in Bangalore. He builds production web platforms, backend APIs, and AI automation systems. IIIT Gwalior alumnus.">
   <meta name="author" content="Mayank Agrawal">
@@ -864,5 +864,14 @@
   </dialog>
 
   <script src="script.js" defer></script>
+  <!-- Agentation (Development Visual Feedback) -->
+  <script>
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      const agentScript = document.createElement('script');
+      agentScript.src = 'agentation.dev.js';
+      agentScript.defer = true;
+      document.body.appendChild(agentScript);
+    }
+  </script>
 </body>
 </html>
