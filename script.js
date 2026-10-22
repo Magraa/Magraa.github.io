@@ -265,7 +265,382 @@
   /* X-ray                                                            */
   /* ---------------------------------------------------------------- */
 
+  /* ---------------------------------------------------------------- */
+  /* X-ray Systems Data & Architectural Dissection                    */
+  /* ---------------------------------------------------------------- */
+
+  const XRAY_SYSTEMS = {
+    shoboti: {
+      name: "Shoboti",
+      badge: "Creator Commerce",
+      title: "Move the light across the creator panel",
+      desc: "Move the cursor across the screen to look through it. The drawing underneath is the PostgreSQL schema, row-level locks, and transition guards that answer each click. Pick a marker to inspect the database guarantees. On a phone, or with reduced motion, the two layers sit side by side instead.",
+      image: "assets/screens/shoboti-admin.webp",
+      alt: "Shoboti creator panel showing net sales, orders, customers and products above a sales chart, an attention list and recent orders.",
+      aspect: "1024 / 715",
+      spots: [
+        {
+          id: 1,
+          x: "28.2%",
+          y: "29.7%",
+          place: "right",
+          title: "The four atomic counters",
+          text: "Net sales, orders, customers and products resolve against <code>orders</code>, <code>payments</code> and <code>inventory</code> rows. Stock is bounded by database checks, <code>available &gt;= 0</code> and <code>reserved &lt;= available</code>, so an oversell fails in Postgres before it fails in the UI."
+        },
+        {
+          id: 2,
+          x: "38.1%",
+          y: "52.4%",
+          place: "right",
+          title: "Revenue attributed, not estimated",
+          text: "The seven-day chart is built from <code>analytics_events</code> joined through <code>content_products</code>, which is what lets a reel claim the money it earned instead of a number someone guessed at."
+        },
+        {
+          id: 3,
+          x: "84.6%",
+          y: "50.1%",
+          place: "left",
+          title: "The attention queue",
+          text: "Three lists a creator acts on: orders to fulfil, variants running low, and setup steps left. They read the same <code>orders.status</code> and <code>inventory</code> rows as the counters, so the panel cannot call a store healthy while it is out of stock."
+        },
+        {
+          id: 4,
+          x: "38.1%",
+          y: "88.1%",
+          place: "above",
+          title: "Recent orders & audit log",
+          text: "Each row is an <code>orders</code> record with its <code>order_items</code> and <code>payments</code> row. Status changes append to <code>order_activity_log</code>, so a disputed order can be replayed instead of argued about."
+        },
+        {
+          id: 5,
+          x: "59.3%",
+          y: "3.6%",
+          place: "below",
+          title: "Unified multi-table search",
+          text: "Products, orders and customers from a single field, because a creator looking for a customer should not have to know which table they live in."
+        },
+        {
+          id: 6,
+          x: "7%",
+          y: "40%",
+          place: "right",
+          title: "Two separate worlds",
+          text: "Creator identity lives in <code>platform_users</code> and <code>creator_settings</code>. Staff identity lives in <code>platform_staff_members</code> and <code>platform_staff_sessions</code>. A creator credential and a staff credential are never the same row."
+        }
+      ]
+    },
+    mrproper: {
+      name: "Mr. Proper",
+      badge: "Dispatch & ERP",
+      title: "Move the light across Mr. Proper Operations & Dispatch ERP",
+      desc: "Look beneath the commercial cleaning chemicals platform. The underlying architecture orchestrates on-demand technician GPS dispatch, automated manufacturing formula batching, bulk B2B invoicing, and contractor QR loyalty ledgers.",
+      image: "assets/screens/mrproper-desktop.webp",
+      alt: "Mr. Proper operations, chemical product storefront, and field service management dashboard.",
+      aspect: "1440 / 1000",
+      spots: [
+        {
+          id: 1,
+          x: "15%",
+          y: "16%",
+          place: "right",
+          title: "Institutional Invoicing & Credit Terms",
+          text: "Handles enterprise accounts, automated GST tax e-invoicing, and revolving credit terms. Integrated with <code>Razorpay Route</code> to execute automated escrow and split disbursements between manufacturing hubs and regional fulfillment distributors."
+        },
+        {
+          id: 2,
+          x: "48%",
+          y: "22%",
+          place: "below",
+          title: "Chemical Bill of Materials (BOM) Batching",
+          text: "Manufacturing ERP engine: when bulk commercial orders are scheduled, the BOM engine calculates exact surfactant concentrations, active alkali volumes, and fragrance additives, auto-reserving raw chemical compounds in PostgreSQL."
+        },
+        {
+          id: 3,
+          x: "84%",
+          y: "18%",
+          place: "left",
+          title: "Omnichannel Atomic Stock Synchronization",
+          text: "Postgres transaction locks bind industrial chemical batching with retail storefront orders: <code>available_stock &gt;= reserved_stock</code> blocks phantom inventory before payment capture occurs."
+        },
+        {
+          id: 4,
+          x: "26%",
+          y: "62%",
+          place: "right",
+          title: "Live GPS Technician Dispatch & Geofencing",
+          text: "Google Maps Distance Matrix API routes service requests to the nearest certified field agents. Service completion mandates geo-fenced GPS check-in timestamps, eliminating phantom or unfulfilled service calls."
+        },
+        {
+          id: 5,
+          x: "64%",
+          y: "66%",
+          place: "above",
+          title: "Proper Perks QR & Anti-Replay Engine",
+          text: "Commercial contractors scan QR codes affixed to bulk chemical barrels. Each token is verified through single-use cryptographic validation with atomic Supabase ledger credits, preventing double-redemption."
+        },
+        {
+          id: 6,
+          x: "88%",
+          y: "46%",
+          place: "left",
+          title: "Role-Based Row-Level Security (RLS)",
+          text: "Strict Supabase PostgreSQL RLS policies cleanly separate factory floor mixologists, field dispatchers, wholesale distributor accounts, and end-consumers into partitioned data environments."
+        }
+      ]
+    },
+    hisab: {
+      name: "Hisab AI",
+      badge: "Fintech PWA",
+      title: "Move the light across Hisab AI Financial Extraction Engine",
+      desc: "Look beneath the vernacular financial PWA. Physical crumpled receipts, handwritten vendor bills, and multilingual voice memos get parsed through multimodal vision and committed into immutable double-entry accounting ledgers.",
+      image: "assets/screens/hisab-desktop.webp",
+      alt: "Hisab AI vernacular financial ledger, receipt extraction telemetry, and accounting dashboard.",
+      aspect: "1536 / 1024",
+      spots: [
+        {
+          id: 1,
+          x: "20%",
+          y: "28%",
+          place: "right",
+          title: "Multimodal Vision OCR Pipeline",
+          text: "Gemini 2.0 Flash Vision extracts merchant identities, bill numbers, CGST/SGST tax breakdowns, and itemized line items from degraded mobile camera photos in under 1.8 seconds with structured schema validation."
+        },
+        {
+          id: 2,
+          x: "52%",
+          y: "26%",
+          place: "below",
+          title: "Double-Entry Cryptographic Ledger",
+          text: "Every entry automatically creates balanced debit and credit records. Rolling SHA-256 hash chains bind consecutive ledger rows, preventing retro-active record modification or balance tampering."
+        },
+        {
+          id: 3,
+          x: "82%",
+          y: "28%",
+          place: "left",
+          title: "Supplier Udhaar & Aging Analysis",
+          text: "Tracks supplier credit lines across 30, 60, and 90-day aging buckets. Automatically computes net outstanding liabilities and schedules WhatsApp/SMS payment reminder webhooks."
+        },
+        {
+          id: 4,
+          x: "26%",
+          y: "68%",
+          place: "right",
+          title: "Offline-First IndexedDB Engine",
+          text: "Local service worker stores entries in client-side IndexedDB when network drops. On reconnect, a conflict-free reconciliation worker synchronizes transactions with Supabase Postgres without data loss."
+        },
+        {
+          id: 5,
+          x: "62%",
+          y: "68%",
+          place: "above",
+          title: "pgvector Semantic Financial Search",
+          text: "Natural language queries like 'what did we spend on cement last month?' vectorize through embedding models to query PostgreSQL pgvector tables in under 20ms."
+        },
+        {
+          id: 6,
+          x: "86%",
+          y: "62%",
+          place: "left",
+          title: "Voice Intent & Hinglish Audio Parser",
+          text: "Speech recognition pipeline processes code-switched Hindi-English audio memos (e.g. 'Ramesh ko 500 diye kal subah'), parsing amounts, parties, and transaction types without manual typing."
+        }
+      ]
+    },
+    simvox: {
+      name: "SIMVox-AI",
+      badge: "Voice Telephony",
+      title: "Move the light across SIMVox Cellular Voice Pipeline",
+      desc: "Look beneath the open-source telephony agent. Physical Android cellular handsets connect over ADB to stream raw duplex call audio through a sub-second Gemini streaming pipeline with zero telecom trunk fees.",
+      image: "assets/screens/simvox-ui.webp",
+      alt: "SIMVox-AI desktop cellular operator console showing live audio waveforms and telephony state.",
+      aspect: "1440 / 1000",
+      spots: [
+        {
+          id: 1,
+          x: "22%",
+          y: "24%",
+          place: "right",
+          title: "Hardware ADB Audio Streamer",
+          text: "Bridges raw PCM audio bidirectionally between Android handset cellular hardware and host PC via low-overhead ADB socket forwarding, completely bypassing VoIP/SIP providers and per-minute carrier trunk fees."
+        },
+        {
+          id: 2,
+          x: "50%",
+          y: "22%",
+          place: "below",
+          title: "Sub-Second Streaming Voice Loop",
+          text: "Silero VAD detects end-of-speech in ~80ms. Audio chunks stream directly to Gemini 2.0 streaming websockets, yielding first-byte audio synthesized responses within 400ms."
+        },
+        {
+          id: 3,
+          x: "80%",
+          y: "22%",
+          place: "left",
+          title: "Neural TTS & Inflection Synthesis",
+          text: "Edge Neural TTS engine synthesizes natural conversational voice with dynamic prosody and inflection modulation matched to caller sentiment and dialogue urgency."
+        },
+        {
+          id: 4,
+          x: "30%",
+          y: "65%",
+          place: "right",
+          title: "Real-Time Audio Spectrum FFT",
+          text: "High-performance Web Audio API analyzer renders 60fps reactive spectrum frequency bars in the desktop operator console, giving live visual confirmation of incoming caller audio packets."
+        },
+        {
+          id: 5,
+          x: "62%",
+          y: "68%",
+          place: "above",
+          title: "Guardrails & Intent Routing Engine",
+          text: "Strict system prompts and function-calling schema validators intercept prompt injections, verify caller authority, and restrict agent tools to authorized business operations."
+        },
+        {
+          id: 6,
+          x: "86%",
+          y: "55%",
+          place: "left",
+          title: "Automated Call CRM Logging",
+          text: "At call termination, the complete dialogue transcript, extracted follow-up tasks, sentiment scores, and audio recording hashes are committed atomically to SQLite/Postgres."
+        }
+      ]
+    }
+  };
+
+  /* ---------------------------------------------------------------- */
+  /* X-ray Controller                                                 */
+  /* ---------------------------------------------------------------- */
+
   const xray = document.querySelector("[data-xray]");
+  const xrayStack = xray?.querySelector(".xray__stack");
+  const xrayBlueImg = xray?.querySelector(".xray__blue img");
+  const xrayPhoto = xray?.querySelector(".xray__photo");
+  const xraySpotsList = xray?.querySelector(".xray__spots");
+  const xrayNotesList = xray?.querySelector(".xray__notes");
+  const xrayTitle = document.getElementById("xray-title");
+  const xrayDesc = document.getElementById("xray-desc");
+  const xrayTabs = Array.from(document.querySelectorAll(".xray-switcher__tab"));
+
+  let activeXrayKey = "shoboti";
+  let pinnedSpot = null;
+
+  function bindXraySpots() {
+    pinnedSpot = null;
+    const currentSpots = Array.from(document.querySelectorAll(".xray__spot"));
+    if (!currentSpots.length) return;
+
+    const setOpen = (spot, open) => {
+      spot.setAttribute("aria-expanded", String(open));
+      document.getElementById(spot.getAttribute("aria-controls"))?.classList.toggle("is-open", open);
+    };
+
+    const showOnly = (spot) => currentSpots.forEach((other) => setOpen(other, other === spot));
+
+    const release = () => {
+      pinnedSpot = null;
+      currentSpots.forEach((other) => setOpen(other, false));
+    };
+
+    currentSpots.forEach((spot) => {
+      const wrap = spot.parentElement;
+
+      wrap.addEventListener("pointerenter", () => {
+        if (finePointer) showOnly(spot);
+      });
+
+      wrap.addEventListener("pointerleave", () => {
+        if (!finePointer) return;
+        if (pinnedSpot) showOnly(pinnedSpot);
+        else setOpen(spot, false);
+      });
+
+      spot.addEventListener("focus", () => showOnly(spot));
+
+      spot.addEventListener("click", () => {
+        pinnedSpot = pinnedSpot === spot ? null : spot;
+        if (pinnedSpot) showOnly(spot);
+        else setOpen(spot, false);
+        window.AudioFX?.tap?.();
+      });
+    });
+
+    if (xray && !xray._hasReleaseListener) {
+      xray._hasReleaseListener = true;
+      xray.addEventListener("click", (event) => {
+        if (!event.target.closest(".xray__spot-wrap, .xray__pop")) release();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") release();
+      });
+    }
+  }
+
+  function renderXraySystem(key) {
+    const data = XRAY_SYSTEMS[key];
+    if (!data || !xray || !xrayStack) return;
+
+    xrayStack.classList.add("is-swapping");
+
+    setTimeout(() => {
+      activeXrayKey = key;
+      if (xrayTitle) xrayTitle.textContent = data.title;
+      if (xrayDesc) xrayDesc.innerHTML = data.desc;
+
+      xrayStack.style.aspectRatio = data.aspect;
+      if (xrayBlueImg) xrayBlueImg.src = data.image;
+      if (xrayPhoto) {
+        xrayPhoto.src = data.image;
+        xrayPhoto.alt = data.alt;
+      }
+
+      // Render spots
+      if (xraySpotsList) {
+        xraySpotsList.innerHTML = data.spots.map((s) => `
+          <li class="xray__spot-wrap" style="--spot-x:${s.x};--spot-y:${s.y}">
+            <button class="xray__spot" id="xray-spot-${s.id}" type="button" aria-expanded="false" aria-controls="xray-note-${s.id}">${s.id}</button>
+          </li>
+        `).join("");
+      }
+
+      // Render notes
+      if (xrayNotesList) {
+        xrayNotesList.innerHTML = data.spots.map((s) => `
+          <div class="xray__pop" id="xray-note-${s.id}" style="--spot-x:${s.x};--spot-y:${s.y}" data-place="${s.place}" role="group" aria-labelledby="xray-spot-${s.id}">
+            <h4>${s.title}</h4>
+            <p>${s.text}</p>
+          </div>
+        `).join("");
+      }
+
+      // Re-bind spot hover and click listeners
+      bindXraySpots();
+
+      xrayStack.classList.remove("is-swapping");
+    }, 110);
+  }
+
+  // Setup tab switcher click listeners
+  if (xrayTabs.length) {
+    xrayTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.getAttribute("data-xray-target");
+        if (target === activeXrayKey) return;
+
+        xrayTabs.forEach((t) => {
+          const isActive = t === tab;
+          t.classList.toggle("is-active", isActive);
+          t.setAttribute("aria-selected", String(isActive));
+        });
+
+        window.AudioFX?.click?.();
+        renderXraySystem(target);
+      });
+    });
+  }
+
+  // Initial binding of spots
+  bindXraySpots();
 
   if (xray && finePointer) {
     let xrayFrame = 0;
@@ -282,62 +657,6 @@
         xray.style.setProperty("--bx", `${(((event.clientX - rect.left) / rect.width) * 100).toFixed(2)}%`);
         xray.style.setProperty("--by", `${(((event.clientY - rect.top) / rect.height) * 100).toFixed(2)}%`);
       });
-    });
-  }
-
-  /* ---------------------------------------------------------------- */
-  /* X-ray markers                                                    */
-  /* ---------------------------------------------------------------- */
-  /* Hover and focus already reveal a note in CSS; this adds pinning   */
-  /* so the same markers work on touch, where there is no hover.       */
-
-  const spots = Array.from(document.querySelectorAll(".xray__spot"));
-
-  if (spots.length) {
-    let pinned = null;
-
-    const setOpen = (spot, open) => {
-      spot.setAttribute("aria-expanded", String(open));
-      document.getElementById(spot.getAttribute("aria-controls"))?.classList.toggle("is-open", open);
-    };
-
-    const showOnly = (spot) => spots.forEach((other) => setOpen(other, other === spot));
-
-    const release = () => {
-      pinned = null;
-      spots.forEach((other) => setOpen(other, false));
-    };
-
-    spots.forEach((spot) => {
-      const wrap = spot.parentElement;
-
-      wrap.addEventListener("pointerenter", () => {
-        if (finePointer) showOnly(spot);
-      });
-
-      wrap.addEventListener("pointerleave", () => {
-        if (!finePointer) return;
-        if (pinned) showOnly(pinned);
-        else setOpen(spot, false);
-      });
-
-      spot.addEventListener("focus", () => showOnly(spot));
-
-      spot.addEventListener("click", () => {
-        pinned = pinned === spot ? null : spot;
-        if (pinned) showOnly(spot);
-        else setOpen(spot, false);
-      });
-    });
-
-    if (xray) {
-      xray.addEventListener("click", (event) => {
-        if (!event.target.closest(".xray__spot-wrap, .xray__pop")) release();
-      });
-    }
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") release();
     });
   }
 

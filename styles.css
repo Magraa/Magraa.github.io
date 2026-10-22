@@ -2946,11 +2946,128 @@ body.dialog-open {
 }
 
 .panel__head {
-  max-width: 66ch;
+  max-width: 100%;
   margin-bottom: clamp(20px, 3vw, 30px);
 }
 
+.panel__head-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel__head-top .kicker {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.xray-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  background: rgba(14, 18, 22, 0.75);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.xray-switcher__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 13px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 180ms var(--ease);
+  user-select: none;
+}
+
+.xray-switcher__tab:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.xray-switcher__tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.xray-switcher__tab.is-active {
+  background: rgba(224, 166, 120, 0.14);
+  border-color: rgba(224, 166, 120, 0.38);
+  color: #fff6f0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.xray-switcher__num {
+  font-size: 9.5px;
+  opacity: 0.55;
+}
+
+.xray-switcher__tab.is-active .xray-switcher__num {
+  opacity: 0.9;
+  color: var(--accent);
+}
+
+.xray-switcher__name {
+  font-weight: 500;
+}
+
+.xray-switcher__badge {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  opacity: 0.7;
+}
+
+.xray-switcher__tab.is-active .xray-switcher__badge {
+  background: rgba(224, 166, 120, 0.22);
+  color: var(--accent);
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .panel__head-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .xray-switcher {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+    padding: 4px;
+    scrollbar-width: none;
+  }
+  .xray-switcher::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .panel__head h3 {
+  max-width: 68ch;
   margin-top: 10px;
   font-family: var(--display);
   font-size: clamp(1.5rem, 2.5vw, 2.1rem);
@@ -2960,6 +3077,7 @@ body.dialog-open {
 }
 
 .panel__head p:last-child {
+  max-width: 68ch;
   margin-top: 12px;
   color: var(--ink-soft);
   font-size: 14px;
@@ -3003,6 +3121,11 @@ body.dialog-open {
   border: 1px solid var(--line-strong);
   border-radius: 12px;
   background: #ffffff;
+  transition: opacity 140ms var(--ease), aspect-ratio 280ms var(--ease);
+}
+
+.xray__stack.is-swapping {
+  opacity: 0.15;
 }
 
 .xray__blue,

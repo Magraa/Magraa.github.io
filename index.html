@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261022_1">
+  <link rel="stylesheet" href="styles.css?v=20261022_2">
   <script>document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');</script>
   <script type="application/ld+json">
   {
@@ -831,9 +831,33 @@
 
       <div class="panel" data-reveal>
         <div class="panel__head">
-          <p class="kicker">X-ray</p>
-          <h3>Move the light across the creator panel</h3>
-          <p>Move the cursor across the screen to look through it. The drawing underneath is the schema and the guards that answer each click. Pick a marker to read what sits there. On a phone, or with reduced motion, the two layers sit side by side instead.</p>
+          <div class="panel__head-top">
+            <p class="kicker">02.1 / Systems Architecture X-Ray</p>
+            <div class="xray-switcher" role="tablist" aria-label="Select system architecture to inspect">
+              <button class="xray-switcher__tab is-active" type="button" role="tab" aria-selected="true" data-xray-target="shoboti">
+                <span class="xray-switcher__num">01</span>
+                <span class="xray-switcher__name">Shoboti</span>
+                <span class="xray-switcher__badge">Commerce</span>
+              </button>
+              <button class="xray-switcher__tab" type="button" role="tab" aria-selected="false" data-xray-target="mrproper">
+                <span class="xray-switcher__num">02</span>
+                <span class="xray-switcher__name">Mr. Proper</span>
+                <span class="xray-switcher__badge">Dispatch &amp; ERP</span>
+              </button>
+              <button class="xray-switcher__tab" type="button" role="tab" aria-selected="false" data-xray-target="hisab">
+                <span class="xray-switcher__num">03</span>
+                <span class="xray-switcher__name">Hisab AI</span>
+                <span class="xray-switcher__badge">Fintech PWA</span>
+              </button>
+              <button class="xray-switcher__tab" type="button" role="tab" aria-selected="false" data-xray-target="simvox">
+                <span class="xray-switcher__num">04</span>
+                <span class="xray-switcher__name">SIMVox-AI</span>
+                <span class="xray-switcher__badge">Voice Telephony</span>
+              </button>
+            </div>
+          </div>
+          <h3 id="xray-title">Move the light across the creator panel</h3>
+          <p id="xray-desc">Move the cursor across the screen to look through it. The drawing underneath is the schema and the guards that answer each click. Pick a marker to read what sits there. On a phone, or with reduced motion, the two layers sit side by side instead.</p>
         </div>
 
         <div class="xray" data-xray>
@@ -1296,7 +1320,7 @@
     </defs>
   </svg>
 
-  <script src="script.js?v=20261022_1" defer></script>
+  <script src="script.js?v=20261022_2" defer></script>
   <!-- Agentation (Development Visual Feedback) -->
   <script>
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
