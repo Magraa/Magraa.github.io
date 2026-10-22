@@ -6210,3 +6210,344 @@ html[data-motion="off"] .marquee-track {
   width: 100%;
   height: 100%;
 }
+
+
+/* ------------------------------------------------------------------ */
+/* Phone rhythm                                                        */
+/* ------------------------------------------------------------------ */
+/* Everything here lives inside max-width queries, so the desktop      */
+/* layout is untouched. A 390px phone carried ~20,700px of document    */
+/* and most of the waste was air between blocks, not content: 74px of  */
+/* section padding twice per section, a 500px floor under every case   */
+/* stage, 92px index tiles for two lines of text.                      */
+
+@media (max-width: 640px) {
+  .hero {
+    gap: clamp(18px, 4.2vw, 26px);
+    padding-bottom: clamp(18px, 4.2vw, 26px);
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 9.2vw, 3.1rem);
+    line-height: 1.08;
+  }
+
+  .hero-lede {
+    margin-top: clamp(10px, 2.5vw, 14px);
+    font-size: clamp(0.92rem, 2.8vw, 1.02rem);
+    line-height: 1.5;
+  }
+
+  .hero-actions {
+    margin-top: clamp(14px, 3.5vw, 18px);
+    gap: 8px;
+  }
+
+  .hero-meta {
+    margin-top: clamp(12px, 3vw, 16px);
+    gap: 6px 12px;
+  }
+
+  .hero-meta li {
+    font-size: clamp(0.72rem, 2vw, 0.8rem);
+  }
+
+  .hero-side {
+    margin-top: clamp(42px, 11vw, 58px);
+  }
+
+  .mascot {
+    width: clamp(82px, 22vw, 98px);
+  }
+
+  .proof-strip > div {
+    padding: clamp(10px, 2.5vw, 13px) 0 clamp(11px, 2.8vw, 14px);
+  }
+
+  .proof-strip > div strong {
+    font-size: clamp(1.3rem, 4.2vw, 1.5rem);
+  }
+
+  .proof-strip > div span {
+    font-size: clamp(0.68rem, 1.9vw, 0.74rem);
+  }
+
+  .section {
+    padding-top: clamp(28px, 6vw, 38px);
+    padding-bottom: clamp(28px, 6vw, 38px);
+  }
+
+  .section-head {
+    padding-top: clamp(8px, 2vw, 12px);
+    gap: clamp(8px, 2vw, 11px);
+    margin-bottom: clamp(16px, 3.8vw, 20px);
+  }
+
+  .section-head h2 {
+    margin-top: 6px;
+    font-size: clamp(1.75rem, 7.5vw, 2.25rem);
+    line-height: 1.1;
+  }
+
+  .section-note {
+    font-size: clamp(0.85rem, 2.5vw, 0.92rem);
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+
+  .work-index {
+    margin-bottom: clamp(16px, 3.5vw, 20px);
+  }
+
+  .work-index a {
+    min-height: 0;
+    gap: 2px;
+    padding: clamp(7px, 2vw, 9px) 10px;
+  }
+
+  .work-index__name {
+    font-size: clamp(0.95rem, 2.8vw, 1.1rem);
+  }
+
+  .case {
+    padding: clamp(18px, 4.2vw, 24px) 0;
+  }
+
+  .case__header {
+    gap: clamp(8px, 2vw, 12px);
+    margin-bottom: clamp(10px, 2.5vw, 14px);
+  }
+
+  .case__title h3 {
+    font-size: clamp(1.7rem, 6.8vw, 2.2rem);
+    line-height: 1.12;
+  }
+
+  .case__role {
+    font-size: clamp(0.72rem, 2vw, 0.8rem);
+  }
+
+  .case__intro p {
+    font-size: clamp(0.88rem, 2.4vw, 0.94rem);
+    line-height: 1.5;
+  }
+
+  .case__intro .metrics {
+    padding: clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 14px);
+    gap: clamp(6px, 1.5vw, 10px);
+  }
+
+  .case__intro .metrics strong {
+    font-size: clamp(1.05rem, 3.2vw, 1.25rem);
+  }
+
+  .case__intro .metrics span {
+    font-size: clamp(0.68rem, 1.8vw, 0.74rem);
+  }
+
+  .case-stage {
+    gap: clamp(8px, 2vw, 10px);
+    padding: clamp(38px, 9vw, 44px) clamp(8px, 2vw, 12px) clamp(8px, 2vw, 12px);
+  }
+
+  .stage-topline {
+    top: clamp(10px, 2.5vw, 12px);
+    left: clamp(10px, 2.5vw, 12px);
+    right: clamp(10px, 2.5vw, 12px);
+  }
+
+  .stage-phones {
+    gap: clamp(8px, 2vw, 10px);
+  }
+
+  /* Crop each mockup to its most representative band on a phone; the
+     expand dialog still carries every screen in full. */
+  .screen-open--browser img {
+    aspect-ratio: 16 / 8.8;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .screen-open--phone img {
+    aspect-ratio: 9 / 12.4;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .phone-label {
+    font-size: clamp(6.5px, 1.8vw, 7.5px);
+  }
+
+  .case__footer {
+    gap: clamp(8px, 2vw, 12px) 16px;
+    padding-top: clamp(8px, 2vw, 12px);
+    margin-top: clamp(10px, 2.5vw, 12px);
+  }
+
+  .tags li {
+    padding: 3px 8px;
+    font-size: clamp(9.5px, 2.2vw, 10.5px);
+  }
+
+  .more-work {
+    padding-top: clamp(16px, 3.8vw, 20px);
+  }
+
+  .more-work__grid {
+    gap: 10px;
+  }
+
+  .more-work__card {
+    gap: 8px;
+    padding: clamp(12px, 3vw, 16px);
+  }
+
+  .panel {
+    margin-top: clamp(14px, 3.5vw, 18px);
+    padding: clamp(14px, 3.2vw, 18px) clamp(10px, 2.5vw, 14px);
+  }
+
+  .panel__head h3 {
+    font-size: clamp(1.35rem, 5vw, 1.75rem);
+    line-height: 1.15;
+  }
+
+  .panel__head p {
+    font-size: clamp(0.85rem, 2.4vw, 0.92rem);
+    line-height: 1.5;
+  }
+
+  /* Two-column responsive state machine on mobile to save vertical scroll */
+  .flow__nodes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    gap: 6px;
+  }
+
+  .flow__node {
+    min-height: 40px;
+    padding: 8px 10px;
+  }
+
+  .flow__node-id {
+    font-size: 9px;
+  }
+
+  .flow__node-out {
+    font-size: 8px;
+  }
+
+  .flow__detail {
+    margin-top: 10px;
+  }
+
+  .flow__docs li {
+    padding: 10px 12px;
+  }
+
+  .repos li {
+    padding: clamp(8px, 2vw, 11px) 12px;
+    gap: 8px;
+  }
+
+  .repos__name {
+    font-size: clamp(10px, 2.5vw, 11px);
+  }
+
+  .repos__meta {
+    font-size: clamp(10px, 2.5vw, 11px);
+  }
+
+  .about-grid {
+    gap: clamp(14px, 3.5vw, 20px);
+  }
+
+  .about-bio p {
+    font-size: clamp(0.88rem, 2.4vw, 0.95rem);
+    line-height: 1.55;
+  }
+
+  .process-steps {
+    gap: 8px;
+  }
+
+  .process-steps li {
+    padding: clamp(12px, 3vw, 16px);
+    gap: 6px;
+  }
+
+  .timeline li {
+    gap: 8px;
+    padding: clamp(12px, 3vw, 16px) 0;
+  }
+
+  .timeline__body h3 {
+    font-size: clamp(1.15rem, 3.8vw, 1.35rem);
+  }
+
+  .timeline__body li {
+    font-size: clamp(0.84rem, 2.3vw, 0.9rem);
+    line-height: 1.48;
+  }
+
+  .skills-grid {
+    gap: 10px;
+  }
+
+  .skills-card {
+    padding: 12px 14px;
+  }
+
+  .contact-panel {
+    gap: clamp(16px, 3.8vw, 22px);
+    padding-top: clamp(14px, 3.5vw, 18px);
+  }
+
+  .contact-panel h2 {
+    font-size: clamp(1.9rem, 8vw, 2.6rem);
+  }
+
+  .contact-list li {
+    padding: clamp(8px, 2vw, 10px) 0;
+  }
+
+  .colophon__facts li {
+    padding: clamp(9px, 2.2vw, 12px);
+    font-size: clamp(10px, 2.5vw, 11px);
+  }
+
+  .site-footer {
+    padding: 14px var(--pad) 22px;
+    font-size: clamp(10px, 2.5vw, 11px);
+  }
+}
+
+@media (max-width: 420px) {
+  .section {
+    padding-top: 26px;
+    padding-bottom: 26px;
+  }
+
+  .section-head {
+    margin-bottom: 16px;
+  }
+
+  .case-stage {
+    padding: 34px 8px 8px;
+    gap: 6px;
+  }
+
+  .screen-open--phone img {
+    aspect-ratio: 9 / 11.8;
+  }
+
+  .work-index a {
+    padding: 7px 8px;
+  }
+
+  /* The mascot is hidden at this width, so its standing room must go
+     too or the hero carries empty air above the card. */
+  .hero-side {
+    margin-top: 0;
+  }
+}

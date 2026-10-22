@@ -891,7 +891,7 @@
       }
       mascotBooted = true;
 
-      import("./mascot3d.js?v=20261022_6")
+      import("./mascot3d.js?v=20261022_9")
         .then(() => {
           mascotGlance = () => {
             if (typeof window.__mascotGlance === "function") {
@@ -1112,7 +1112,7 @@
 
     const onMeshPointer = (event) => {
       if (event.clientX === undefined) return;
-      if (meshCoarse.matches && event.pointerType === "mouse") return;
+      if (event.pointerType === "touch" || meshCoarse.matches || window.innerWidth <= 768) return;
       const rect = meshCanvas.getBoundingClientRect();
       well.x = event.clientX - rect.left;
       well.y = event.clientY - rect.top;
