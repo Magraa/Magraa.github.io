@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261022_16">
+  <link rel="stylesheet" href="styles.css?v=20261022_17">
   <script type="importmap">
   {
     "imports": {
@@ -137,6 +137,13 @@
 
       <div class="hero-side">
         <div class="mascot" aria-hidden="true" data-mascot>
+          <div class="mascot-speech" id="mascot-speech" aria-live="polite">
+            <div class="mascot-speech__bubble">
+              <span class="mascot-speech__dot" aria-hidden="true"></span>
+              <span class="mascot-speech__text" id="mascot-speech-text">Welcome! Take a look around 👋</span>
+            </div>
+            <span class="mascot-speech__tail" aria-hidden="true"></span>
+          </div>
           <canvas class="mascot__stage"></canvas>
         </div>
 
@@ -1270,7 +1277,7 @@
     </div>
   </dialog>
 
-  <script src="script.js?v=20261022_16" defer></script>
+  <script src="script.js?v=20261022_17" defer></script>
   <!-- Agentation (Development Visual Feedback) -->
   <script>
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {

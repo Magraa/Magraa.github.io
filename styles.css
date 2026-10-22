@@ -6238,6 +6238,110 @@ html[data-motion="off"] .marquee-track {
   display: none;
 }
 
+/* Mascot speech bubble (Desktop only) */
+.mascot-speech {
+  position: absolute;
+  bottom: calc(84%);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 20;
+  width: max-content;
+  max-width: clamp(230px, 22vw, 300px);
+  opacity: 1;
+  transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1), transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mascot-speech.is-switching {
+  opacity: 0;
+  transform: translateX(-50%) translateY(4px) scale(0.96);
+}
+
+.mascot-speech__bubble {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(14, 15, 18, 0.94);
+  border: 1px solid rgba(224, 166, 120, 0.38);
+  border-radius: 12px;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(224, 166, 120, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-align: left;
+}
+
+.mascot-speech__dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--copper, #e0a678);
+  box-shadow: 0 0 8px var(--copper, #e0a678);
+  animation: speechDotPulse 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes speechDotPulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+.mascot-speech__text {
+  font-family: var(--font, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: #f4f4f5;
+  letter-spacing: -0.01em;
+}
+
+.mascot-speech__tail {
+  position: relative;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 7px solid rgba(224, 166, 120, 0.45);
+  margin-top: -1px;
+}
+
+.mascot-speech__tail::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -5px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid rgba(14, 15, 18, 0.95);
+}
+
+@media (min-width: 901px) and (max-width: 1180px) {
+  .hero-side {
+    margin-top: 36px;
+  }
+}
+
+@media (max-width: 899px) {
+  .mascot-speech {
+    display: none !important;
+  }
+}
+
 @media (max-width: 1080px) {
   .mascot {
     width: clamp(200px, 24vw, 268px);

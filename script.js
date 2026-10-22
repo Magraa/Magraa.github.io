@@ -923,6 +923,147 @@
   }
 
   /* ---------------------------------------------------------------- */
+  /* Mascot speech cloud bubble (Desktop only)                        */
+  /* ---------------------------------------------------------------- */
+  /* Contextual speech bubble directly above the 3D robot. Reacts to  */
+  /* hovered hero elements with an optimized dwell delay (180ms) and  */
+  /* automatically resets after 3.5s. Viewport culled via             */
+  /* IntersectionObserver so it takes 0% load when scrolled away.     */
+  const initMascotSpeech = () => {
+    const speechEl = document.getElementById("mascot-speech");
+    const textEl = document.getElementById("mascot-speech-text");
+    const heroEl = document.querySelector(".hero");
+    if (!speechEl || !textEl || !heroEl) return;
+
+    const isDesktop = () => window.matchMedia("(min-width: 900px)").matches;
+    if (!isDesktop()) return;
+
+    const DEFAULT_TEXT = "Welcome! Take a look around 👋";
+    let currentText = DEFAULT_TEXT;
+    let dwellTimer = null;
+    let resetTimer = null;
+    let isHeroVisible = true;
+
+    const setBubbleText = (nextText) => {
+      if (nextText === currentText) return;
+      currentText = nextText;
+      speechEl.classList.add("is-switching");
+      window.setTimeout(() => {
+        textEl.textContent = nextText;
+        speechEl.classList.remove("is-switching");
+      }, 120);
+    };
+
+    const scheduleReset = () => {
+      if (resetTimer) window.clearTimeout(resetTimer);
+      resetTimer = window.setTimeout(() => {
+        if (isHeroVisible && isDesktop()) {
+          setBubbleText(DEFAULT_TEXT);
+        }
+      }, 3500);
+    };
+
+    const triggers = [
+      {
+        selector: '.hero-actions a[href="#work"]',
+        text: "Yeah, go ahead! Check out the systems and code.",
+      },
+      {
+        selector: '.hero-actions a[href^="mailto:"], .header-cta',
+        text: "Drop a note directly to Mayank's inbox ✉️",
+      },
+      {
+        selector: '.hero-actions a[href*="linkedin.com"]',
+        text: "Let's connect professionally on LinkedIn!",
+      },
+      {
+        selector: "#hero-title, .hero-line",
+        text: "That's Mayank — full-stack architect & AI builder.",
+      },
+      {
+        selector: ".eyebrow",
+        text: "Sub-second AI pipelines & low-latency backends.",
+      },
+      {
+        selector: ".hero-lede",
+        text: "Zero fluff. Real production code solving real problems.",
+      },
+      {
+        selector: ".hero-meta li",
+        text: "Bangalore IST · Ready for immediate remote work.",
+      },
+      {
+        selector: ".profile-card",
+        text: "That's Mayank's live stack: Next.js, Python, PostgreSQL!",
+      },
+      {
+        selector: ".mascot",
+        text: "Beep boop! I'm Mayank's autonomous co-pilot 🤖",
+      },
+      {
+        selector: "[data-palette-open]",
+        text: "Hit Ctrl+K anytime for instant search & navigation!",
+      },
+      {
+        selector: "[data-sound-toggle]",
+        text: "Tactile mechanical sounds crafted with Web Audio!",
+      },
+      {
+        selector: ".site-nav a",
+        text: "Jump directly to any section of the portfolio!",
+      },
+    ];
+
+    const onElementEnter = (text) => {
+      if (!isHeroVisible || !isDesktop()) return;
+      if (resetTimer) {
+        window.clearTimeout(resetTimer);
+        resetTimer = null;
+      }
+      if (dwellTimer) window.clearTimeout(dwellTimer);
+      dwellTimer = window.setTimeout(() => {
+        if (isHeroVisible && isDesktop()) {
+          setBubbleText(text);
+        }
+      }, 180);
+    };
+
+    const onElementLeave = () => {
+      if (dwellTimer) {
+        window.clearTimeout(dwellTimer);
+        dwellTimer = null;
+      }
+      scheduleReset();
+    };
+
+    triggers.forEach(({ selector, text }) => {
+      const items = document.querySelectorAll(selector);
+      items.forEach((item) => {
+        item.addEventListener("mouseenter", () => onElementEnter(text));
+        item.addEventListener("mouseleave", onElementLeave);
+        item.addEventListener("focus", () => onElementEnter(text));
+        item.addEventListener("blur", onElementLeave);
+      });
+    });
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(
+        (entries) => {
+          isHeroVisible = entries[0].isIntersecting;
+          if (!isHeroVisible) {
+            if (dwellTimer) window.clearTimeout(dwellTimer);
+            if (resetTimer) window.clearTimeout(resetTimer);
+            setBubbleText(DEFAULT_TEXT);
+          }
+        },
+        { threshold: 0 }
+      ).observe(heroEl);
+    }
+  };
+
+  initMascotSpeech();
+
+  /* ---------------------------------------------------------------- */
   /* Hero spacetime mesh                                              */
   /* ---------------------------------------------------------------- */
   /* A wire floor in perspective that dents into a gravity well under  */
