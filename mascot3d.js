@@ -344,6 +344,9 @@ function frameModel() {
 
 function onPointer(event) {
   if (event.clientX === undefined) return;
+  if (event.pointerType === "touch" || window.innerWidth <= 768 || window.matchMedia("(pointer: coarse)").matches) {
+    return;
+  }
   const rect = hero.getBoundingClientRect();
   if (!rect.width || !rect.height) return;
 
@@ -892,7 +895,12 @@ function tick() {
   elapsed += dt;
   const t = elapsed;
 
-  if (t - lastMoveT > 3.5 && t > glance.until) {
+  const isMobile = window.innerWidth <= 768 || window.matchMedia("(pointer: coarse)").matches;
+  if (isMobile) {
+    /* Autonomous gentle idle movement on mobile: no cursor/touch tracking */
+    target.x = Math.sin(t * 0.45) * 0.32;
+    target.y = Math.sin(t * 0.31 + 1.2) * 0.16;
+  } else if (t - lastMoveT > 3.5 && t > glance.until) {
     target.x = Math.sin(t * 0.45) * 0.45;
     target.y = Math.sin(t * 0.31 + 1.2) * 0.2;
   }

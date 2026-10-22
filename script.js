@@ -882,7 +882,6 @@
   const mascotHost = document.querySelector("[data-mascot]");
 
   if (mascotHost) {
-    const tinyScreen = window.matchMedia("(max-width: 420px)");
     let mascotBooted = false;
 
     const bootMascot = () => {
@@ -891,7 +890,7 @@
       }
       mascotBooted = true;
 
-      import("./mascot3d.js?v=20261022_9")
+      import("./mascot3d.js?v=20261022_12")
         .then(() => {
           mascotGlance = () => {
             if (typeof window.__mascotGlance === "function") {
@@ -906,16 +905,13 @@
 
     const scheduleMascot = () => {
       if (typeof window.requestIdleCallback === "function") {
-        window.requestIdleCallback(bootMascot, { timeout: 2500 });
+        window.requestIdleCallback(bootMascot, { timeout: 2000 });
       } else {
-        window.setTimeout(bootMascot, 1200);
+        window.setTimeout(bootMascot, 800);
       }
     };
 
     const startMascot = () => {
-      if (tinyScreen.matches) {
-        return;
-      }
       if (document.readyState === "complete") {
         scheduleMascot();
       } else {
@@ -924,7 +920,6 @@
     };
 
     startMascot();
-    tinyScreen.addEventListener("change", startMascot);
   }
 
   /* ---------------------------------------------------------------- */

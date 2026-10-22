@@ -6260,23 +6260,34 @@ html[data-motion="off"] .marquee-track {
 
 @media (max-width: 640px) {
   .hero-side {
-    margin-top: 118px;
+    position: relative;
+    margin-top: clamp(74px, 19vw, 88px);
+  }
+
+  .hero-side .profile-card {
+    position: relative;
+    z-index: 2;
   }
 
   .mascot {
-    right: 2%;
-    width: 128px;
-    transform: translateY(calc(-100% + 5px));
+    left: 50%;
+    right: auto;
+    width: clamp(96px, 27vw, 122px);
+    transform: translateX(-50%) translateY(calc(-100% + 20px));
+    z-index: 1;
+    display: block;
   }
 }
 
 @media (max-width: 420px) {
-  .mascot {
-    display: none;
+  .hero-side {
+    margin-top: 74px;
   }
 
-  .hero-side {
-    margin-top: 0;
+  .mascot {
+    width: clamp(90px, 25vw, 106px);
+    transform: translateX(-50%) translateY(calc(-100% + 16px));
+    display: block;
   }
 }
 
@@ -6366,14 +6377,6 @@ html[data-motion="off"] .marquee-track {
 
   .hero-meta li {
     font-size: clamp(0.72rem, 2vw, 0.8rem);
-  }
-
-  .hero-side {
-    margin-top: clamp(42px, 11vw, 58px);
-  }
-
-  .mascot {
-    width: clamp(82px, 22vw, 98px);
   }
 
   .proof-strip > div {
@@ -6646,11 +6649,5 @@ html[data-motion="off"] .marquee-track {
 
   .work-index a {
     padding: 7px 8px;
-  }
-
-  /* The mascot is hidden at this width, so its standing room must go
-     too or the hero carries empty air above the card. */
-  .hero-side {
-    margin-top: 0;
   }
 }
