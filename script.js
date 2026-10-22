@@ -331,60 +331,60 @@
     },
     mrproper: {
       name: "Mr. Proper",
-      badge: "Dispatch & ERP",
-      title: "Move the light across Mr. Proper Operations & Dispatch ERP",
-      desc: "Look beneath the commercial cleaning chemicals platform. The underlying architecture orchestrates on-demand technician GPS dispatch, automated manufacturing formula batching, bulk B2B invoicing, and contractor QR loyalty ledgers.",
-      image: "assets/screens/mrproper-desktop.webp",
-      alt: "Mr. Proper operations, chemical product storefront, and field service management dashboard.",
-      aspect: "1440 / 1000",
+      badge: "Decision Intelligence & ERP",
+      title: "Move the light across Mr. Proper Operations & Decision Intelligence ERP",
+      desc: "Look beneath the commercial chemicals and B2B offline operations dashboard. The architecture aggregates offline distributor revenue, automated order volume batching, revolving credit risk monitoring, and automated ledger recovery webhooks.",
+      image: "assets/screens/mrproper-admin.webp",
+      alt: "Mr. Proper Decision Intelligence dashboard showing offline sales performance, positive growth trends, revenue attribution, and smart insights.",
+      aspect: "1681 / 1057",
       spots: [
         {
           id: 1,
-          x: "15%",
-          y: "16%",
+          x: "27.1%",
+          y: "26.9%",
           place: "right",
-          title: "Institutional Invoicing & Credit Terms",
-          text: "Handles enterprise accounts, automated GST tax e-invoicing, and revolving credit terms. Integrated with <code>Razorpay Route</code> to execute automated escrow and split disbursements between manufacturing hubs and regional fulfillment distributors."
+          title: "Executive KPI Engine & Realtime Ledger Sync",
+          text: "Aggregates ₹24.85L in offline commercial revenue across 1,428 orders and 84 active regional distributors. Built with incremental materialized views in PostgreSQL that refresh on transactional change events rather than costly full-table scans."
         },
         {
           id: 2,
-          x: "48%",
-          y: "22%",
-          place: "below",
-          title: "Chemical Bill of Materials (BOM) Batching",
-          text: "Manufacturing ERP engine: when bulk commercial orders are scheduled, the BOM engine calculates exact surfactant concentrations, active alkali volumes, and fragrance additives, auto-reserving raw chemical compounds in PostgreSQL."
+          x: "88.2%",
+          y: "26.9%",
+          place: "left",
+          title: "Positive Growth & Margin Intelligence",
+          text: "Calculates period-over-period expansion (+34.8% net growth) and credit exposure ratios (₹1.84L outstanding across revolving 30-day terms). Alerts prevent dispatch locking when distributor balances stay within safe credit thresholds."
         },
         {
           id: 3,
-          x: "84%",
-          y: "18%",
-          place: "left",
-          title: "Omnichannel Atomic Stock Synchronization",
-          text: "Postgres transaction locks bind industrial chemical batching with retail storefront orders: <code>available_stock &gt;= reserved_stock</code> blocks phantom inventory before payment capture occurs."
+          x: "33.0%",
+          y: "52.6%",
+          place: "right",
+          title: "12-Month Revenue Attribution Curve",
+          text: "Tracks offline sales momentum across monthly and 30-day daily windows. Joined against <code>inventory_transactions</code> and raw chemical bill-of-materials batching, ensuring sales surges match factory floor mixing capacity."
         },
         {
           id: 4,
-          x: "26%",
-          y: "62%",
-          place: "right",
-          title: "Live GPS Technician Dispatch & Geofencing",
-          text: "Google Maps Distance Matrix API routes service requests to the nearest certified field agents. Service completion mandates geo-fenced GPS check-in timestamps, eliminating phantom or unfulfilled service calls."
+          x: "57.6%",
+          y: "52.6%",
+          place: "above",
+          title: "Automated Order Volume Batching",
+          text: "Displays unit order volumes scaling steadily to 140+ orders/mo. Behind each bar is an automated grouping pipeline that consolidates regional distributor orders into unified transport manifests, slashing freight overhead."
         },
         {
           id: 5,
-          x: "64%",
-          y: "66%",
-          place: "above",
-          title: "Proper Perks QR & Anti-Replay Engine",
-          text: "Commercial contractors scan QR codes affixed to bulk chemical barrels. Each token is verified through single-use cryptographic validation with atomic Supabase ledger credits, preventing double-redemption."
+          x: "82.2%",
+          y: "52.6%",
+          place: "left",
+          title: "Omnichannel Revenue Attribution",
+          text: "Donut breakdown partitions revenue across Bulk Commercial Chem (58%), B2B Hubs (28%), and Direct Offline Storefronts (14%). RLS policies restrict regional managers to their assigned territorial partitions."
         },
         {
           id: 6,
-          x: "88%",
-          y: "46%",
-          place: "left",
-          title: "Role-Based Row-Level Security (RLS)",
-          text: "Strict Supabase PostgreSQL RLS policies cleanly separate factory floor mixologists, field dispatchers, wholesale distributor accounts, and end-consumers into partitioned data environments."
+          x: "57.6%",
+          y: "81.8%",
+          place: "above",
+          title: "Decision Intelligence & Automated Ledger Webhooks",
+          text: "Background worker continuously evaluates aging balances, distributor reorder cycles, and SKU velocity gaps. Dispatches automated WhatsApp ledger summaries and payment reminder webhooks to maintain a 96.4% on-time settlement rate."
         }
       ]
     },
