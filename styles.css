@@ -1304,9 +1304,10 @@ main,
   text-overflow: ellipsis;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px) and (min-width: 641px) {
   .more-work__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
   }
 }
 
@@ -6509,16 +6510,79 @@ html[data-motion="off"] .marquee-track {
   }
 
   .more-work {
-    padding-top: clamp(16px, 3.8vw, 20px);
+    padding-top: clamp(14px, 3.5vw, 18px);
+  }
+
+  .more-work__hint {
+    font-size: 9.5px;
   }
 
   .more-work__grid {
-    gap: 10px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
   }
 
   .more-work__card {
-    gap: 8px;
-    padding: clamp(12px, 3vw, 16px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 10px 8px;
+    border-radius: 8px;
+  }
+
+  .more-work__card-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+
+  .more-work__tag {
+    font-size: 7px;
+    padding: 1px 4px;
+    letter-spacing: 0.02em;
+    gap: 3px;
+  }
+
+  .more-work__tag .hud__pulse {
+    width: 4px;
+    height: 4px;
+  }
+
+  .more-work__year {
+    display: none;
+  }
+
+  .more-work__name {
+    font-size: clamp(0.78rem, 2.3vw, 0.92rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .more-work__summary {
+    font-size: 9px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: var(--muted);
+  }
+
+  .more-work__card-foot {
+    padding-top: 6px;
+    gap: 4px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .more-work__cta {
+    font-size: 8px;
+    gap: 2px;
+  }
+
+  .more-work__stack {
+    display: none;
   }
 
   .panel {
