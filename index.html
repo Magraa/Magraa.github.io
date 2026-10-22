@@ -719,7 +719,7 @@
         </div>
         <div class="more-work__grid">
           <!-- 1. TenderFlow AI -->
-          <button class="more-work__card" type="button" data-project-modal="tenderflow" aria-haspopup="dialog" aria-label="Inspect TenderFlow AI project overview">
+          <button class="more-work__card" type="button" data-more-work-card="tenderflow" aria-expanded="false" aria-controls="more-work-drawer" aria-label="Toggle TenderFlow AI architecture overview">
             <div class="more-work__card-top">
               <span class="more-work__tag more-work__tag--live"><i class="hud__pulse" aria-hidden="true"></i>Live Platform</span>
               <span class="more-work__year">2026</span>
@@ -727,13 +727,13 @@
             <strong class="more-work__name">TenderFlow AI</strong>
             <p class="more-work__summary">Autonomous government tender intelligence, GeM scraper, and multimodal PDF clause extraction platform.</p>
             <div class="more-work__card-foot">
-              <span class="more-work__cta">View Overview <span aria-hidden="true">↗</span></span>
+              <span class="more-work__cta">Inspect Overview <span class="more-work__arrow" aria-hidden="true">↓</span></span>
               <span class="more-work__stack">Next.js · Gemini · Firestore</span>
             </div>
           </button>
 
           <!-- 2. CoupleTrust -->
-          <button class="more-work__card" type="button" data-project-modal="coupletrust" aria-haspopup="dialog" aria-label="Inspect CoupleTrust Android app overview">
+          <button class="more-work__card" type="button" data-more-work-card="coupletrust" aria-expanded="false" aria-controls="more-work-drawer" aria-label="Toggle CoupleTrust Android app overview">
             <div class="more-work__card-top">
               <span class="more-work__tag more-work__tag--android">Android Compose</span>
               <span class="more-work__year">2026</span>
@@ -741,13 +741,13 @@
             <strong class="more-work__name">CoupleTrust</strong>
             <p class="more-work__summary">Privacy-first digital transparency &amp; mutual consent app for couples. Transparency, not surveillance.</p>
             <div class="more-work__card-foot">
-              <span class="more-work__cta">View Overview <span aria-hidden="true">↗</span></span>
+              <span class="more-work__cta">Inspect Overview <span class="more-work__arrow" aria-hidden="true">↓</span></span>
               <span class="more-work__stack">Kotlin · Jetpack Compose · MVVM</span>
             </div>
           </button>
 
           <!-- 3. FinAudit AI -->
-          <button class="more-work__card" type="button" data-project-modal="finaudit" aria-haspopup="dialog" aria-label="Inspect FinAudit AI fraud audit overview">
+          <button class="more-work__card" type="button" data-more-work-card="finaudit" aria-expanded="false" aria-controls="more-work-drawer" aria-label="Toggle FinAudit AI fraud audit overview">
             <div class="more-work__card-top">
               <span class="more-work__tag more-work__tag--audit">Audit Engine</span>
               <span class="more-work__year">2026</span>
@@ -755,10 +755,67 @@
             <strong class="more-work__name">FinAudit AI</strong>
             <p class="more-work__summary">Automated bank reconciliation, ledger fraud detection, and invoice mismatch auditing with sub-second Polars engine.</p>
             <div class="more-work__card-foot">
-              <span class="more-work__cta">View Overview <span aria-hidden="true">↗</span></span>
+              <span class="more-work__cta">Inspect Overview <span class="more-work__arrow" aria-hidden="true">↓</span></span>
               <span class="more-work__stack">Python · FastAPI · Polars</span>
             </div>
           </button>
+        </div>
+
+        <!-- Inline Expandable Architecture & Overview Drawer -->
+        <div class="more-work__drawer" id="more-work-drawer" aria-hidden="true">
+          <div class="more-work__drawer-inner">
+            <div class="more-work__panel" id="more-work-panel">
+              <header class="more-work__panel-head">
+                <div class="more-work__panel-lead">
+                  <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                  <div class="more-work__panel-titles">
+                    <div class="more-work__panel-tag-row">
+                      <span class="more-work__panel-badge" id="more-work-badge">Live Platform</span>
+                      <span class="more-work__panel-year" id="more-work-year">2026</span>
+                    </div>
+                    <h4 class="more-work__panel-title" id="more-work-title">TenderFlow AI</h4>
+                    <p class="more-work__panel-subtitle" id="more-work-subtitle">Autonomous Government Tender Discovery &amp; Multimodal AI Procurement Platform</p>
+                  </div>
+                </div>
+                <div class="more-work__panel-actions">
+                  <span class="more-work__panel-role" id="more-work-role">Lead Full-Stack Architect &amp; Systems Engineer</span>
+                  <button class="more-work__panel-close" type="button" id="more-work-close" aria-label="Close project overview">✕ Close</button>
+                </div>
+              </header>
+
+              <div class="more-work__panel-body">
+                <div class="more-work__panel-metrics" id="more-work-metrics">
+                  <!-- Populated dynamically -->
+                </div>
+
+                <div class="more-work__panel-section">
+                  <h5 class="more-work__panel-heading">Architecture &amp; Engineering Solution</h5>
+                  <div class="more-work__panel-prose" id="more-work-overview">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+
+                <div class="more-work__panel-section">
+                  <h5 class="more-work__panel-heading">Core Technologies</h5>
+                  <ul class="more-work__panel-tags" id="more-work-tags">
+                    <!-- Populated dynamically -->
+                  </ul>
+                </div>
+              </div>
+
+              <footer class="more-work__panel-foot">
+                <div class="more-work__panel-foot-left">
+                  <span class="more-work__panel-note">Integrated with production API &amp; verified test suites</span>
+                </div>
+                <div class="more-work__panel-foot-right">
+                  <a class="button button--secondary" id="more-work-link" href="https://portal.shivlinkindustries.in/" target="_blank" rel="noopener noreferrer">
+                    <span id="more-work-link-label">Open Live Portal</span>
+                    <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 12 12 4M6 4h6v6"/></svg>
+                  </a>
+                </div>
+              </footer>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1140,54 +1197,6 @@
       <img id="screen-dialog-image" alt="">
       <figcaption id="screen-dialog-caption"></figcaption>
     </figure>
-  </dialog>
-
-  <!-- Project Overview & Architecture Modal Dialog -->
-  <dialog class="project-modal" id="project-modal" tabindex="-1" aria-labelledby="project-modal-title">
-    <div class="project-modal__shell">
-      <header class="project-modal__header">
-        <div class="project-modal__title-group">
-          <div class="project-modal__status-row">
-            <span class="project-modal__badge" id="project-modal-badge">Production Live</span>
-            <span class="project-modal__year" id="project-modal-year">2026</span>
-          </div>
-          <h3 class="project-modal__title" id="project-modal-title">Project Title</h3>
-          <p class="project-modal__subtitle" id="project-modal-subtitle">Project Subtitle</p>
-          <span class="project-modal__role" id="project-modal-role">Role Citation</span>
-        </div>
-        <button class="project-modal__close" type="button" id="project-modal-close" aria-label="Close project dialog">✕</button>
-      </header>
-
-      <div class="project-modal__body">
-        <div class="project-modal__metrics" id="project-modal-metrics">
-          <!-- Populated dynamically -->
-        </div>
-
-        <div class="project-modal__section">
-          <h4 class="project-modal__section-heading">Architecture &amp; Engineering Solution</h4>
-          <div class="project-modal__prose" id="project-modal-overview">
-            <!-- Populated dynamically -->
-          </div>
-        </div>
-
-        <div class="project-modal__section">
-          <h4 class="project-modal__section-heading">Core Technologies</h4>
-          <ul class="project-modal__tags" id="project-modal-tags">
-            <!-- Populated dynamically -->
-          </ul>
-        </div>
-      </div>
-
-      <footer class="project-modal__footer">
-        <button class="button button--secondary" type="button" id="project-modal-dismiss">Done</button>
-        <div class="project-modal__actions">
-          <a class="button button--primary" id="project-modal-link" href="#" target="_blank" rel="noopener noreferrer">
-            <span id="project-modal-link-label">Open Live Portal</span>
-            <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 12 12 4M6 4h6v6"/></svg>
-          </a>
-        </div>
-      </footer>
-    </div>
   </dialog>
 
   <dialog class="palette" id="palette" aria-label="Command palette">

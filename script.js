@@ -537,6 +537,252 @@
   }
 
   /* ---------------------------------------------------------------- */
+  /* Hero mascot                                                      */
+  /* ---------------------------------------------------------------- */
+  /* One loop drives seven custom properties. It cancels entirely when
+     the hero leaves the viewport or motion is switched off, so the
+     character costs nothing once you scroll past it. */
+
+  let mascotGlance = () => {};
+  const mascot = document.querySelector("[data-mascot]");
+
+  if (mascot) {
+    const hero = mascot.closest(".hero");
+    const vars = mascot.style;
+    const TAU = Math.PI * 2;
+    const YAW = 14;
+    const PITCH = 9;
+    const GAZE_X = 7.5;
+    const GAZE_Y = 5.5;
+    const ROLL = 1.8;
+    const IDLE_AFTER = 3000;
+
+    let yaw = 0, yawV = 0, pitch = 0, pitchV = 0;
+    let gx = 0, gxV = 0, gy = 0, gyV = 0;
+    let roll = 0, rollV = 0, tRoll = 0;
+    let tYaw = 0, tPitch = 0, tGx = 0, tGy = 0;
+
+    let breath = 0;
+    let lid = 0;
+    let blinkPhase = 0, blinkStart = 0, nextBlink = 0, doubleBlink = false;
+
+    let lastPointer = -1e9;
+    let pointerInside = false;
+    let glanceUntil = 0, glanceYaw = 0, glancePitch = 0, glanceGx = 0, glanceGy = 0;
+
+    let visible = true;
+    let raf = 0;
+    let last = 0;
+
+    const clamp = (value, lo, hi) => Math.min(hi, Math.max(lo, value));
+    const ease = (value) => Math.sign(value) * Math.pow(Math.abs(value), 1.15);
+
+    const poseStill = () => {
+      vars.setProperty("--mx", "0deg");
+      vars.setProperty("--my", "0deg");
+      vars.setProperty("--gx", "0");
+      vars.setProperty("--gy", "0");
+      vars.setProperty("--lid", "0");
+      vars.setProperty("--breath", "0");
+      vars.setProperty("--roll", "0deg");
+    };
+
+    const tick = (now) => {
+      if (!visible || stillPlaying()) {
+        raf = 0;
+        poseStill();
+        return;
+      }
+
+      const dt = Math.min(48, now - last || 16.7);
+      last = now;
+      const k = dt / 16.67;
+
+      if (!pointerInside && now - lastPointer > IDLE_AFTER) {
+        tYaw = Math.sin((now / 11000) * TAU) * 5;
+        tPitch = Math.sin((now / 17000) * TAU + 1.7) * 3;
+        tGx = Math.sin((now / 9000) * TAU) * 3;
+        tGy = Math.sin((now / 15000) * TAU + 0.6) * 2;
+        tRoll = Math.sin((now / 13000) * TAU + 0.9) * 1.2;
+      } else if (!pointerInside && now - lastPointer > 900) {
+        tYaw = 0;
+        tPitch = 0;
+        tGx = 0;
+        tGy = 0;
+        tRoll = 0;
+      }
+
+      if (now < glanceUntil) {
+        tYaw = glanceYaw;
+        tPitch = glancePitch;
+        tGx = glanceGx;
+        tGy = glanceGy;
+      }
+
+      yawV += (tYaw - yaw) * 0.14 * k;
+      yawV *= Math.pow(0.76, k);
+      yaw += yawV;
+
+      pitchV += (tPitch - pitch) * 0.14 * k;
+      pitchV *= Math.pow(0.76, k);
+      pitch += pitchV;
+
+      gxV += (tGx - gx) * 0.26 * k;
+      gxV *= Math.pow(0.68, k);
+      gx += gxV;
+
+      gyV += (tGy - gy) * 0.26 * k;
+      gyV *= Math.pow(0.68, k);
+      gy += gyV;
+
+      rollV += (tRoll - roll) * 0.18 * k;
+      rollV *= Math.pow(0.74, k);
+      roll += rollV;
+
+      if (blinkPhase === 0 && now >= nextBlink) {
+        blinkPhase = 1;
+        blinkStart = now;
+      } else if (blinkPhase === 1) {
+        const p = Math.min(1, (now - blinkStart) / 90);
+        lid = p;
+        if (p >= 1) {
+          blinkPhase = 2;
+          blinkStart = now;
+        }
+      } else if (blinkPhase === 2) {
+        lid = 1;
+        if (now - blinkStart >= 30) {
+          blinkPhase = 3;
+          blinkStart = now;
+          if (Math.random() < 0.22) doubleBlink = true;
+        }
+      } else if (blinkPhase === 3) {
+        const p = Math.min(1, (now - blinkStart) / 140);
+        lid = 1 - p;
+        if (p >= 1) {
+          lid = 0;
+          if (doubleBlink) {
+            doubleBlink = false;
+            blinkPhase = 1;
+            blinkStart = now;
+          } else {
+            blinkPhase = 0;
+            nextBlink = now + 3800 + Math.random() * 3400;
+          }
+        }
+      }
+
+      breath = (1 - Math.cos((now / 4600) * TAU)) / 2;
+
+      vars.setProperty("--mx", `${clamp(yaw, -YAW, YAW).toFixed(2)}deg`);
+      vars.setProperty("--my", `${clamp(pitch, -PITCH, PITCH).toFixed(2)}deg`);
+      vars.setProperty("--gx", clamp(gx, -GAZE_X, GAZE_X).toFixed(2));
+      vars.setProperty("--gy", clamp(gy, -GAZE_Y, GAZE_Y).toFixed(2));
+      vars.setProperty("--lid", lid.toFixed(3));
+      vars.setProperty("--breath", breath.toFixed(3));
+      vars.setProperty("--roll", `${clamp(roll, -ROLL, ROLL).toFixed(2)}deg`);
+
+      raf = window.requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      if (raf || !visible || stillPlaying()) {
+        return;
+      }
+      last = performance.now();
+      raf = window.requestAnimationFrame(tick);
+    };
+
+    const stop = () => {
+      if (raf) {
+        window.cancelAnimationFrame(raf);
+      }
+      raf = 0;
+      poseStill();
+    };
+
+    if (finePointer && hero) {
+      hero.addEventListener(
+        "pointermove",
+        (event) => {
+          if (stillPlaying()) {
+            return;
+          }
+          /* Normalise across the whole hero, not the mascot's own box: a
+             262px box clamps the eyes to full deflection for most of the page. */
+          const box = hero.getBoundingClientRect();
+          if (!box.width) {
+            return;
+          }
+          const nx = clamp((event.clientX - (box.left + box.width / 2)) / (box.width / 2), -1, 1);
+          const ny = clamp((event.clientY - (box.top + box.height / 2)) / (box.height / 2), -1, 1);
+
+          tYaw = ease(nx) * YAW;
+          tPitch = ease(ny) * PITCH;
+          tGx = ease(nx) * GAZE_X;
+          tGy = ease(ny) * GAZE_Y;
+          tRoll = nx * ROLL;
+          lastPointer = performance.now();
+          pointerInside = true;
+        },
+        { passive: true }
+      );
+
+      hero.addEventListener("pointerleave", () => {
+        pointerInside = false;
+      });
+    }
+
+    mascotGlance = () => {
+      glanceUntil = performance.now() + 900;
+      glanceYaw = -3;
+      glancePitch = -6;
+      glanceGx = 0;
+      glanceGy = -GAZE_Y;
+      lastPointer = performance.now();
+      pointerInside = false;
+      start();
+    };
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(
+        (entries) => {
+          visible = entries[0].isIntersecting;
+          if (visible) {
+            start();
+          } else {
+            stop();
+          }
+        },
+        { threshold: 0 }
+      ).observe(hero || mascot);
+    }
+
+    const syncMotion = () => {
+      if (stillPlaying()) {
+        stop();
+      } else {
+        start();
+      }
+    };
+
+    window.matchMedia("(prefers-reduced-motion: reduce)").addEventListener?.("change", syncMotion);
+
+    new MutationObserver(syncMotion).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-motion"],
+    });
+
+    nextBlink = performance.now() + 1600;
+
+    if (stillPlaying()) {
+      poseStill();
+    } else {
+      start();
+    }
+  }
+
+  /* ---------------------------------------------------------------- */
   /* Console                                                          */
   /* ---------------------------------------------------------------- */
   /* Answers are read back out of the rendered document, so a command */
@@ -1237,6 +1483,7 @@
       }
 
       palette.showModal();
+      mascotGlance();
       document.body.classList.add("dialog-open");
       paletteInput.focus();
     };
@@ -1922,21 +2169,22 @@
     });
   }
 
-  /* 7. Project Overview & Architecture Modal Dialog ------------------- */
-  const projectModal = document.getElementById("project-modal");
-  if (projectModal) {
-    const modalBadge = document.getElementById("project-modal-badge");
-    const modalYear = document.getElementById("project-modal-year");
-    const modalTitle = document.getElementById("project-modal-title");
-    const modalSubtitle = document.getElementById("project-modal-subtitle");
-    const modalRole = document.getElementById("project-modal-role");
-    const modalMetrics = document.getElementById("project-modal-metrics");
-    const modalOverview = document.getElementById("project-modal-overview");
-    const modalTags = document.getElementById("project-modal-tags");
-    const modalLink = document.getElementById("project-modal-link");
-    const modalLinkLabel = document.getElementById("project-modal-link-label");
-    const closeBtn = document.getElementById("project-modal-close");
-    const dismissBtn = document.getElementById("project-modal-dismiss");
+  /* 7. Inline Project Overview & Architecture Drawer ------------------ */
+  const moreWorkDrawer = document.getElementById("more-work-drawer");
+  const moreWorkPanel = document.getElementById("more-work-panel");
+  if (moreWorkDrawer && moreWorkPanel) {
+    const badgeEl = document.getElementById("more-work-badge");
+    const yearEl = document.getElementById("more-work-year");
+    const titleEl = document.getElementById("more-work-title");
+    const subtitleEl = document.getElementById("more-work-subtitle");
+    const roleEl = document.getElementById("more-work-role");
+    const metricsEl = document.getElementById("more-work-metrics");
+    const overviewEl = document.getElementById("more-work-overview");
+    const tagsEl = document.getElementById("more-work-tags");
+    const linkEl = document.getElementById("more-work-link");
+    const linkLabelEl = document.getElementById("more-work-link-label");
+    const closeBtn = document.getElementById("more-work-close");
+    const cards = document.querySelectorAll("[data-more-work-card]");
 
     const PROJECT_DETAILS = {
       tenderflow: {
@@ -2007,81 +2255,94 @@
       }
     };
 
-    let activeTrigger = null;
+    let currentProjectKey = null;
 
-    const openProjectModal = (key, triggerEl) => {
-      const data = PROJECT_DETAILS[key];
-      if (!data) return;
-
-      activeTrigger = triggerEl;
-
-      if (modalBadge) {
-        modalBadge.textContent = data.badge;
-        modalBadge.className = `project-modal__badge project-modal__badge--${data.badgeType}`;
+    const renderProjectData = (data) => {
+      if (badgeEl) {
+        badgeEl.textContent = data.badge;
+        badgeEl.className = `more-work__panel-badge more-work__panel-badge--${data.badgeType}`;
       }
-      if (modalYear) modalYear.textContent = data.year;
-      if (modalTitle) modalTitle.textContent = data.title;
-      if (modalSubtitle) modalSubtitle.textContent = data.subtitle;
-      if (modalRole) modalRole.textContent = data.role;
+      if (yearEl) yearEl.textContent = data.year;
+      if (titleEl) titleEl.textContent = data.title;
+      if (subtitleEl) subtitleEl.textContent = data.subtitle;
+      if (roleEl) roleEl.textContent = data.role;
 
-      if (modalMetrics) {
-        modalMetrics.innerHTML = data.metrics.map((m) => `
-          <div class="project-modal__metric-card">
-            <span class="project-modal__metric-val">${m.val}</span>
-            <span class="project-modal__metric-label">${m.label}</span>
+      if (metricsEl) {
+        metricsEl.innerHTML = data.metrics.map((m) => `
+          <div class="more-work__panel-metric-card">
+            <span class="more-work__panel-metric-val">${m.val}</span>
+            <span class="more-work__panel-metric-label">${m.label}</span>
           </div>
         `).join("");
       }
 
-      if (modalOverview) {
-        modalOverview.innerHTML = data.paragraphs.map((p) => `<p>${p}</p>`).join("");
+      if (overviewEl) {
+        overviewEl.innerHTML = data.paragraphs.map((p) => `<p>${p}</p>`).join("");
       }
 
-      if (modalTags) {
-        modalTags.innerHTML = data.techStack.map((t) => `<li>${t}</li>`).join("");
+      if (tagsEl) {
+        tagsEl.innerHTML = data.techStack.map((t) => `<li>${t}</li>`).join("");
       }
 
-      if (modalLink && modalLinkLabel) {
-        modalLink.href = data.primaryAction.url;
-        modalLinkLabel.textContent = data.primaryAction.label;
+      if (linkEl && linkLabelEl) {
+        linkEl.href = data.primaryAction.url;
+        linkLabelEl.textContent = data.primaryAction.label;
       }
-
-      projectModal.showModal();
-      document.body.classList.add("dialog-open");
-      AudioFX.click();
-      Toast.show(`Opened ${data.title} Architecture Overview`, "info");
     };
 
-    const closeProjectModal = () => {
-      if (projectModal.open) {
-        projectModal.close();
-        document.body.classList.remove("dialog-open");
+    const openDrawer = (key, cardEl) => {
+      const data = PROJECT_DETAILS[key];
+      if (!data) return;
+
+      const isAlreadyOpen = moreWorkDrawer.getAttribute("aria-hidden") === "false";
+
+      // If clicking the active card, toggle close
+      if (isAlreadyOpen && currentProjectKey === key) {
+        closeDrawer();
+        return;
+      }
+
+      cards.forEach((c) => {
+        const isTarget = c === cardEl;
+        c.classList.toggle("more-work__card--active", isTarget);
+        c.setAttribute("aria-expanded", String(isTarget));
+      });
+
+      currentProjectKey = key;
+
+      if (isAlreadyOpen) {
+        moreWorkPanel.style.opacity = "0.3";
+        setTimeout(() => {
+          renderProjectData(data);
+          moreWorkPanel.style.opacity = "1";
+        }, 110);
         AudioFX.tap();
-        if (activeTrigger instanceof HTMLElement) {
-          activeTrigger.focus();
-        }
-        activeTrigger = null;
+        Toast.show(`Viewing ${data.title} Architecture Overview`, "info");
+      } else {
+        renderProjectData(data);
+        moreWorkDrawer.setAttribute("aria-hidden", "false");
+        AudioFX.click();
+        Toast.show(`Expanded ${data.title} Architecture Overview`, "info");
       }
     };
 
-    document.querySelectorAll("[data-project-modal]").forEach((card) => {
+    const closeDrawer = () => {
+      moreWorkDrawer.setAttribute("aria-hidden", "true");
+      cards.forEach((c) => {
+        c.classList.remove("more-work__card--active");
+        c.setAttribute("aria-expanded", "false");
+      });
+      currentProjectKey = null;
+      AudioFX.tap();
+    };
+
+    cards.forEach((card) => {
       card.addEventListener("click", () => {
-        const key = card.getAttribute("data-project-modal");
-        openProjectModal(key, card);
+        const key = card.getAttribute("data-more-work-card");
+        openDrawer(key, card);
       });
     });
 
-    if (closeBtn) closeBtn.addEventListener("click", closeProjectModal);
-    if (dismissBtn) dismissBtn.addEventListener("click", closeProjectModal);
-
-    projectModal.addEventListener("click", (e) => {
-      if (e.target === projectModal) {
-        closeProjectModal();
-      }
-    });
-
-    projectModal.addEventListener("cancel", () => {
-      document.body.classList.remove("dialog-open");
-    });
+    if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
   }
 })();
