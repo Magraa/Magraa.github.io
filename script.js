@@ -340,6 +340,22 @@
       spots: [
         {
           id: 1,
+          x: "6.5%",
+          y: "41.0%",
+          place: "right",
+          title: "Offline Sales & Field Rep Telemetry",
+          text: "Manages distributor store visits, physical invoice logging, and field sales representative check-ins. Geo-tagged mobile check-ins and offline-first visit logs queue locally in IndexedDB, syncing with Supabase PostgreSQL via idempotent batch endpoints when connectivity restores."
+        },
+        {
+          id: 2,
+          x: "6.5%",
+          y: "61.8%",
+          place: "right",
+          title: "Chemical BOM Batching & Floor ERP",
+          text: "Manufacturing orchestration module: calculates raw surfactant concentrates, active alkali ratios, and fragrance dilutions per batch order. Transaction-level row locks auto-reserve raw chemical inventory in Postgres before dispatching mixing instructions to factory staff."
+        },
+        {
+          id: 3,
           x: "27.1%",
           y: "26.9%",
           place: "right",
@@ -347,7 +363,7 @@
           text: "Aggregates ₹24.85L in offline commercial revenue across 1,428 orders and 84 active regional distributors. Built with incremental materialized views in PostgreSQL that refresh on transactional change events rather than costly full-table scans."
         },
         {
-          id: 2,
+          id: 4,
           x: "88.2%",
           y: "26.9%",
           place: "left",
@@ -355,7 +371,7 @@
           text: "Calculates period-over-period expansion (+34.8% net growth) and credit exposure ratios (₹1.84L outstanding across revolving 30-day terms). Alerts prevent dispatch locking when distributor balances stay within safe credit thresholds."
         },
         {
-          id: 3,
+          id: 5,
           x: "33.0%",
           y: "52.6%",
           place: "right",
@@ -363,7 +379,7 @@
           text: "Tracks offline sales momentum across monthly and 30-day daily windows. Joined against <code>inventory_transactions</code> and raw chemical bill-of-materials batching, ensuring sales surges match factory floor mixing capacity."
         },
         {
-          id: 4,
+          id: 6,
           x: "57.6%",
           y: "52.6%",
           place: "above",
@@ -371,7 +387,7 @@
           text: "Displays unit order volumes scaling steadily to 140+ orders/mo. Behind each bar is an automated grouping pipeline that consolidates regional distributor orders into unified transport manifests, slashing freight overhead."
         },
         {
-          id: 5,
+          id: 7,
           x: "82.2%",
           y: "52.6%",
           place: "left",
@@ -379,7 +395,7 @@
           text: "Donut breakdown partitions revenue across Bulk Commercial Chem (58%), B2B Hubs (28%), and Direct Offline Storefronts (14%). RLS policies restrict regional managers to their assigned territorial partitions."
         },
         {
-          id: 6,
+          id: 8,
           x: "57.6%",
           y: "81.8%",
           place: "above",
