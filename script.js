@@ -890,7 +890,7 @@
       }
       mascotBooted = true;
 
-      import("./mascot3d.js?v=20261022_19")
+      import("./mascot3d.js?v=20261022_20")
         .then(() => {
           mascotGlance = () => {
             if (typeof window.__mascotGlance === "function") {

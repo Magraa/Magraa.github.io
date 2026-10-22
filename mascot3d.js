@@ -904,7 +904,6 @@ function tick() {
   elapsed += dt;
   const t = elapsed;
 
-  const isMobile = window.innerWidth <= 768 || window.matchMedia("(pointer: coarse)").matches;
   if (isMobile) {
     /* Autonomous gentle idle movement on mobile: no cursor/touch tracking */
     target.x = Math.sin(t * 0.45) * 0.32;
