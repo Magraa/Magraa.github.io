@@ -25,7 +25,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261022_2">
+  <link rel="stylesheet" href="styles.css?v=20261022_4">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three/three.module.min.js",
+      "three/addons/": "./vendor/three/addons/"
+    }
+  }
+  </script>
+
   <script>document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');</script>
   <script type="application/ld+json">
   {
@@ -127,19 +136,7 @@
 
       <div class="hero-side">
         <div class="mascot" aria-hidden="true" data-mascot>
-          <div class="mascot__rig">
-            <div class="mascot__plate" style="--z:-34px;--s:1.0548"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-shadow"/></svg></div>
-            <div class="mascot__plate" style="--z:-26px;--s:1.0419"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-collar-back"/></svg></div>
-            <div class="mascot__plate mascot__plate--breath" style="--z:-14px;--s:1.0226"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-body"/></svg></div>
-            <div class="mascot__plate" style="--z:0px;--s:1"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-ears"/></svg></div>
-            <div class="mascot__plate" style="--z:0px;--s:1"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-collar-front"/></svg></div>
-            <div class="mascot__plate mascot__plate--breath" style="--z:10px;--s:0.9839"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-head"/></svg></div>
-            <div class="mascot__plate" style="--z:18px;--s:0.9710"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-brow"/></svg></div>
-            <div class="mascot__plate" style="--z:24px;--s:0.9613"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-sockets"/></svg></div>
-            <div class="mascot__plate" style="--z:34px;--s:0.9452"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-irises" class="mascot__iris"/></svg></div>
-            <div class="mascot__plate" style="--z:44px;--s:0.9290"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-glints" class="mascot__glint"/></svg></div>
-            <div class="mascot__plate" style="--z:50px;--s:0.9194"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-lids" class="mascot__lid"/></svg></div>
-          </div>
+          <canvas class="mascot__stage"></canvas>
         </div>
 
         <aside class="profile-card" aria-label="Profile summary" data-reveal>
@@ -1135,6 +1132,10 @@
               Email me
               <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9M8.5 3.5 13 8l-4.5 4.5"/></svg>
             </a>
+            <a class="button button--ghost button--whatsapp" href="https://wa.me/919340861338" target="_blank" rel="noopener noreferrer" aria-label="Chat with Mayank on WhatsApp">
+              <svg class="icon icon--whatsapp" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.301-.15-1.78-.878-2.056-.978-.276-.1-.476-.15-.677.15-.2.3-.777.978-.952 1.179-.176.2-.351.226-.652.075-.3-.15-1.268-.468-2.416-1.492-.893-.798-1.496-1.784-1.672-2.085-.175-.301-.019-.464.132-.614.136-.135.301-.351.452-.527.15-.175.2-.3.301-.501.1-.2.05-.376-.025-.526-.075-.15-.677-1.634-.928-2.239-.244-.589-.493-.509-.677-.518-.175-.009-.376-.009-.577-.009-.2 0-.526.075-.802.376-.276.301-1.053 1.028-1.053 2.508 0 1.48 1.078 2.909 1.229 3.109.15.2 2.122 3.24 5.141 4.544.718.31 1.279.496 1.716.635.722.23 1.378.197 1.898.12.579-.087 1.78-.727 2.03-1.43.251-.703.251-1.305.176-1.43-.075-.126-.276-.201-.577-.351zM12.042 21.666a9.614 9.614 0 0 1-4.89-1.339l-.351-.208-3.633.953.97-3.542-.228-.363a9.61 9.61 0 0 1-1.474-5.125c0-5.32 4.329-9.648 9.65-9.648a9.61 9.61 0 0 1 6.822 2.825 9.608 9.608 0 0 1 2.824 6.824c0 5.323-4.329 9.653-9.69 9.653zm8.384-18.037A11.776 11.776 0 0 0 12.042 0C5.399 0 0 5.399 0 12.042a11.74 11.74 0 0 0 1.802 6.273L0 24l5.857-1.536a11.743 11.743 0 0 0 6.185 1.742h.005c6.642 0 12.042-5.4 12.042-12.044 0-3.217-1.253-6.241-3.528-8.515z" fill="currentColor"/></svg>
+              WhatsApp <span aria-hidden="true">↗</span>
+            </a>
             <a class="button button--ghost" href="https://www.linkedin.com/in/mayank-agrawal-532967192/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
             <a class="button button--quiet" href="https://github.com/Magraa" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
           </div>
@@ -1142,6 +1143,7 @@
         <ul class="contact-list">
           <li><span>Email</span><a href="mailto:agrawalmayank1111@gmail.com">agrawalmayank1111@gmail.com</a></li>
           <li><span>Phone</span><a href="tel:+919340861338">+91 9340861338</a></li>
+          <li><span>WhatsApp</span><a href="https://wa.me/919340861338" target="_blank" rel="noopener noreferrer">+91 9340861338 <span aria-hidden="true">↗</span></a></li>
           <li><span>Location</span><span>Bangalore, India · IST</span></li>
           <li><span>Local time</span><span data-local-time>—</span></li>
           <li><span>Portfolio</span><a href="https://magraa.github.io/" target="_blank" rel="noopener noreferrer">magraa.github.io <span aria-hidden="true">↗</span></a></li>
@@ -1235,92 +1237,7 @@
     </div>
   </dialog>
 
-  <svg class="mascot-sprite" width="0" height="0" aria-hidden="true" focusable="false">
-    <defs>
-      <radialGradient id="msk-shadow-grad" cx="50%" cy="50%" r="50%">
-        <stop offset="0" stop-color="#050505" stop-opacity=".6"/>
-        <stop offset=".65" stop-color="#050505" stop-opacity=".2"/>
-        <stop offset="1" stop-color="#050505" stop-opacity="0"/>
-      </radialGradient>
-      <radialGradient id="msk-eye-glow" cx="50%" cy="50%" r="50%">
-        <stop offset="0" stop-color="#e0a678" stop-opacity=".42"/>
-        <stop offset=".6" stop-color="#e0a678" stop-opacity=".18"/>
-        <stop offset="1" stop-color="#e0a678" stop-opacity="0"/>
-      </radialGradient>
-      <linearGradient id="msk-body-grad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#2f2a22"/>
-        <stop offset="1" stop-color="#181510"/>
-      </linearGradient>
-      <linearGradient id="msk-head-grad" x1=".2" y1="0" x2=".8" y2="1">
-        <stop offset="0" stop-color="#4c453a"/>
-        <stop offset="1" stop-color="#272319"/>
-      </linearGradient>
-
-      <g id="msk-shadow">
-        <ellipse cx="160" cy="326" rx="84" ry="14" fill="url(#msk-shadow-grad)"/>
-      </g>
-
-      <g id="msk-collar-back">
-        <path d="M100 198 L220 198 L236 230 L84 230 Z" fill="#242019" stroke="rgba(243,239,231,.26)" stroke-width="1.4" stroke-linejoin="round"/>
-      </g>
-
-      <g id="msk-body">
-        <path d="M160 318C116 318 96 294 96 266C96 232 120 212 160 212C200 212 224 232 224 266C224 294 204 318 160 318Z" fill="url(#msk-body-grad)" stroke="rgba(243,239,231,.3)" stroke-width="1.5"/>
-        <path d="M116 252C122 236 138 226 160 224" fill="none" stroke="rgba(243,239,231,.12)" stroke-width="4" stroke-linecap="round"/>
-        <circle cx="144" cy="276" r="3.4" fill="rgba(243,239,231,.36)"/>
-        <circle cx="160" cy="276" r="3.4" fill="rgba(243,239,231,.36)"/>
-        <circle cx="176" cy="276" r="3.4" fill="rgba(243,239,231,.36)"/>
-      </g>
-
-      <g id="msk-ears">
-        <path d="M160 56 L160 30" fill="none" stroke="rgba(224,166,120,.65)" stroke-width="2.6" stroke-linecap="round"/>
-        <circle cx="160" cy="24" r="5.4" fill="#e0a678"/>
-        <circle cx="158.4" cy="22.4" r="1.8" fill="#f6e2cb" opacity=".8"/>
-      </g>
-
-      <g id="msk-head">
-        <rect x="78" y="54" width="164" height="152" rx="47" fill="url(#msk-head-grad)" stroke="rgba(243,239,231,.34)" stroke-width="1.5"/>
-        <path d="M104 82C114 70 130 64 150 62" fill="none" stroke="rgba(243,239,231,.22)" stroke-width="3" stroke-linecap="round"/>
-        <rect x="94" y="76" width="132" height="108" rx="30" fill="#100e0a" stroke="rgba(224,166,120,.24)" stroke-width="1.2"/>
-        <path d="M108 100C120 86 138 80 160 80C182 80 200 86 212 100" fill="none" stroke="rgba(243,239,231,.1)" stroke-width="2.4" stroke-linecap="round"/>
-      </g>
-
-      <g id="msk-brow">
-        <rect x="132" y="190" width="56" height="3" rx="1.5" fill="#e0a678" opacity=".42"/>
-      </g>
-
-      <g id="msk-sockets">
-        <circle cx="128" cy="128" r="24" fill="url(#msk-eye-glow)"/>
-        <circle cx="192" cy="128" r="24" fill="url(#msk-eye-glow)"/>
-        <circle cx="128" cy="128" r="22" fill="#060606" stroke="rgba(224,166,120,.32)" stroke-width="1.1"/>
-        <circle cx="192" cy="128" r="22" fill="#060606" stroke="rgba(224,166,120,.32)" stroke-width="1.1"/>
-      </g>
-
-      <g id="msk-irises">
-        <circle cx="128" cy="128" r="14" fill="#e9b184"/>
-        <circle cx="192" cy="128" r="14" fill="#e9b184"/>
-        <circle cx="128" cy="128" r="6.4" fill="#0d0a07"/>
-        <circle cx="192" cy="128" r="6.4" fill="#0d0a07"/>
-      </g>
-
-      <g id="msk-glints">
-        <circle cx="123.7" cy="123.6" r="4" fill="#c7e0d1" opacity=".95"/>
-        <circle cx="187.7" cy="123.6" r="4" fill="#c7e0d1" opacity=".95"/>
-      </g>
-
-      <g id="msk-lids">
-        <rect x="106" y="106" width="44" height="44" rx="22" fill="#100e0a"/>
-        <rect x="170" y="106" width="44" height="44" rx="22" fill="#100e0a"/>
-      </g>
-
-      <g id="msk-collar-front">
-        <path d="M100 200 L160 224 L220 200 L220 216 L160 242 L100 216 Z" fill="#2b2620" stroke="rgba(243,239,231,.26)" stroke-width="1.3" stroke-linejoin="round"/>
-        <path d="M100 200 L160 224 L220 200" fill="none" stroke="rgba(224,166,120,.32)" stroke-width="1.4"/>
-      </g>
-    </defs>
-  </svg>
-
-  <script src="script.js?v=20261022_2" defer></script>
+  <script src="script.js?v=20261022_4" defer></script>
   <!-- Agentation (Development Visual Feedback) -->
   <script>
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {

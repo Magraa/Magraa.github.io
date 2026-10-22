@@ -430,6 +430,32 @@ main,
   border-color: var(--ink-soft);
 }
 
+.button--whatsapp {
+  border-color: rgba(37, 211, 102, 0.32);
+  background: rgba(37, 211, 102, 0.05);
+  color: #e6fced;
+}
+
+.button--whatsapp .icon--whatsapp {
+  width: 15px;
+  height: 15px;
+  color: #25d366;
+  flex-shrink: 0;
+  transition: transform 220ms var(--ease), color 220ms var(--ease);
+}
+
+.button--whatsapp:hover {
+  border-color: rgba(37, 211, 102, 0.65);
+  background: rgba(37, 211, 102, 0.14);
+  color: #ffffff;
+  box-shadow: 0 4px 18px rgba(37, 211, 102, 0.22);
+}
+
+.button--whatsapp:hover .icon--whatsapp {
+  transform: scale(1.14);
+  color: #4ade80;
+}
+
 .button--quiet {
   padding-left: 8px;
   padding-right: 8px;
@@ -5996,9 +6022,10 @@ html[data-motion="off"] .marquee-track {
 /* ------------------------------------------------------------------ */
 /* Hero mascot                                                         */
 /* ------------------------------------------------------------------ */
-/* Eleven stacked plates at different Z depths inside a 620px          */
-/* perspective. Each plate carries the inverse scale (620 - z) / 620,   */
-/* so at rest they align exactly and only rotation produces parallax.   */
+/* A WebGL robot floating above the profile card, turning to face the   */
+/* pointer. The canvas stays transparent so the page grain still        */
+/* textures it, and script.js imports three.js only once the page is    */
+/* idle -- nothing here costs anything during first paint.              */
 
 .hero-side {
   position: relative;
@@ -6014,69 +6041,32 @@ html[data-motion="off"] .marquee-track {
   justify-self: auto;
 }
 
-.mascot-sprite {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-}
-
 .mascot {
   position: absolute;
   top: 0;
   right: -6%;
   z-index: 3;
-  width: clamp(196px, 23vw, 262px);
-  aspect-ratio: 320 / 340;
-  perspective: 620px;
-  perspective-origin: 50% 58%;
+  width: clamp(208px, 24vw, 286px);
+  aspect-ratio: 320 / 300;
   transform: translateY(-95%);
   pointer-events: none;
 }
 
-.mascot__rig {
+.mascot__stage {
   position: absolute;
   inset: 0;
-  transform-style: preserve-3d;
-  transform: rotateX(var(--my, 0deg)) rotateY(var(--mx, 0deg)) rotateZ(var(--roll, 0deg));
-  will-change: transform;
-}
-
-.mascot__plate {
-  position: absolute;
-  inset: 0;
-  transform: translateZ(var(--z)) scale(var(--s));
-}
-
-.mascot__plate--breath {
-  transform-origin: 50% 88%;
-  transform: translateZ(var(--z)) scale(calc(var(--s) * (1 + var(--breath, 0) * 0.013)));
-}
-
-.mascot__plate svg {
   display: block;
   width: 100%;
   height: 100%;
-  overflow: visible;
 }
 
-.mascot__iris {
-  transform: translate(calc(var(--gx, 0) * 1px), calc(var(--gy, 0) * 1px));
-}
-
-.mascot__glint {
-  transform: translate(calc(var(--gx, 0) * 0.5px), calc(var(--gy, 0) * 0.5px));
-}
-
-.mascot__lid {
-  transform-box: fill-box;
-  transform-origin: 50% 0;
-  transform: scaleY(var(--lid, 0));
+.mascot--failed .mascot__stage {
+  display: none;
 }
 
 @media (max-width: 1080px) {
   .mascot {
-    width: clamp(190px, 23vw, 250px);
+    width: clamp(200px, 24vw, 268px);
     right: -1%;
   }
 }
@@ -6090,7 +6080,7 @@ html[data-motion="off"] .marquee-track {
 
   .mascot {
     right: 4%;
-    width: 150px;
+    width: 164px;
     transform: translateY(calc(-100% + 6px));
   }
 }
@@ -6102,7 +6092,7 @@ html[data-motion="off"] .marquee-track {
 
   .mascot {
     right: 2%;
-    width: 116px;
+    width: 128px;
     transform: translateY(calc(-100% + 5px));
   }
 }
@@ -6114,12 +6104,5 @@ html[data-motion="off"] .marquee-track {
 
   .hero-side {
     margin-top: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mascot__rig {
-    transform: none;
-    will-change: auto;
   }
 }
