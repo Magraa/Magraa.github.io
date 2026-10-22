@@ -969,12 +969,48 @@
         text: "Yeah, go ahead! Check out the systems and code.",
       },
       {
-        selector: '.hero-actions a[href^="mailto:"], .header-cta',
+        selector: '.hero-actions a[href^="mailto:"]',
         text: "Drop a note directly to Mayank's inbox ✉️",
       },
       {
         selector: '.hero-actions a[href*="linkedin.com"]',
         text: "Let's connect professionally on LinkedIn!",
+      },
+      {
+        selector: '.brand',
+        text: "Back to top! Always here to guide your tour.",
+      },
+      {
+        selector: '.site-nav a[href="#work"]',
+        text: "Explore production web platforms & flagship projects.",
+      },
+      {
+        selector: '.site-nav a[href="#systems"]',
+        text: "Deep architectural breakdowns & system designs.",
+      },
+      {
+        selector: '.site-nav a[href="#console"]',
+        text: "Interactive terminal console with live system logs.",
+      },
+      {
+        selector: '.site-nav a[href="#about"]',
+        text: "Engineering philosophy, pedigree & technical background.",
+      },
+      {
+        selector: '.site-nav a[href="#experience"]',
+        text: "Verified production history across startups & client teams.",
+      },
+      {
+        selector: '.site-nav a[href="#skills"]',
+        text: "Full-stack toolkit: Next.js, Python, PostgreSQL & AI.",
+      },
+      {
+        selector: '.site-nav a[href="#contact"]',
+        text: "Start a conversation or discuss engineering roles!",
+      },
+      {
+        selector: '.header-cta',
+        text: "Drop an email directly to Mayank's inbox ✉️",
       },
       {
         selector: "#hero-title, .hero-line",
@@ -1007,10 +1043,6 @@
       {
         selector: "[data-sound-toggle]",
         text: "Tactile mechanical sounds crafted with Web Audio!",
-      },
-      {
-        selector: ".site-nav a",
-        text: "Jump directly to any section of the portfolio!",
       },
     ];
 

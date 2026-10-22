@@ -6250,7 +6250,7 @@ html[data-motion="off"] .marquee-track {
   pointer-events: none;
   z-index: 20;
   width: max-content;
-  max-width: clamp(230px, 22vw, 300px);
+  max-width: clamp(240px, 24vw, 320px);
   opacity: 1;
   transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1), transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
