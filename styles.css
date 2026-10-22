@@ -6623,7 +6623,9 @@ html[data-motion="off"] .marquee-track {
   }
 
   .site-footer {
-    padding: 14px var(--pad) 22px;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px var(--pad) calc(54px + env(safe-area-inset-bottom, 0px));
     font-size: clamp(10px, 2.5vw, 11px);
   }
 }
@@ -6649,5 +6651,9 @@ html[data-motion="off"] .marquee-track {
 
   .work-index a {
     padding: 7px 8px;
+  }
+
+  .site-footer {
+    padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px));
   }
 }
