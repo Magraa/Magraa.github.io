@@ -2205,8 +2205,8 @@
         ],
         techStack: ["Next.js 15", "TypeScript", "Firebase Firestore", "Gemini 2.0 Flash Vision", "Playwright", "Tailwind CSS"],
         primaryAction: {
-          label: "Open Live Portal (portal.shivlinkindustries.in)",
-          url: "https://portal.shivlinkindustries.in/"
+          label: "View Architecture & Showcase Repo",
+          url: "https://github.com/Magraa/TenderFlow-AI-Showcase"
         }
       },
       coupletrust: {
