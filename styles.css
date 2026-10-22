@@ -78,8 +78,23 @@ a {
 }
 
 button,
-a {
+a,
+input,
+[role="button"] {
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button,
+.hud,
+.palette-trigger,
+.sound-toggle,
+.chip,
+.tab,
+kbd,
+.badge {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 img,
@@ -6364,6 +6379,24 @@ html[data-motion="off"] .marquee-track {
 }
 
 @media (max-width: 640px) {
+  .site-header {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(11, 11, 12, 0.95);
+  }
+
+  .hud {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(11, 11, 12, 0.95);
+  }
+
+  .hero-side .profile-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(14, 15, 18, 0.94);
+  }
+
   .hero-side {
     position: relative;
     margin-top: clamp(74px, 19vw, 88px);

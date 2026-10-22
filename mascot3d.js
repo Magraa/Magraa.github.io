@@ -888,9 +888,18 @@ function staticPose() {
 }
 
 const clock = new THREE.Clock();
+let lastMobileRenderT = 0;
 
 function tick() {
   rafId = requestAnimationFrame(tick);
+  const isMobile = window.innerWidth <= 768 || window.matchMedia("(pointer: coarse)").matches;
+  const now = performance.now();
+  if (isMobile && now - lastMobileRenderT < 32) {
+    /* 30 FPS mobile battery governor: halves GPU draw calls on mobile */
+    return;
+  }
+  lastMobileRenderT = now;
+
   const dt = Math.min(clock.getDelta(), 0.05);
   elapsed += dt;
   const t = elapsed;

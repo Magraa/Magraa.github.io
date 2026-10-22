@@ -890,7 +890,7 @@
       }
       mascotBooted = true;
 
-      import("./mascot3d.js?v=20261022_12")
+      import("./mascot3d.js?v=20261022_19")
         .then(() => {
           mascotGlance = () => {
             if (typeof window.__mascotGlance === "function") {
@@ -1114,7 +1114,11 @@
     const meshCtx = meshCanvas.getContext("2d");
     const meshReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     const meshCoarse = window.matchMedia("(hover: none), (pointer: coarse)");
-    const meshStill = () => meshReduce.matches || document.documentElement.dataset.motion === "off";
+    const meshStill = () =>
+      meshReduce.matches ||
+      document.documentElement.dataset.motion === "off" ||
+      meshCoarse.matches ||
+      window.innerWidth <= 768;
 
     const ROWS = 28;
     const COLS = 38;
@@ -2112,7 +2116,6 @@
       const hudSound = document.querySelector("[data-hud-sound]");
       if (hudSound) {
         hudSound.textContent = enabled ? "ON" : "OFF";
-        hudSound.setAttribute("aria-pressed", enabled ? "true" : "false");
       }
       if (enabled) {
         init();
@@ -2193,7 +2196,6 @@
     const hudSound = document.querySelector("[data-hud-sound]");
     if (hudSound && enabled) {
       hudSound.textContent = "ON";
-      hudSound.setAttribute("aria-pressed", "true");
     }
 
     document.addEventListener("click", (e) => {
@@ -2330,6 +2332,11 @@
 
       trigger.setAttribute("aria-expanded", String(nextState));
       drawer.setAttribute("aria-hidden", String(!nextState));
+      if (nextState) {
+        drawer.removeAttribute("inert");
+      } else {
+        drawer.setAttribute("inert", "");
+      }
       wb.classList.toggle("case-workbench--expanded", nextState);
 
       if (label) {
@@ -2856,6 +2863,7 @@
         Toast.show(`Viewing ${data.title} Architecture Overview`, "info");
       } else {
         renderProjectData(data);
+        moreWorkDrawer.removeAttribute("inert");
         moreWorkDrawer.setAttribute("aria-hidden", "false");
         AudioFX.click();
         Toast.show(`Expanded ${data.title} Architecture Overview`, "info");
@@ -2864,6 +2872,7 @@
 
     const closeDrawer = () => {
       moreWorkDrawer.setAttribute("aria-hidden", "true");
+      moreWorkDrawer.setAttribute("inert", "");
       cards.forEach((c) => {
         c.classList.remove("more-work__card--active");
         c.setAttribute("aria-expanded", "false");

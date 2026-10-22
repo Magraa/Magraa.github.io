@@ -2,7 +2,7 @@
 <html lang="en" class="no-js">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.github.com http://localhost:4747 http://127.0.0.1:4747 ws://localhost:4747 ws://127.0.0.1:4747; base-uri 'self'; form-action 'self'; object-src 'none'">
   <title>Mayank Agrawal — Full-Stack &amp; AI Systems Engineer</title>
   <meta name="description" content="Mayank Agrawal is a full-stack and AI systems engineer in Bangalore. He builds production web platforms, backend APIs, and AI automation systems. IIIT Gwalior alumnus.">
@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261022_18">
+  <link rel="stylesheet" href="styles.css?v=20261022_19">
   <script type="importmap">
   {
     "imports": {
@@ -94,7 +94,7 @@
         <kbd class="palette-trigger__kbd" data-palette-kbd>Ctrl K</kbd>
         <span class="sr-only">open the command palette</span>
       </button>
-      <button class="sound-toggle" type="button" data-sound-toggle aria-label="Toggle tactile sound effects" aria-pressed="false" title="Toggle tactile sound (Press S)">
+      <button class="sound-toggle" type="button" data-sound-toggle aria-label="Sound (S), toggle tactile sound effects" aria-pressed="false" title="Toggle tactile sound (Press S)">
         <svg class="icon sound-toggle__icon sound-toggle__icon--off" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7 3 3.5 6H1v4h2.5L7 13V3Z"/><line x1="10" y1="6" x2="14" y2="10"/><line x1="14" y1="6" x2="10" y2="10"/></svg>
         <svg class="icon sound-toggle__icon sound-toggle__icon--on" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7 3 3.5 6H1v4h2.5L7 13V3Z"/><path d="M10 5.5a4 4 0 0 1 0 5"/><path d="M12 3a7.5 7.5 0 0 1 0 10"/></svg>
         <span class="sound-toggle__label">Sound</span>
@@ -345,7 +345,7 @@
             </div>
           </button>
 
-          <div class="workbench-drawer" id="workbench-panel-hisab" aria-hidden="true">
+          <div class="workbench-drawer" id="workbench-panel-hisab" aria-hidden="true" inert>
             <div class="workbench-drawer__content">
               <div class="hisab-sandbox" data-hisab-sandbox>
                 <div class="hisab-sandbox__head">
@@ -492,7 +492,7 @@
             </div>
           </button>
 
-          <div class="workbench-drawer" id="workbench-panel-simvox" aria-hidden="true">
+          <div class="workbench-drawer" id="workbench-panel-simvox" aria-hidden="true" inert>
             <div class="workbench-drawer__content">
               <div class="simvox-bench" data-simvox-bench>
                 <div class="simvox-bench__head">
@@ -736,7 +736,7 @@
         </div>
         <div class="more-work__grid">
           <!-- 1. TenderFlow AI -->
-          <button class="more-work__card" type="button" data-more-work-card="tenderflow" aria-expanded="false" aria-controls="more-work-drawer" aria-label="Toggle TenderFlow AI architecture overview">
+          <button class="more-work__card" type="button" data-more-work-card="tenderflow" aria-expanded="false" aria-controls="more-work-drawer">
             <div class="more-work__card-top">
               <span class="more-work__tag more-work__tag--live"><i class="hud__pulse" aria-hidden="true"></i>Live Platform</span>
               <span class="more-work__year">2026</span>
@@ -750,7 +750,7 @@
           </button>
 
           <!-- 2. CoupleTrust -->
-          <button class="more-work__card" type="button" data-more-work-card="coupletrust" aria-expanded="false" aria-controls="more-work-drawer" aria-label="Toggle CoupleTrust Android app overview">
+          <button class="more-work__card" type="button" data-more-work-card="coupletrust" aria-expanded="false" aria-controls="more-work-drawer">
             <div class="more-work__card-top">
               <span class="more-work__tag more-work__tag--android">Android Compose</span>
               <span class="more-work__year">2026</span>
@@ -764,7 +764,7 @@
           </button>
 
           <!-- 3. FinAudit AI -->
-          <button class="more-work__card" type="button" data-more-work-card="finaudit" aria-expanded="false" aria-controls="more-work-drawer" aria-label="Toggle FinAudit AI fraud audit overview">
+          <button class="more-work__card" type="button" data-more-work-card="finaudit" aria-expanded="false" aria-controls="more-work-drawer">
             <div class="more-work__card-top">
               <span class="more-work__tag more-work__tag--audit">Audit Engine</span>
               <span class="more-work__year">2026</span>
@@ -779,7 +779,7 @@
         </div>
 
         <!-- Inline Expandable Architecture & Overview Drawer -->
-        <div class="more-work__drawer" id="more-work-drawer" aria-hidden="true">
+        <div class="more-work__drawer" id="more-work-drawer" aria-hidden="true" inert>
           <div class="more-work__drawer-inner">
             <div class="more-work__panel" id="more-work-panel">
               <header class="more-work__panel-head">
@@ -1239,10 +1239,10 @@
         <span class="hud__keyhint"><kbd>C</kbd> Copy Email</span>
       </div>
       <div class="hud__col hud__col--controls">
-        <button class="hud__btn" type="button" data-sound-toggle aria-label="Toggle sound">
+        <button class="hud__btn" type="button" data-sound-toggle>
           <span>SND:</span><strong data-hud-sound>OFF</strong>
         </button>
-        <button class="hud__btn" type="button" data-palette-open aria-label="Open command palette">
+        <button class="hud__btn" type="button" data-palette-open>
           <kbd>K</kbd> CMD
         </button>
         <a class="hud__btn hud__btn--resume" href="Mayank_Agrawal_Resume.pdf" target="_blank" rel="noopener noreferrer">
@@ -1277,7 +1277,7 @@
     </div>
   </dialog>
 
-  <script src="script.js?v=20261022_18" defer></script>
+  <script src="script.js?v=20261022_19" defer></script>
   <!-- Agentation (Development Visual Feedback) -->
   <script>
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
