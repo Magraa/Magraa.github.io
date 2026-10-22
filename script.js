@@ -946,7 +946,7 @@
     const ROWS = 28;
     const COLS = 38;
     const BUCKETS = 5;
-    const BUCKET_ALPHA = [0.06, 0.12, 0.20, 0.30, 0.45];
+    const BUCKET_ALPHA = [0.08, 0.16, 0.28, 0.45, 0.68];
     const BUCKET_RGB = [
       "224,166,120",
       "224,166,120",
@@ -996,8 +996,8 @@
 
       const horizon = -mh * 0.12;
       const near = mh * 1.15;
-      const sigma = Math.min(mw, mh) * 0.22;
-      const amp = noWell ? 0 : Math.min(mw, mh) * 0.14 * well.strength;
+      const sigma = Math.max(Math.min(mw, mh) * 0.28, 270);
+      const amp = noWell ? 0 : Math.min(mw, mh) * 0.16 * well.strength;
       const twoSigmaSq = 2 * sigma * sigma;
 
       for (let r = 0; r <= ROWS; r++) {
@@ -1037,7 +1037,7 @@
       const place = (a, b) => {
         const u = Math.max(vu[a], vu[b]);
         let alpha = 0.07 + 0.14 * u;
-        alpha += Math.max(vg[a], vg[b]) * 0.5 * well.strength;
+        alpha += Math.max(vg[a], vg[b]) * 0.65 * well.strength;
         let bucket = Math.floor(alpha / 0.1);
         if (bucket < 0) bucket = 0;
         if (bucket >= BUCKETS) bucket = BUCKETS - 1;

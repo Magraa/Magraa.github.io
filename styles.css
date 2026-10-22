@@ -536,18 +536,18 @@ main,
   border: 1px solid rgba(224, 166, 120, 0.24);
   border-radius: var(--radius);
   background:
-    radial-gradient(380px 140px at 85% -15%, rgba(224, 166, 120, 0.1), transparent 70%),
+    radial-gradient(380px 140px at 85% -15%, rgba(224, 166, 120, 0.14), transparent 70%),
     linear-gradient(180deg, rgba(243, 239, 231, 0.05), rgba(243, 239, 231, 0.015)),
-    rgba(14, 15, 18, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    rgba(14, 15, 18, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition: transform 300ms var(--ease), border-color 300ms var(--ease), box-shadow 300ms var(--ease);
 }
 
 .profile-card:hover {
   border-color: rgba(224, 166, 120, 0.45);
-  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.55), 0 0 34px rgba(224, 166, 120, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.55), 0 0 34px rgba(224, 166, 120, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .profile-card::before {
@@ -559,7 +559,7 @@ main,
     linear-gradient(var(--line) 1px, transparent 1px),
     linear-gradient(90deg, var(--line) 1px, transparent 1px);
   background-size: 34px 34px;
-  opacity: 0.3;
+  opacity: 0.16;
   mask-image: linear-gradient(180deg, #000, transparent 78%);
 }
 
