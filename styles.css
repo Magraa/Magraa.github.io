@@ -347,20 +347,40 @@ main,
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  padding: 6px 14px 6px 10px;
+  border-radius: 999px;
+  background: rgba(18, 22, 26, 0.72);
+  border: 1px solid rgba(169, 201, 182, 0.28);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .eyebrow::before {
   content: "";
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   flex: 0 0 auto;
   border-radius: 50%;
   background: var(--mint);
-  box-shadow: 0 0 0 4px rgba(169, 201, 182, 0.12);
+  box-shadow: 0 0 0 3px rgba(169, 201, 182, 0.22), 0 0 10px rgba(169, 201, 182, 0.7);
+  animation: hudPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes hudPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.88;
+  }
+  50% {
+    transform: scale(1.22);
+    opacity: 1;
+    filter: brightness(1.25);
+  }
 }
 
 .hero h1 {
-  margin-top: 20px;
+  margin-top: 24px;
   font-family: var(--display);
   font-size: clamp(4.1rem, 10.6vw, 9.2rem);
   font-weight: 500;
@@ -373,9 +393,13 @@ main,
 }
 
 .hero-line--accent {
-  color: var(--copper);
+  display: block;
   font-style: italic;
   font-weight: 400;
+  background: linear-gradient(135deg, #fcedde 0%, #e0a678 48%, #c57644 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 32px rgba(224, 166, 120, 0.28));
 }
 
 .hero-lede {
@@ -418,8 +442,10 @@ main,
 }
 
 .button--primary:hover {
+  background: var(--copper);
   border-color: var(--copper-soft);
-  color: #17120d;
+  color: #120e0a;
+  box-shadow: 0 4px 22px rgba(224, 166, 120, 0.38);
 }
 
 .button--ghost {
@@ -494,6 +520,7 @@ main,
   flex: 0 0 auto;
   border-radius: 50%;
   background: var(--copper);
+  box-shadow: 0 0 8px rgba(224, 166, 120, 0.7);
 }
 
 .profile-card {
@@ -501,14 +528,23 @@ main,
   width: 100%;
   max-width: 440px;
   justify-self: end;
-  padding: 20px;
+  padding: 22px;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(224, 166, 120, 0.24);
   border-radius: var(--radius);
   background:
-    linear-gradient(180deg, rgba(243, 239, 231, 0.055), rgba(243, 239, 231, 0.015)),
-    var(--surface);
-  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.38);
+    radial-gradient(380px 140px at 85% -15%, rgba(224, 166, 120, 0.1), transparent 70%),
+    linear-gradient(180deg, rgba(243, 239, 231, 0.05), rgba(243, 239, 231, 0.015)),
+    rgba(14, 15, 18, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: transform 300ms var(--ease), border-color 300ms var(--ease), box-shadow 300ms var(--ease);
+}
+
+.profile-card:hover {
+  border-color: rgba(224, 166, 120, 0.45);
+  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.55), 0 0 34px rgba(224, 166, 120, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .profile-card::before {
@@ -641,9 +677,15 @@ main,
 }
 
 .proof-strip > div {
-  padding: 20px 0;
+  padding: 22px 18px 22px 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+  transition: border-color 240ms var(--ease), background 240ms var(--ease);
+}
+
+.proof-strip > div:hover {
+  border-top-color: rgba(224, 166, 120, 0.45);
+  background: rgba(224, 166, 120, 0.025);
 }
 
 .proof-strip > div + div {
@@ -658,6 +700,12 @@ main,
   font-weight: 500;
   letter-spacing: -0.03em;
   line-height: 1;
+  transition: color 240ms var(--ease), text-shadow 240ms var(--ease);
+}
+
+.proof-strip > div:hover strong {
+  color: var(--copper-soft);
+  text-shadow: 0 0 20px rgba(224, 166, 120, 0.35);
 }
 
 .proof-strip span {
@@ -6051,6 +6099,32 @@ html[data-motion="off"] .marquee-track {
   aspect-ratio: 320 / 300;
   transform: translateY(-95%);
   pointer-events: none;
+}
+
+.mascot::after {
+  content: "";
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  width: 82%;
+  height: 82%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(224, 166, 120, 0.22) 0%, rgba(169, 201, 182, 0.09) 45%, transparent 72%);
+  filter: blur(32px);
+  pointer-events: none;
+  z-index: -1;
+  animation: mascotAuraBreath 6s ease-in-out infinite alternate;
+}
+
+@keyframes mascotAuraBreath {
+  0% {
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+  100% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
 }
 
 .mascot__stage {

@@ -152,10 +152,18 @@ scene.environment = pmrem.fromScene(envScene, 0.02).texture;
 scene.environmentIntensity = 1.0;
 pmrem.dispose();
 
-scene.add(new THREE.HemisphereLight(C.ink, 0x2a1c12, 2.3));
-const keyLight = new THREE.DirectionalLight(0xffffff, 0.55);
+scene.add(new THREE.HemisphereLight(C.ink, 0x2a1c12, 2.5));
+const keyLight = new THREE.DirectionalLight(0xfff6ed, 1.15);
 keyLight.position.set(-3, 4, 5);
 scene.add(keyLight);
+
+const rimLight = new THREE.DirectionalLight(C.copper, 1.45);
+rimLight.position.set(3, -2, -2);
+scene.add(rimLight);
+
+const fillLight = new THREE.DirectionalLight(C.mint, 0.45);
+fillLight.position.set(-3, -2, 2);
+scene.add(fillLight);
 
 /* No bloom pass. UnrealBloomPass writes luminance into pixels whose alpha
    is zero, and a premultiplied canvas composites that RGB anyway, so the
@@ -227,7 +235,7 @@ const haze = new THREE.Sprite(
   new THREE.SpriteMaterial({
     map: glowTex,
     color: C.copper,
-    opacity: 0.09,
+    opacity: 0.22,
     blending: THREE.AdditiveBlending,
     toneMapped: false,
     depthWrite: false,
@@ -236,7 +244,7 @@ const haze = new THREE.Sprite(
 );
 /* The halo has to stay inside the camera frame: a sprite wider than the
    frustum clips at the canvas edge and reads as a hard rectangle. */
-haze.scale.set(3.4, 3.4, 1);
+haze.scale.set(3.6, 3.6, 1);
 haze.position.set(0, 0, -2.2);
 scene.add(haze);
 
@@ -942,8 +950,13 @@ function tick() {
     }
   }
 
-  const ag = 0.7 * (0.85 + Math.sin(t * 1.6) * 0.15) + 0.15;
-  for (const g of antennaGlows) g.material.opacity = ag;
+  const ag = 0.75 * (0.85 + Math.sin(t * 1.8) * 0.15) + 0.2;
+  const antScale = 0.62 + Math.sin(t * 2.2) * 0.06;
+  for (const g of antennaGlows) {
+    g.material.opacity = ag;
+    g.scale.set(antScale, antScale, 1);
+  }
+  haze.material.opacity = 0.18 + Math.sin(t * 1.2) * 0.05;
 
   render();
 }
