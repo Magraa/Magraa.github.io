@@ -2713,4 +2713,50 @@
 
     if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
   }
+
+  /* ------------------------------------------------------------------ */
+  /* Contact item copy buttons                                         */
+  /* ------------------------------------------------------------------ */
+  document.querySelectorAll("[data-copy]").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const val = btn.getAttribute("data-copy");
+      if (!val) return;
+
+      const finish = () => {
+        btn.classList.add("is-copied");
+        if (typeof AudioFX !== "undefined" && AudioFX.click) AudioFX.click();
+        if (typeof Toast !== "undefined" && Toast.show) Toast.show(`Copied ${val} to clipboard!`, "success");
+        setTimeout(() => {
+          btn.classList.remove("is-copied");
+        }, 2000);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(val);
+          finish();
+          return;
+        } catch {
+          /* Fallback below */
+        }
+      }
+
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = val;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        finish();
+      } catch (err) {
+        if (typeof Toast !== "undefined" && Toast.show) Toast.show(val, "info");
+      }
+    });
+  });
 })();

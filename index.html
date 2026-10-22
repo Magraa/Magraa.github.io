@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261022_11">
+  <link rel="stylesheet" href="styles.css?v=20261022_12">
   <script type="importmap">
   {
     "imports": {
@@ -917,7 +917,7 @@
         </div>
       </div>
 
-      <div class="panel" data-reveal>
+      <div class="panel panel--flow" data-reveal>
         <div class="panel__head">
           <p class="kicker">State machine</p>
           <h3>How an order survives</h3>
@@ -1154,8 +1154,28 @@
           </div>
         </div>
         <ul class="contact-list">
-          <li><span>Email</span><a href="mailto:agrawalmayank1111@gmail.com">agrawalmayank1111@gmail.com</a></li>
-          <li><span>Phone</span><a href="tel:+919340861338">+91 9340861338</a></li>
+          <li>
+            <span>Email</span>
+            <span class="contact-val">
+              <a href="mailto:agrawalmayank1111@gmail.com">agrawalmayank1111@gmail.com</a>
+              <button class="copy-btn" type="button" data-copy="agrawalmayank1111@gmail.com" aria-label="Copy email address" title="Copy email address">
+                <svg class="copy-icon copy-icon--default" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="8" height="8" rx="1.5"/><path d="M3 11V3.5A1.5 1.5 0 0 1 4.5 2H11"/></svg>
+                <svg class="copy-icon copy-icon--copied" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6"/></svg>
+                <span class="copy-tooltip" aria-hidden="true">Copied!</span>
+              </button>
+            </span>
+          </li>
+          <li>
+            <span>Phone</span>
+            <span class="contact-val">
+              <a href="tel:+919340861338">+91 9340861338</a>
+              <button class="copy-btn" type="button" data-copy="+91 9340861338" aria-label="Copy phone number" title="Copy phone number">
+                <svg class="copy-icon copy-icon--default" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="8" height="8" rx="1.5"/><path d="M3 11V3.5A1.5 1.5 0 0 1 4.5 2H11"/></svg>
+                <svg class="copy-icon copy-icon--copied" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6"/></svg>
+                <span class="copy-tooltip" aria-hidden="true">Copied!</span>
+              </button>
+            </span>
+          </li>
           <li><span>WhatsApp</span><a href="https://wa.me/919340861338" target="_blank" rel="noopener noreferrer">+91 9340861338 <span aria-hidden="true">↗</span></a></li>
           <li><span>Location</span><span>Bangalore, India · IST</span></li>
           <li><span>Local time</span><span data-local-time>—</span></li>
@@ -1250,7 +1270,7 @@
     </div>
   </dialog>
 
-  <script src="script.js?v=20261022_11" defer></script>
+  <script src="script.js?v=20261022_12" defer></script>
   <!-- Agentation (Development Visual Feedback) -->
   <script>
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {

@@ -1597,6 +1597,101 @@ main,
   color: var(--copper-soft);
 }
 
+.contact-val {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  position: relative;
+}
+
+.copy-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 180ms var(--ease-soft);
+  flex-shrink: 0;
+}
+
+.copy-btn:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+}
+
+.copy-btn:focus-visible {
+  outline: 2px solid var(--copper-soft);
+  outline-offset: 2px;
+}
+
+.copy-btn .copy-icon--copied {
+  display: none;
+  color: var(--mint);
+}
+
+.copy-btn.is-copied {
+  border-color: rgba(69, 182, 156, 0.45);
+  background: rgba(69, 182, 156, 0.12);
+  color: var(--mint);
+}
+
+.copy-btn.is-copied .copy-icon--default {
+  display: none;
+}
+
+.copy-btn.is-copied .copy-icon--copied {
+  display: block;
+}
+
+.copy-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 50%;
+  transform: translateX(50%) translateY(4px);
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 160ms var(--ease-soft), transform 160ms var(--ease-soft);
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.copy-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: var(--line-strong) transparent transparent transparent;
+}
+
+.copy-btn.is-copied .copy-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(50%) translateY(0);
+}
+
 .site-footer {
   display: flex;
   flex-wrap: wrap;
@@ -6222,6 +6317,27 @@ html[data-motion="off"] .marquee-track {
 /* stage, 92px index tiles for two lines of text.                      */
 
 @media (max-width: 640px) {
+  /* Prevent accidental text selection and callouts when tapping/holding on phone screens */
+  body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Keep input fields and editable areas fully selectable so typing and editing work */
+  input,
+  textarea,
+  [contenteditable="true"],
+  .shell__input {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+  }
+
   .hero {
     gap: clamp(18px, 4.2vw, 26px);
     padding-bottom: clamp(18px, 4.2vw, 26px);
@@ -6417,37 +6533,20 @@ html[data-motion="off"] .marquee-track {
     line-height: 1.5;
   }
 
-  /* Two-column responsive state machine on mobile to save vertical scroll */
-  .flow__nodes {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: none;
-    gap: 6px;
-  }
-
-  .flow__node {
-    min-height: 40px;
-    padding: 8px 10px;
-  }
-
-  .flow__node-id {
-    font-size: 9px;
-  }
-
-  .flow__node-out {
-    font-size: 8px;
-  }
-
-  .flow__detail {
-    margin-top: 10px;
-  }
-
-  .flow__docs li {
-    padding: 10px 12px;
+  /* Hide state machine on phone screen because it does not work well on mobile */
+  .panel--flow,
+  .panel:has(.flow) {
+    display: none !important;
   }
 
   .repos li {
     padding: clamp(8px, 2vw, 11px) 12px;
     gap: 8px;
+  }
+
+  /* Show only 4 repository entries on phone screen */
+  .repos li:nth-child(n+5) {
+    display: none !important;
   }
 
   .repos__name {
@@ -6509,6 +6608,10 @@ html[data-motion="off"] .marquee-track {
 
   .contact-list li {
     padding: clamp(8px, 2vw, 10px) 0;
+  }
+
+  .contact-val {
+    justify-content: flex-start;
   }
 
   .colophon__facts li {
