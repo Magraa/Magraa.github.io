@@ -396,8 +396,11 @@ main,
   display: block;
   font-style: italic;
   font-weight: 400;
+  padding: 0.04em 0.08em 0.28em 0;
+  margin: -0.04em -0.08em -0.28em 0;
   background: linear-gradient(135deg, #fcedde 0%, #e0a678 48%, #c57644 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 0 32px rgba(224, 166, 120, 0.28));
 }
