@@ -912,6 +912,229 @@
   }
 
   /* ---------------------------------------------------------------- */
+  /* Hero spacetime mesh                                              */
+  /* ---------------------------------------------------------------- */
+  /* A wire floor in perspective that dents into a gravity well under  */
+  /* the pointer, glows where it dents, and ripples slowly once the    */
+  /* pointer rests. Canvas 2D with no dependencies: the grid is        */
+  /* projected by hand, displaced by a gaussian, and batched into a    */
+  /* handful of alpha buckets so a frame costs a few stroke calls.     */
+  /* Same motion contract as the mascot — one flat frame when motion   */
+  /* is off, nothing at all when the hero is out of view.              */
+
+  const meshCanvas = document.querySelector(".hero-mesh");
+  const meshStage = document.querySelector(".hero-stage");
+  const meshHero = document.querySelector(".hero");
+
+  if (meshCanvas && meshStage && meshHero) {
+    const meshCtx = meshCanvas.getContext("2d");
+    const meshReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const meshCoarse = window.matchMedia("(hover: none), (pointer: coarse)");
+    const meshStill = () => meshReduce.matches || document.documentElement.dataset.motion === "off";
+
+    const ROWS = 28;
+    const COLS = 38;
+    const BUCKETS = 5;
+    const BUCKET_ALPHA = [0.06, 0.12, 0.20, 0.30, 0.45];
+    const BUCKET_RGB = [
+      "224,166,120",
+      "224,166,120",
+      "229,178,134",
+      "236,194,154",
+      "243,216,186",
+    ];
+
+    let mw = 0;
+    let mh = 0;
+    let mRatio = 0;
+    let mElapsed = 0;
+    let mLast = 0;
+    let mRunning = false;
+    let mRaf = 0;
+    let mVisible = true;
+    let lastPointerT = -10;
+    const well = { x: -9999, y: -9999, strength: 0 };
+
+    /* (ROWS+1) x (COLS+1) vertices, reused every frame */
+    const vx = new Float32Array((ROWS + 1) * (COLS + 1));
+    const vy = new Float32Array((ROWS + 1) * (COLS + 1));
+    const vg = new Float32Array((ROWS + 1) * (COLS + 1));
+    const vu = new Float32Array((ROWS + 1) * (COLS + 1));
+    const paths = [];
+    for (let i = 0; i < BUCKETS; i++) paths.push(new Path2D());
+
+    const sizeMesh = () => {
+      const h = meshHero.offsetHeight;
+      if (!h) return false;
+      meshStage.style.height = h + "px";
+      const w = meshStage.clientWidth;
+      const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+      if (w && w === mw && h === mh && ratio === mRatio) return true;
+      mw = w;
+      mh = h;
+      mRatio = ratio;
+      meshCanvas.width = Math.round(w * ratio);
+      meshCanvas.height = Math.round(h * ratio);
+      return true;
+    };
+
+    function drawMesh(t, idle, noWell) {
+      if (!mw || !mh) return;
+      meshCtx.setTransform(mRatio, 0, 0, mRatio, 0, 0);
+      meshCtx.clearRect(0, 0, mw, mh);
+
+      const horizon = -mh * 0.12;
+      const near = mh * 1.15;
+      const sigma = Math.min(mw, mh) * 0.22;
+      const amp = noWell ? 0 : Math.min(mw, mh) * 0.14 * well.strength;
+      const twoSigmaSq = 2 * sigma * sigma;
+
+      for (let r = 0; r <= ROWS; r++) {
+        const tr = r / ROWS;
+        const u = tr * tr * 0.58 + tr * 0.42;
+        const yBase = horizon + (near - horizon) * u;
+        const half = mw * (0.68 + 0.48 * u);
+        for (let c = 0; c <= COLS; c++) {
+          const sx = (c / COLS) * 2 - 1;
+          let x = mw / 2 + sx * half;
+          let y = yBase;
+
+          if (idle > 0) {
+            y += Math.sin(sx * 2.4 + t * 0.8) * 3.2 * u * idle;
+            y += Math.cos(u * 5 - t * 0.6) * 2.4 * u * idle;
+          }
+
+          let g = 0;
+          if (amp > 0.01) {
+            const dx = x - well.x;
+            const dy = (y - well.y) * 1.55;
+            g = Math.exp(-(dx * dx + dy * dy) / twoSigmaSq);
+            y += g * amp;
+            x += (well.x - x) * 0.1 * g;
+          }
+
+          const i = r * (COLS + 1) + c;
+          vx[i] = x;
+          vy[i] = y;
+          vg[i] = g;
+          vu[i] = u;
+        }
+      }
+
+      for (let i = 0; i < BUCKETS; i++) paths[i] = new Path2D();
+
+      const place = (a, b) => {
+        const u = Math.max(vu[a], vu[b]);
+        let alpha = 0.07 + 0.14 * u;
+        alpha += Math.max(vg[a], vg[b]) * 0.5 * well.strength;
+        let bucket = Math.floor(alpha / 0.1);
+        if (bucket < 0) bucket = 0;
+        if (bucket >= BUCKETS) bucket = BUCKETS - 1;
+        const p = paths[bucket];
+        p.moveTo(vx[a], vy[a]);
+        p.lineTo(vx[b], vy[b]);
+      };
+
+      for (let r = 0; r <= ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          place(r * (COLS + 1) + c, r * (COLS + 1) + c + 1);
+        }
+      }
+      for (let c = 0; c <= COLS; c++) {
+        for (let r = 0; r < ROWS; r++) {
+          place(r * (COLS + 1) + c, (r + 1) * (COLS + 1) + c);
+        }
+      }
+
+      meshCtx.lineWidth = 1;
+      for (let i = 0; i < BUCKETS; i++) {
+        meshCtx.strokeStyle = "rgba(" + BUCKET_RGB[i] + "," + BUCKET_ALPHA[i] + ")";
+        meshCtx.stroke(paths[i]);
+      }
+    }
+
+    const clamp01 = (v) => Math.min(1, Math.max(0, v));
+
+    function meshTick() {
+      mRaf = requestAnimationFrame(meshTick);
+      const now = performance.now() / 1000;
+      const dt = Math.min(now - mLast, 0.05);
+      mLast = now;
+      mElapsed += dt;
+
+      const want = mElapsed - lastPointerT < 2.2 ? 1 : 0;
+      well.strength += (want - well.strength) * Math.min(1, dt * 4);
+      const idle = clamp01((mElapsed - lastPointerT - 2.2) / 1.5);
+      drawMesh(mElapsed, idle, false);
+    }
+
+    const startMesh = () => {
+      if (mRunning) return;
+      mRunning = true;
+      mLast = performance.now() / 1000;
+      mRaf = requestAnimationFrame(meshTick);
+    };
+
+    const stopMesh = () => {
+      if (!mRunning) return;
+      mRunning = false;
+      cancelAnimationFrame(mRaf);
+    };
+
+    const meshStatic = () => {
+      if (sizeMesh()) drawMesh(0, 0, true);
+    };
+
+    const meshSync = () => {
+      if (meshStill() || document.hidden || !mVisible || !sizeMesh()) {
+        stopMesh();
+        if (meshStill() && mw && mh) meshStatic();
+        return;
+      }
+      startMesh();
+    };
+
+    const onMeshPointer = (event) => {
+      if (event.clientX === undefined) return;
+      if (meshCoarse.matches && event.pointerType === "mouse") return;
+      const rect = meshCanvas.getBoundingClientRect();
+      well.x = event.clientX - rect.left;
+      well.y = event.clientY - rect.top;
+      lastPointerT = mElapsed;
+    };
+
+    window.addEventListener("pointermove", onMeshPointer, { passive: true });
+    window.addEventListener("pointerdown", onMeshPointer, { passive: true });
+
+    new IntersectionObserver(
+      (entries) => {
+        mVisible = entries[0].isIntersecting;
+        meshSync();
+      },
+      { threshold: 0 }
+    ).observe(meshHero);
+
+    new ResizeObserver(() => {
+      if (meshStill()) {
+        stopMesh();
+        meshStatic();
+        return;
+      }
+      sizeMesh();
+      meshSync();
+    }).observe(meshHero);
+
+    document.addEventListener("visibilitychange", meshSync);
+    meshReduce.addEventListener("change", meshSync);
+    new MutationObserver(meshSync).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-motion"],
+    });
+
+    meshSync();
+  }
+
+  /* ---------------------------------------------------------------- */
   /* Console                                                          */
   /* ---------------------------------------------------------------- */
   /* Answers are read back out of the rendered document, so a command */

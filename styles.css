@@ -154,8 +154,9 @@ ol {
     linear-gradient(var(--line) 1px, transparent 1px),
     linear-gradient(90deg, var(--line) 1px, transparent 1px);
   background-size: 96px 96px;
-  opacity: 0.32;
-  mask-image: radial-gradient(ellipse 90% 65% at 50% 0%, #000 12%, transparent 72%);
+  opacity: 0.28;
+  mask-image: radial-gradient(ellipse 110% 90% at 50% 30%, #000 35%, transparent 92%);
+  -webkit-mask-image: radial-gradient(ellipse 110% 90% at 50% 30%, #000 35%, transparent 92%);
 }
 
 .site-header,
@@ -6105,4 +6106,30 @@ html[data-motion="off"] .marquee-track {
   .hero-side {
     margin-top: 0;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero spacetime mesh                                                 */
+/* ------------------------------------------------------------------ */
+/* A perspective wire floor that dents under the pointer. The stage is */
+/* pinned to the hero's height and painted at z-index -1 inside main,  */
+/* so it sits above the fixed page grid and below every scrap of       */
+/* content, and it never intercepts a click.                           */
+
+.hero-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+}
+
+.hero-mesh {
+  display: block;
+  width: 100%;
+  height: 100%;
 }

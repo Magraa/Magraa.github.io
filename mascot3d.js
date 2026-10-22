@@ -550,20 +550,24 @@ function buildEye(side, R) {
     eyeMat({ map: irisTex, color: new THREE.Color(1.15, 1.0, 0.88) })
   );
   iris.position.z = 0.001;
-  iris.renderOrder = 10;
+  iris.renderOrder = 11;
 
   const pupilWrap = new THREE.Group();
   const pupil = new THREE.Mesh(new THREE.CircleGeometry(0.083), eyeMat({ color: C.pupil }));
   pupil.position.z = 0.003;
-  pupil.renderOrder = 10;
+  pupil.renderOrder = 12;
   const glint = new THREE.Mesh(new THREE.CircleGeometry(0.022), eyeMat({ color: 0xfff4e8 }));
   glint.position.set(0.032, 0.034, 0.005);
-  glint.renderOrder = 10;
+  glint.renderOrder = 13;
   pupilWrap.add(pupil, glint);
 
   g.add(halo, ring, iris, pupilWrap);
   head.add(g);
-  return { group: g, pupilWrap };
+  /* Every part is transparent with depth testing off, so the only thing
+     standing between "pupil on iris" and "iris on pupil" is draw order.
+     Distinct renderOrders make the stack deterministic; equal ones left
+     it to a depth tie that flipped as the head turned. */
+  return { group: g, pupilWrap, qSurface: g.quaternion.clone() };
 }
 
 /* ------------------------------------------------------------------ */
@@ -826,6 +830,27 @@ function render() {
   renderer.render(scene, camera);
 }
 
+/* Flat decals tangent to a sphere go edge-on as the head turns, so at yaw
+   the far eye collapsed to a sliver while the near one still read fine and
+   the pair looked unrelated. Blending each eye part-way toward facing the
+   camera keeps both legible without detaching them from the face. */
+const EYE_BILLBOARD = 0.55;
+const _camLocal = new THREE.Vector3();
+const _eyeDir = new THREE.Vector3();
+const _qBill = new THREE.Quaternion();
+const _Z = new THREE.Vector3(0, 0, 1);
+
+function orientEyes() {
+  head.updateMatrixWorld(true);
+  _camLocal.copy(camera.position);
+  head.worldToLocal(_camLocal);
+  for (const eye of eyes) {
+    _eyeDir.copy(_camLocal).sub(eye.group.position).normalize();
+    _qBill.setFromUnitVectors(_Z, _eyeDir);
+    eye.group.quaternion.copy(eye.qSurface).slerp(_qBill, EYE_BILLBOARD);
+  }
+}
+
 function staticPose() {
   intro = 1;
   blinkT = -1;
@@ -838,6 +863,7 @@ function staticPose() {
      than a dead-front mannequin, and it never moves. */
   head.rotation.set(-0.05, -0.14, 0.02);
   body.rotation.set(0, -0.07, 0);
+  orientEyes();
   for (const { wrap, def } of arms) {
     wrap.position.set(def.x, def.y, def.z);
     wrap.rotation.set(0, 0, def.rz);
@@ -884,6 +910,8 @@ function tick() {
 
   body.rotation.y = look.x * 0.28;
   body.rotation.x = look.y * 0.12;
+
+  orientEyes();
 
   for (const { wrap, def } of arms) {
     const w = Math.sin(t * 2.0 + def.phase);
