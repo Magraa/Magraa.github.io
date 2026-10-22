@@ -125,7 +125,24 @@
         </ul>
       </div>
 
-      <aside class="profile-card" aria-label="Profile summary" data-reveal>
+      <div class="hero-side">
+        <div class="mascot" aria-hidden="true" data-mascot>
+          <div class="mascot__rig">
+            <div class="mascot__plate" style="--z:-34px;--s:1.0548"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-shadow"/></svg></div>
+            <div class="mascot__plate" style="--z:-26px;--s:1.0419"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-collar-back"/></svg></div>
+            <div class="mascot__plate mascot__plate--breath" style="--z:-14px;--s:1.0226"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-body"/></svg></div>
+            <div class="mascot__plate" style="--z:0px;--s:1"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-ears"/></svg></div>
+            <div class="mascot__plate" style="--z:0px;--s:1"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-collar-front"/></svg></div>
+            <div class="mascot__plate mascot__plate--breath" style="--z:10px;--s:0.9839"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-head"/></svg></div>
+            <div class="mascot__plate" style="--z:18px;--s:0.9710"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-brow"/></svg></div>
+            <div class="mascot__plate" style="--z:24px;--s:0.9613"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-sockets"/></svg></div>
+            <div class="mascot__plate" style="--z:34px;--s:0.9452"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-irises" class="mascot__iris"/></svg></div>
+            <div class="mascot__plate" style="--z:44px;--s:0.9290"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-glints" class="mascot__glint"/></svg></div>
+            <div class="mascot__plate" style="--z:50px;--s:0.9194"><svg viewBox="0 0 320 340" overflow="visible"><use href="#msk-lids" class="mascot__lid"/></svg></div>
+          </div>
+        </div>
+
+        <aside class="profile-card" aria-label="Profile summary" data-reveal>
         <div class="profile-card__bar">
           <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
           <span>profile.json</span>
@@ -141,7 +158,8 @@
           <span class="status"><i aria-hidden="true"></i>Open to work</span>
           <a href="#contact">Start a conversation <span aria-hidden="true">→</span></a>
         </div>
-      </aside>
+        </aside>
+      </div>
     </section>
 
     <section class="proof-strip" aria-label="Career highlights" data-reveal>
@@ -692,10 +710,55 @@
       </article>
 
       <div class="more-work" data-reveal>
-        <p class="kicker">Also built</p>
-        <div class="more-work__row">
-          <a href="https://github.com/Magraa/FinAudit-AI-Showcase" target="_blank" rel="noopener noreferrer"><strong>FinAudit AI</strong><span>Bank reconciliation and fraud audit pipeline</span></a>
-          <a href="https://github.com/Magraa/ProperCoupons" target="_blank" rel="noopener noreferrer"><strong>ProperCoupons</strong><span>Cryptographic coupon generator for a D2C brand</span></a>
+        <div class="more-work__header">
+          <div>
+            <p class="kicker">Also engineered</p>
+            <h3 class="more-work__title">Additional Systems &amp; Platforms</h3>
+          </div>
+          <span class="more-work__hint">Click any project to inspect architecture &amp; overview</span>
+        </div>
+        <div class="more-work__grid">
+          <!-- 1. TenderFlow AI -->
+          <button class="more-work__card" type="button" data-project-modal="tenderflow" aria-haspopup="dialog" aria-label="Inspect TenderFlow AI project overview">
+            <div class="more-work__card-top">
+              <span class="more-work__tag more-work__tag--live"><i class="hud__pulse" aria-hidden="true"></i>Live Platform</span>
+              <span class="more-work__year">2026</span>
+            </div>
+            <strong class="more-work__name">TenderFlow AI</strong>
+            <p class="more-work__summary">Autonomous government tender intelligence, GeM scraper, and multimodal PDF clause extraction platform.</p>
+            <div class="more-work__card-foot">
+              <span class="more-work__cta">View Overview <span aria-hidden="true">↗</span></span>
+              <span class="more-work__stack">Next.js · Gemini · Firestore</span>
+            </div>
+          </button>
+
+          <!-- 2. CoupleTrust -->
+          <button class="more-work__card" type="button" data-project-modal="coupletrust" aria-haspopup="dialog" aria-label="Inspect CoupleTrust Android app overview">
+            <div class="more-work__card-top">
+              <span class="more-work__tag more-work__tag--android">Android Compose</span>
+              <span class="more-work__year">2026</span>
+            </div>
+            <strong class="more-work__name">CoupleTrust</strong>
+            <p class="more-work__summary">Privacy-first digital transparency &amp; mutual consent app for couples. Transparency, not surveillance.</p>
+            <div class="more-work__card-foot">
+              <span class="more-work__cta">View Overview <span aria-hidden="true">↗</span></span>
+              <span class="more-work__stack">Kotlin · Jetpack Compose · MVVM</span>
+            </div>
+          </button>
+
+          <!-- 3. FinAudit AI -->
+          <button class="more-work__card" type="button" data-project-modal="finaudit" aria-haspopup="dialog" aria-label="Inspect FinAudit AI fraud audit overview">
+            <div class="more-work__card-top">
+              <span class="more-work__tag more-work__tag--audit">Audit Engine</span>
+              <span class="more-work__year">2026</span>
+            </div>
+            <strong class="more-work__name">FinAudit AI</strong>
+            <p class="more-work__summary">Automated bank reconciliation, ledger fraud detection, and invoice mismatch auditing with sub-second Polars engine.</p>
+            <div class="more-work__card-foot">
+              <span class="more-work__cta">View Overview <span aria-hidden="true">↗</span></span>
+              <span class="more-work__stack">Python · FastAPI · Polars</span>
+            </div>
+          </button>
         </div>
       </div>
     </section>
@@ -1079,6 +1142,54 @@
     </figure>
   </dialog>
 
+  <!-- Project Overview & Architecture Modal Dialog -->
+  <dialog class="project-modal" id="project-modal" tabindex="-1" aria-labelledby="project-modal-title">
+    <div class="project-modal__shell">
+      <header class="project-modal__header">
+        <div class="project-modal__title-group">
+          <div class="project-modal__status-row">
+            <span class="project-modal__badge" id="project-modal-badge">Production Live</span>
+            <span class="project-modal__year" id="project-modal-year">2026</span>
+          </div>
+          <h3 class="project-modal__title" id="project-modal-title">Project Title</h3>
+          <p class="project-modal__subtitle" id="project-modal-subtitle">Project Subtitle</p>
+          <span class="project-modal__role" id="project-modal-role">Role Citation</span>
+        </div>
+        <button class="project-modal__close" type="button" id="project-modal-close" aria-label="Close project dialog">✕</button>
+      </header>
+
+      <div class="project-modal__body">
+        <div class="project-modal__metrics" id="project-modal-metrics">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div class="project-modal__section">
+          <h4 class="project-modal__section-heading">Architecture &amp; Engineering Solution</h4>
+          <div class="project-modal__prose" id="project-modal-overview">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <div class="project-modal__section">
+          <h4 class="project-modal__section-heading">Core Technologies</h4>
+          <ul class="project-modal__tags" id="project-modal-tags">
+            <!-- Populated dynamically -->
+          </ul>
+        </div>
+      </div>
+
+      <footer class="project-modal__footer">
+        <button class="button button--secondary" type="button" id="project-modal-dismiss">Done</button>
+        <div class="project-modal__actions">
+          <a class="button button--primary" id="project-modal-link" href="#" target="_blank" rel="noopener noreferrer">
+            <span id="project-modal-link-label">Open Live Portal</span>
+            <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 12 12 4M6 4h6v6"/></svg>
+          </a>
+        </div>
+      </footer>
+    </div>
+  </dialog>
+
   <dialog class="palette" id="palette" aria-label="Command palette">
     <div class="palette__box">
       <div class="palette__row">
@@ -1090,6 +1201,91 @@
       <p class="palette__foot"><span>↑↓ move</span><span>↵ run</span><span>Esc close</span></p>
     </div>
   </dialog>
+
+  <svg class="mascot-sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <radialGradient id="msk-shadow-grad" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#050505" stop-opacity=".6"/>
+        <stop offset=".65" stop-color="#050505" stop-opacity=".2"/>
+        <stop offset="1" stop-color="#050505" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="msk-eye-glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#e0a678" stop-opacity=".42"/>
+        <stop offset=".6" stop-color="#e0a678" stop-opacity=".18"/>
+        <stop offset="1" stop-color="#e0a678" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="msk-body-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2f2a22"/>
+        <stop offset="1" stop-color="#181510"/>
+      </linearGradient>
+      <linearGradient id="msk-head-grad" x1=".2" y1="0" x2=".8" y2="1">
+        <stop offset="0" stop-color="#4c453a"/>
+        <stop offset="1" stop-color="#272319"/>
+      </linearGradient>
+
+      <g id="msk-shadow">
+        <ellipse cx="160" cy="326" rx="84" ry="14" fill="url(#msk-shadow-grad)"/>
+      </g>
+
+      <g id="msk-collar-back">
+        <path d="M100 198 L220 198 L236 230 L84 230 Z" fill="#242019" stroke="rgba(243,239,231,.26)" stroke-width="1.4" stroke-linejoin="round"/>
+      </g>
+
+      <g id="msk-body">
+        <path d="M160 318C116 318 96 294 96 266C96 232 120 212 160 212C200 212 224 232 224 266C224 294 204 318 160 318Z" fill="url(#msk-body-grad)" stroke="rgba(243,239,231,.3)" stroke-width="1.5"/>
+        <path d="M116 252C122 236 138 226 160 224" fill="none" stroke="rgba(243,239,231,.12)" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="144" cy="276" r="3.4" fill="rgba(243,239,231,.36)"/>
+        <circle cx="160" cy="276" r="3.4" fill="rgba(243,239,231,.36)"/>
+        <circle cx="176" cy="276" r="3.4" fill="rgba(243,239,231,.36)"/>
+      </g>
+
+      <g id="msk-ears">
+        <path d="M160 56 L160 30" fill="none" stroke="rgba(224,166,120,.65)" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="160" cy="24" r="5.4" fill="#e0a678"/>
+        <circle cx="158.4" cy="22.4" r="1.8" fill="#f6e2cb" opacity=".8"/>
+      </g>
+
+      <g id="msk-head">
+        <rect x="78" y="54" width="164" height="152" rx="47" fill="url(#msk-head-grad)" stroke="rgba(243,239,231,.34)" stroke-width="1.5"/>
+        <path d="M104 82C114 70 130 64 150 62" fill="none" stroke="rgba(243,239,231,.22)" stroke-width="3" stroke-linecap="round"/>
+        <rect x="94" y="76" width="132" height="108" rx="30" fill="#100e0a" stroke="rgba(224,166,120,.24)" stroke-width="1.2"/>
+        <path d="M108 100C120 86 138 80 160 80C182 80 200 86 212 100" fill="none" stroke="rgba(243,239,231,.1)" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+
+      <g id="msk-brow">
+        <rect x="132" y="190" width="56" height="3" rx="1.5" fill="#e0a678" opacity=".42"/>
+      </g>
+
+      <g id="msk-sockets">
+        <circle cx="128" cy="128" r="24" fill="url(#msk-eye-glow)"/>
+        <circle cx="192" cy="128" r="24" fill="url(#msk-eye-glow)"/>
+        <circle cx="128" cy="128" r="22" fill="#060606" stroke="rgba(224,166,120,.32)" stroke-width="1.1"/>
+        <circle cx="192" cy="128" r="22" fill="#060606" stroke="rgba(224,166,120,.32)" stroke-width="1.1"/>
+      </g>
+
+      <g id="msk-irises">
+        <circle cx="128" cy="128" r="14" fill="#e9b184"/>
+        <circle cx="192" cy="128" r="14" fill="#e9b184"/>
+        <circle cx="128" cy="128" r="6.4" fill="#0d0a07"/>
+        <circle cx="192" cy="128" r="6.4" fill="#0d0a07"/>
+      </g>
+
+      <g id="msk-glints">
+        <circle cx="123.7" cy="123.6" r="4" fill="#c7e0d1" opacity=".95"/>
+        <circle cx="187.7" cy="123.6" r="4" fill="#c7e0d1" opacity=".95"/>
+      </g>
+
+      <g id="msk-lids">
+        <rect x="106" y="106" width="44" height="44" rx="22" fill="#100e0a"/>
+        <rect x="170" y="106" width="44" height="44" rx="22" fill="#100e0a"/>
+      </g>
+
+      <g id="msk-collar-front">
+        <path d="M100 200 L160 224 L220 200 L220 216 L160 242 L100 216 Z" fill="#2b2620" stroke="rgba(243,239,231,.26)" stroke-width="1.3" stroke-linejoin="round"/>
+        <path d="M100 200 L160 224 L220 200" fill="none" stroke="rgba(224,166,120,.32)" stroke-width="1.4"/>
+      </g>
+    </defs>
+  </svg>
 
   <script src="script.js" defer></script>
   <!-- Agentation (Development Visual Feedback) -->

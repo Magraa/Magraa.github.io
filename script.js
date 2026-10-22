@@ -1921,4 +1921,167 @@
       });
     });
   }
+
+  /* 7. Project Overview & Architecture Modal Dialog ------------------- */
+  const projectModal = document.getElementById("project-modal");
+  if (projectModal) {
+    const modalBadge = document.getElementById("project-modal-badge");
+    const modalYear = document.getElementById("project-modal-year");
+    const modalTitle = document.getElementById("project-modal-title");
+    const modalSubtitle = document.getElementById("project-modal-subtitle");
+    const modalRole = document.getElementById("project-modal-role");
+    const modalMetrics = document.getElementById("project-modal-metrics");
+    const modalOverview = document.getElementById("project-modal-overview");
+    const modalTags = document.getElementById("project-modal-tags");
+    const modalLink = document.getElementById("project-modal-link");
+    const modalLinkLabel = document.getElementById("project-modal-link-label");
+    const closeBtn = document.getElementById("project-modal-close");
+    const dismissBtn = document.getElementById("project-modal-dismiss");
+
+    const PROJECT_DETAILS = {
+      tenderflow: {
+        badge: "Live Platform · Production",
+        badgeType: "live",
+        year: "2026",
+        title: "TenderFlow AI",
+        subtitle: "Autonomous Government Tender Discovery & Multimodal AI Procurement Platform",
+        role: "Lead Full-Stack Architect & Systems Engineer",
+        metrics: [
+          { val: "24/7", label: "Autonomous GeM / CPPP tender scraping pipeline" },
+          { val: "< 3s", label: "80-page PDF clause & ATC condition extraction" },
+          { val: "Bilingual", label: "Hindi (हिंदी सारांश) & English executive briefs" }
+        ],
+        paragraphs: [
+          "Public procurement notices in India are fragmented across GeM, CPPP, and state portals, with buyers uploading complex 50–100 page PDFs and secondary specification sheets. Missing an EMD exemption deadline, turnover threshold, or OEM authorization clause disqualifies bids before evaluation.",
+          "TenderFlow AI automates this entire lifecycle: Playwright background workers monitor designated ministries and product categories 24/7, bypassing portal bot defenses. Gemini 2.0 Flash Vision reads scanned documents to extract eligibility criteria, compliance risks, and dual-language summaries, pushing instant alerts to enterprise contractors."
+        ],
+        techStack: ["Next.js 15", "TypeScript", "Firebase Firestore", "Gemini 2.0 Flash Vision", "Playwright", "Tailwind CSS"],
+        primaryAction: {
+          label: "Open Live Portal (portal.shivlinkindustries.in)",
+          url: "https://portal.shivlinkindustries.in/"
+        }
+      },
+      coupletrust: {
+        badge: "Native Android · Verified MVP",
+        badgeType: "android",
+        year: "2026",
+        title: "CoupleTrust",
+        subtitle: "Privacy-First Digital Transparency & Mutual Consent Platform for Couples",
+        role: "Creator & Android Systems Developer",
+        metrics: [
+          { val: "100%", label: "Mutual, voluntary consent (transparency, not surveillance)" },
+          { val: "17 / 17", label: "Firestore security rule emulator tests verified" },
+          { val: "Zero Chat", label: "No private messages accessed; strictly aggregate metadata" }
+        ],
+        paragraphs: [
+          "Built around the core tenet 'Transparency, not surveillance', CoupleTrust was engineered for couples who want to voluntarily share agreed digital-usage metrics (screen time, app categories, notification volume) without spyware, keyloggers, or hidden trackers.",
+          "All data sharing requires strict two-way mutual reciprocity: either partner can revoke consent instantly, triggering immediate cryptographic data expiry. Architected with modern Kotlin and Jetpack Compose under Clean Architecture + MVVM, supported by 17 unit-tested Firestore security rules and Cloud Functions."
+        ],
+        techStack: ["Kotlin", "Jetpack Compose", "Clean Architecture", "MVVM", "Android SDK 37", "Firebase Firestore Rules", "Cloud Functions (TypeScript)"],
+        primaryAction: {
+          label: "View Architecture & GitHub",
+          url: "https://github.com/Magraa"
+        }
+      },
+      finaudit: {
+        badge: "Fintech · Fraud Audit Engine",
+        badgeType: "audit",
+        year: "2026",
+        title: "FinAudit AI",
+        subtitle: "Bank Statement Reconciliation & Automated Ledger Fraud Audit Pipeline",
+        role: "Lead Backend & Systems Architect",
+        metrics: [
+          { val: "99.8%", label: "Automated statement transaction reconciliation" },
+          { val: "< 850ms", label: "10,000-line bank statement parsing via Polars" },
+          { val: "100% Trail", label: "Cryptographically auditable anomaly evidence logs" }
+        ],
+        paragraphs: [
+          "Reconciling multi-account bank statements against ERP ledgers and GST tax filings is notoriously error-prone and vulnerable to delayed fraud detection. FinAudit AI replaces manual Excel reconciliation with an autonomous vectorized auditing pipeline.",
+          "Using Polars for sub-second dataframe processing, it analyzes thousands of ledger rows in milliseconds. The pipeline performs fuzzy counterparty matching, flags circular transfers and duplicate payments, detects tax credit discrepancies, and generates forensic audit summaries with verifiable proof logs."
+        ],
+        techStack: ["Python", "FastAPI", "Polars", "PostgreSQL", "OpenAI / Gemini", "Docker", "PyTest"],
+        primaryAction: {
+          label: "GitHub Repository (FinAudit AI)",
+          url: "https://github.com/Magraa/FinAudit-AI-Showcase"
+        }
+      }
+    };
+
+    let activeTrigger = null;
+
+    const openProjectModal = (key, triggerEl) => {
+      const data = PROJECT_DETAILS[key];
+      if (!data) return;
+
+      activeTrigger = triggerEl;
+
+      if (modalBadge) {
+        modalBadge.textContent = data.badge;
+        modalBadge.className = `project-modal__badge project-modal__badge--${data.badgeType}`;
+      }
+      if (modalYear) modalYear.textContent = data.year;
+      if (modalTitle) modalTitle.textContent = data.title;
+      if (modalSubtitle) modalSubtitle.textContent = data.subtitle;
+      if (modalRole) modalRole.textContent = data.role;
+
+      if (modalMetrics) {
+        modalMetrics.innerHTML = data.metrics.map((m) => `
+          <div class="project-modal__metric-card">
+            <span class="project-modal__metric-val">${m.val}</span>
+            <span class="project-modal__metric-label">${m.label}</span>
+          </div>
+        `).join("");
+      }
+
+      if (modalOverview) {
+        modalOverview.innerHTML = data.paragraphs.map((p) => `<p>${p}</p>`).join("");
+      }
+
+      if (modalTags) {
+        modalTags.innerHTML = data.techStack.map((t) => `<li>${t}</li>`).join("");
+      }
+
+      if (modalLink && modalLinkLabel) {
+        modalLink.href = data.primaryAction.url;
+        modalLinkLabel.textContent = data.primaryAction.label;
+      }
+
+      projectModal.showModal();
+      document.body.classList.add("dialog-open");
+      AudioFX.click();
+      Toast.show(`Opened ${data.title} Architecture Overview`, "info");
+    };
+
+    const closeProjectModal = () => {
+      if (projectModal.open) {
+        projectModal.close();
+        document.body.classList.remove("dialog-open");
+        AudioFX.tap();
+        if (activeTrigger instanceof HTMLElement) {
+          activeTrigger.focus();
+        }
+        activeTrigger = null;
+      }
+    };
+
+    document.querySelectorAll("[data-project-modal]").forEach((card) => {
+      card.addEventListener("click", () => {
+        const key = card.getAttribute("data-project-modal");
+        openProjectModal(key, card);
+      });
+    });
+
+    if (closeBtn) closeBtn.addEventListener("click", closeProjectModal);
+    if (dismissBtn) dismissBtn.addEventListener("click", closeProjectModal);
+
+    projectModal.addEventListener("click", (e) => {
+      if (e.target === projectModal) {
+        closeProjectModal();
+      }
+    });
+
+    projectModal.addEventListener("cancel", () => {
+      document.body.classList.remove("dialog-open");
+    });
+  }
 })();
