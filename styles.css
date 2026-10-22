@@ -4691,14 +4691,183 @@ html[data-motion="off"] .marquee-track {
   cursor: pointer;
 }
 
-/* 4. Hisab AI Natural Language Ledger Sandbox ---------------------- */
-.hisab-sandbox {
+/* ==========================================================================
+   4. Case Workbench & Collapsible Sandbox Drawer
+   ========================================================================== */
+.case-workbench {
   margin-top: 24px;
-  padding: 22px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--bg-elevated);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  transition: border-color 220ms var(--ease), box-shadow 220ms var(--ease);
+}
+
+.case-workbench:hover {
+  border-color: var(--line-strong);
+}
+
+.case-workbench--expanded {
+  border-color: rgba(224, 166, 120, 0.35);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.45);
+}
+
+.workbench-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 20px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 180ms var(--ease);
+}
+
+.workbench-trigger:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.workbench-trigger:focus-visible {
+  outline: 2px solid var(--copper);
+  outline-offset: -2px;
+}
+
+.workbench-trigger__lead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.workbench-trigger__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border: 1px solid rgba(224, 166, 120, 0.35);
+  border-radius: 999px;
+  background: rgba(224, 166, 120, 0.08);
+  color: var(--copper);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.workbench-trigger__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--copper);
+  box-shadow: 0 0 8px var(--copper);
+  animation: hudPulse 2s infinite ease-in-out;
+}
+
+.workbench-trigger__title {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workbench-trigger__meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.workbench-trigger__hint {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.workbench-trigger__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 180ms var(--ease);
+}
+
+.workbench-trigger:hover .workbench-trigger__action {
+  border-color: var(--copper);
+  color: var(--copper-soft);
+}
+
+.workbench-trigger__icon {
+  display: inline-block;
+  transition: transform 300ms var(--ease-spring);
+}
+
+.workbench-trigger[aria-expanded="true"] .workbench-trigger__icon {
+  transform: rotate(180deg);
+}
+
+.workbench-drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 360ms var(--ease-spring), opacity 260ms var(--ease);
+  opacity: 0;
+}
+
+.workbench-drawer[aria-hidden="false"] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.workbench-drawer__content {
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  padding: 22px;
+}
+
+@media (max-width: 760px) {
+  .workbench-trigger {
+    padding: 12px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .workbench-trigger__meta {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .workbench-trigger__hint {
+    display: none;
+  }
+  .workbench-drawer__content {
+    padding: 16px 12px;
+  }
+}
+
+/* ==========================================================================
+   5. Hisab AI Natural Language Bahi-Khata Ledger Sandbox
+   ========================================================================== */
+.hisab-sandbox {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .hisab-sandbox__head {
@@ -4726,7 +4895,16 @@ html[data-motion="off"] .marquee-track {
   color: var(--ink);
 }
 
+.hisab-sandbox__badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .hisab-sandbox__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 3px 8px;
   border: 1px solid rgba(169, 201, 182, 0.3);
   border-radius: 999px;
@@ -4735,6 +4913,12 @@ html[data-motion="off"] .marquee-track {
   font-family: var(--mono);
   font-size: 9.5px;
   letter-spacing: 0.03em;
+}
+
+.hisab-sandbox__badge--speed {
+  border-color: rgba(74, 222, 128, 0.35);
+  background: rgba(74, 222, 128, 0.08);
+  color: #4ade80;
 }
 
 .hisab-sandbox__chips {
@@ -4779,10 +4963,27 @@ html[data-motion="off"] .marquee-track {
   margin-bottom: 18px;
 }
 
-.hisab-sandbox__input {
+.hisab-sandbox__input-wrap {
+  position: relative;
   flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.hisab-sandbox__prompt-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--copper);
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.hisab-sandbox__input {
+  width: 100%;
   height: 42px;
-  padding: 0 14px;
+  padding: 0 14px 0 34px;
   border: 1px solid var(--line-strong);
   border-radius: 10px;
   background: var(--surface);
@@ -4790,7 +4991,7 @@ html[data-motion="off"] .marquee-track {
   font-family: var(--sans);
   font-size: 14px;
   outline: none;
-  transition: border-color 160ms var(--ease);
+  transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease);
 }
 
 .hisab-sandbox__input:focus {
@@ -4805,20 +5006,23 @@ html[data-motion="off"] .marquee-track {
 
 .hisab-sandbox__results {
   display: grid;
-  grid-template-columns: 1fr 220px;
+  grid-template-columns: 1fr 240px;
   gap: 18px;
 }
 
 .hisab-ledger {
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.28);
   overflow: hidden;
 }
 
 .hisab-ledger__header {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
+  gap: 8px;
   padding: 8px 12px;
   border-bottom: 1px solid var(--line);
   font-family: var(--mono);
@@ -4829,16 +5033,29 @@ html[data-motion="off"] .marquee-track {
   background: var(--surface);
 }
 
-.hisab-ledger__total {
-  color: var(--copper);
-  font-weight: 700;
+.hisab-ledger__balances {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hisab-ledger__balance {
+  font-weight: 600;
+}
+
+.hisab-ledger__balance--recv {
+  color: #4ade80;
+}
+
+.hisab-ledger__balance--pay {
+  color: #f87171;
 }
 
 .hisab-ledger__list {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 140px;
+  max-height: 180px;
   overflow-y: auto;
 }
 
@@ -4846,7 +5063,8 @@ html[data-motion="off"] .marquee-track {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  gap: 12px;
+  padding: 9px 12px;
   border-bottom: 1px solid rgba(243, 239, 231, 0.06);
   font-size: 12.5px;
   animation: ledgerSlideIn 240ms var(--ease-spring);
@@ -4857,20 +5075,103 @@ html[data-motion="off"] .marquee-track {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.hisab-ledger__cat {
+.hisab-ledger__item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.hisab-ledger__party-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hisab-ledger__party-name {
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.hisab-item-badge {
   padding: 1px 6px;
   border-radius: 4px;
-  background: rgba(224, 166, 120, 0.12);
-  color: var(--copper);
   font-family: var(--mono);
-  font-size: 9.5px;
-  margin-right: 8px;
+  font-size: 9px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.hisab-item-badge--supp {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #c084fc;
+}
+
+.hisab-item-badge--cust {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+}
+
+.hisab-item-badge--settled {
+  background: rgba(45, 212, 191, 0.15);
+  border: 1px solid rgba(45, 212, 191, 0.3);
+  color: #2dd4bf;
+}
+
+.hisab-item-badge--exp {
+  background: rgba(224, 166, 120, 0.15);
+  border: 1px solid rgba(224, 166, 120, 0.3);
+  color: var(--copper);
+}
+
+.hisab-ledger__note {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.hisab-ledger__time {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.hisab-ledger__item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.hisab-ledger__dir-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 .hisab-ledger__amt {
   font-family: var(--mono);
-  font-weight: 600;
-  color: var(--ink);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.hisab-amt--payable {
+  color: #f87171;
+}
+
+.hisab-amt--receivable {
+  color: #4ade80;
+}
+
+.hisab-amt--settled {
+  color: #2dd4bf;
+}
+
+.hisab-amt--expense {
+  color: var(--ink-soft);
 }
 
 .hisab-telemetry {
@@ -4898,13 +5199,13 @@ html[data-motion="off"] .marquee-track {
 }
 
 .hisab-telemetry__card strong {
-  font-size: 18px;
+  font-size: 15px;
   color: var(--mint);
   margin: 3px 0;
 }
 
 .hisab-telemetry__card span:last-child {
-  font-size: 10px;
+  font-size: 10.5px;
   color: var(--ink-soft);
 }
 
@@ -4914,14 +5215,15 @@ html[data-motion="off"] .marquee-track {
   }
 }
 
-/* 5. SIMVox-AI Latency Waterfall & Audio Workbench ----------------- */
+/* ==========================================================================
+   6. SIMVox-AI Latency Waterfall & Audio Workbench
+   ========================================================================== */
 .simvox-bench {
-  margin-top: 24px;
-  padding: 22px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--bg-elevated);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .simvox-bench__head {

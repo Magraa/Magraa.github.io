@@ -307,48 +307,78 @@
           <div class="stage-spotlight" aria-hidden="true"></div>
         </div>
 
-        <div class="hisab-sandbox" data-hisab-sandbox data-reveal>
-          <div class="hisab-sandbox__head">
-            <div class="hisab-sandbox__title">
-              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <h4>Live Client-Side Ledger Sandbox</h4>
+        <div class="case-workbench" data-workbench="hisab" data-reveal>
+          <button class="workbench-trigger" type="button" aria-expanded="false" aria-controls="workbench-panel-hisab">
+            <div class="workbench-trigger__lead">
+              <span class="workbench-trigger__pill"><span class="workbench-trigger__dot" aria-hidden="true"></span>Live Engine</span>
+              <span class="workbench-trigger__title">Interactive Bahi-Khata &amp; Entity Parser</span>
             </div>
-            <span class="hisab-sandbox__badge">IndexedDB Dexie Engine · 0ms Roundtrip</span>
-          </div>
-
-          <div class="hisab-sandbox__chips">
-            <span class="hisab-sandbox__chip-label">Try sample:</span>
-            <button class="chip" type="button" data-hisab-chip="Cab to Indiranagar ₹180">"Cab to Indiranagar ₹180"</button>
-            <button class="chip" type="button" data-hisab-chip="Blue Tokai iced latte ₹260">"Blue Tokai iced latte ₹260"</button>
-            <button class="chip" type="button" data-hisab-chip="Zepto groceries ₹640">"Zepto groceries ₹640"</button>
-          </div>
-
-          <form class="hisab-sandbox__form" data-hisab-form autocomplete="off">
-            <label class="sr-only" for="hisab-input">Natural language expense string</label>
-            <input class="hisab-sandbox__input" id="hisab-input" type="text" placeholder="e.g. Swiggy biryani dinner 350 or Auto 90" autocomplete="off" spellcheck="false" />
-            <button class="button button--secondary hisab-sandbox__btn" type="submit">Parse Entry (0ms)</button>
-          </form>
-
-          <div class="hisab-sandbox__results" data-hisab-results>
-            <div class="hisab-ledger">
-              <div class="hisab-ledger__header">
-                <span>Recent Parsed Ledger</span>
-                <span class="hisab-ledger__total" data-hisab-total>Total: ₹1,080</span>
-              </div>
-              <ul class="hisab-ledger__list" data-hisab-list>
-                <!-- Populated dynamically -->
-              </ul>
+            <div class="workbench-trigger__meta">
+              <span class="workbench-trigger__hint">Test "Gaurav 300" or "Mr Proper udhaar 3000"</span>
+              <span class="workbench-trigger__action">
+                <span class="workbench-trigger__label">Open Sandbox</span>
+                <svg class="workbench-trigger__icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+              </span>
             </div>
-            <div class="hisab-telemetry">
-              <div class="hisab-telemetry__card">
-                <span class="hisab-telemetry__kicker">Client Execution</span>
-                <strong>&lt; 1ms</strong>
-                <span>Zero server roundtrip</span>
-              </div>
-              <div class="hisab-telemetry__card">
-                <span class="hisab-telemetry__kicker">Offline Storage</span>
-                <strong>AES-GCM</strong>
-                <span>Local IndexedDB sync</span>
+          </button>
+
+          <div class="workbench-drawer" id="workbench-panel-hisab" aria-hidden="true">
+            <div class="workbench-drawer__content">
+              <div class="hisab-sandbox" data-hisab-sandbox>
+                <div class="hisab-sandbox__head">
+                  <div class="hisab-sandbox__title">
+                    <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                    <h4>Client-Side Bahi-Khata &amp; Entity Parser</h4>
+                  </div>
+                  <div class="hisab-sandbox__badges">
+                    <span class="hisab-sandbox__badge hisab-sandbox__badge--speed"><i class="hud__pulse" aria-hidden="true"></i>&lt;1ms Parse</span>
+                    <span class="hisab-sandbox__badge">IndexedDB Dexie · Offline 100%</span>
+                  </div>
+                </div>
+
+                <div class="hisab-sandbox__chips">
+                  <span class="hisab-sandbox__chip-label">Try Bahi-Khata sample:</span>
+                  <button class="chip" type="button" data-hisab-chip="Mr Proper udhaar 3000">"Mr Proper udhaar 3000"</button>
+                  <button class="chip" type="button" data-hisab-chip="Gaurav 300">"Gaurav 300"</button>
+                  <button class="chip" type="button" data-hisab-chip="Sharma Hardware 1200 cement">"Sharma Hardware 1200 cement"</button>
+                  <button class="chip" type="button" data-hisab-chip="Ramesh 500 jama">"Ramesh 500 jama"</button>
+                </div>
+
+                <form class="hisab-sandbox__form" data-hisab-form autocomplete="off">
+                  <label class="sr-only" for="hisab-input">Bahi-Khata natural language entry</label>
+                  <div class="hisab-sandbox__input-wrap">
+                    <span class="hisab-sandbox__prompt-icon">₹</span>
+                    <input class="hisab-sandbox__input" id="hisab-input" type="text" placeholder='e.g. "Gaurav 300" or "Mr Proper udhaar 3000" or "Ramesh 500 jama"' autocomplete="off" spellcheck="false" />
+                  </div>
+                  <button class="button button--secondary hisab-sandbox__btn" type="submit">Parse Khata (0ms)</button>
+                </form>
+
+                <div class="hisab-sandbox__results" data-hisab-results>
+                  <div class="hisab-ledger">
+                    <div class="hisab-ledger__header">
+                      <span>Bahi-Khata Running Ledger</span>
+                      <div class="hisab-ledger__balances">
+                        <span class="hisab-ledger__balance hisab-ledger__balance--recv" data-hisab-receivable>Owed to you: ₹300</span>
+                        <span class="hisab-ledger__balance hisab-ledger__balance--pay" data-hisab-payable>You owe: ₹4,200</span>
+                      </div>
+                    </div>
+                    <ul class="hisab-ledger__list" data-hisab-list>
+                      <!-- Populated dynamically -->
+                    </ul>
+                  </div>
+                  <div class="hisab-telemetry">
+                    <div class="hisab-telemetry__card">
+                      <span class="hisab-telemetry__kicker">Entity Classification</span>
+                      <strong id="hisab-last-party">Mr. Proper</strong>
+                      <span id="hisab-last-role">Supplier · You Owe ₹3,000</span>
+                    </div>
+                    <div class="hisab-telemetry__card">
+                      <span class="hisab-telemetry__kicker">Deterministic Engine</span>
+                      <strong>&lt; 1ms Parse</strong>
+                      <span>Zero server roundtrip needed</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -424,82 +454,102 @@
           <div class="stage-spotlight" aria-hidden="true"></div>
         </div>
 
-        <div class="simvox-bench" data-simvox-bench data-reveal>
-          <div class="simvox-bench__head">
-            <div class="simvox-bench__title">
-              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <h4>Live Voice Turn Telemetry &amp; Audio Oscilloscope</h4>
+        <div class="case-workbench" data-workbench="simvox" data-reveal>
+          <button class="workbench-trigger" type="button" aria-expanded="false" aria-controls="workbench-panel-simvox">
+            <div class="workbench-trigger__lead">
+              <span class="workbench-trigger__pill"><span class="workbench-trigger__dot" aria-hidden="true"></span>Live Telemetry</span>
+              <span class="workbench-trigger__title">Voice Turn Latency Bench &amp; Audio Oscilloscope</span>
             </div>
-            <div class="simvox-bench__stats">
-              <span class="simvox-bench__badge"><i class="hud__pulse" aria-hidden="true"></i>Target: &lt;800ms</span>
-              <span class="simvox-bench__mode" data-simvox-hz>48 kHz / 16-bit</span>
+            <div class="workbench-trigger__meta">
+              <span class="workbench-trigger__hint">Run WASAPI + Silero VAD + Gemini pipeline (&lt;800ms)</span>
+              <span class="workbench-trigger__action">
+                <span class="workbench-trigger__label">Open Bench</span>
+                <svg class="workbench-trigger__icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+              </span>
             </div>
-          </div>
+          </button>
 
-          <div class="simvox-bench__canvas-wrap">
-            <canvas class="simvox-bench__canvas" id="simvox-canvas" width="900" height="110" aria-label="Audio waveform visualizer"></canvas>
-            <div class="simvox-bench__overlay">
-              <span class="simvox-bench__freq"><span class="hud__pulse" aria-hidden="true"></span>WASAPI Loopback Active</span>
-              <span class="simvox-bench__db" data-simvox-db>-28.4 dB</span>
-            </div>
-          </div>
+          <div class="workbench-drawer" id="workbench-panel-simvox" aria-hidden="true">
+            <div class="workbench-drawer__content">
+              <div class="simvox-bench" data-simvox-bench>
+                <div class="simvox-bench__head">
+                  <div class="simvox-bench__title">
+                    <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                    <h4>Live Voice Turn Telemetry &amp; Audio Oscilloscope</h4>
+                  </div>
+                  <div class="simvox-bench__stats">
+                    <span class="simvox-bench__badge"><i class="hud__pulse" aria-hidden="true"></i>Target: &lt;800ms</span>
+                    <span class="simvox-bench__mode" data-simvox-hz>48 kHz / 16-bit</span>
+                  </div>
+                </div>
 
-          <div class="simvox-waterfall" id="simvox-waterfall">
-            <div class="simvox-waterfall__step" data-step="wasapi">
-              <div class="simvox-waterfall__meta">
-                <span class="simvox-waterfall__num">01</span>
-                <span class="simvox-waterfall__label">WASAPI Ring Buffer</span>
-              </div>
-              <div class="simvox-waterfall__bar-track">
-                <div class="simvox-waterfall__bar" style="width: 5%"></div>
-              </div>
-              <span class="simvox-waterfall__time">38ms</span>
-            </div>
-            <div class="simvox-waterfall__step" data-step="vad">
-              <div class="simvox-waterfall__meta">
-                <span class="simvox-waterfall__num">02</span>
-                <span class="simvox-waterfall__label">Silero VAD Silence Gate</span>
-              </div>
-              <div class="simvox-waterfall__bar-track">
-                <div class="simvox-waterfall__bar" style="width: 3%"></div>
-              </div>
-              <span class="simvox-waterfall__time">16ms</span>
-            </div>
-            <div class="simvox-waterfall__step" data-step="gemini">
-              <div class="simvox-waterfall__meta">
-                <span class="simvox-waterfall__num">03</span>
-                <span class="simvox-waterfall__label">Gemini Multimodal Live</span>
-              </div>
-              <div class="simvox-waterfall__bar-track">
-                <div class="simvox-waterfall__bar" style="width: 68%"></div>
-              </div>
-              <span class="simvox-waterfall__time">478ms</span>
-            </div>
-            <div class="simvox-waterfall__step" data-step="tts">
-              <div class="simvox-waterfall__meta">
-                <span class="simvox-waterfall__num">04</span>
-                <span class="simvox-waterfall__label">Edge-TTS Stream Buffer</span>
-              </div>
-              <div class="simvox-waterfall__bar-track">
-                <div class="simvox-waterfall__bar" style="width: 24%"></div>
-              </div>
-              <span class="simvox-waterfall__time">162ms</span>
-            </div>
-            <div class="simvox-waterfall__total">
-              <span>Total Latency Roundtrip:</span>
-              <strong class="simvox-waterfall__ms" data-simvox-total>694ms</strong>
-              <span class="simvox-waterfall__verdict">PASS &lt; 800ms SLA</span>
-            </div>
-          </div>
+                <div class="simvox-bench__canvas-wrap">
+                  <canvas class="simvox-bench__canvas" id="simvox-canvas" width="900" height="110" aria-label="Audio waveform visualizer"></canvas>
+                  <div class="simvox-bench__overlay">
+                    <span class="simvox-bench__freq"><span class="hud__pulse" aria-hidden="true"></span>WASAPI Loopback Active</span>
+                    <span class="simvox-bench__db" data-simvox-db>-28.4 dB</span>
+                  </div>
+                </div>
 
-          <div class="simvox-bench__actions">
-            <button class="button button--secondary simvox-bench__trigger" type="button" data-simvox-trigger>
-              <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><polygon points="4,2 14,8 4,14"/></svg>
-              Simulate Voice Turn
-            </button>
-            <div class="simvox-bench__rates">
-              <button class="simvox-bench__rate-btn active" type="button" data-rate="48">48 kHz</button>
-              <button class="simvox-bench__rate-btn" type="button" data-rate="16">16 kHz</button>
+                <div class="simvox-waterfall" id="simvox-waterfall">
+                  <div class="simvox-waterfall__step" data-step="wasapi">
+                    <div class="simvox-waterfall__meta">
+                      <span class="simvox-waterfall__num">01</span>
+                      <span class="simvox-waterfall__label">WASAPI Ring Buffer</span>
+                    </div>
+                    <div class="simvox-waterfall__bar-track">
+                      <div class="simvox-waterfall__bar" style="width: 5%"></div>
+                    </div>
+                    <span class="simvox-waterfall__time">38ms</span>
+                  </div>
+                  <div class="simvox-waterfall__step" data-step="vad">
+                    <div class="simvox-waterfall__meta">
+                      <span class="simvox-waterfall__num">02</span>
+                      <span class="simvox-waterfall__label">Silero VAD Silence Gate</span>
+                    </div>
+                    <div class="simvox-waterfall__bar-track">
+                      <div class="simvox-waterfall__bar" style="width: 3%"></div>
+                    </div>
+                    <span class="simvox-waterfall__time">16ms</span>
+                  </div>
+                  <div class="simvox-waterfall__step" data-step="gemini">
+                    <div class="simvox-waterfall__meta">
+                      <span class="simvox-waterfall__num">03</span>
+                      <span class="simvox-waterfall__label">Gemini Multimodal Live</span>
+                    </div>
+                    <div class="simvox-waterfall__bar-track">
+                      <div class="simvox-waterfall__bar" style="width: 68%"></div>
+                    </div>
+                    <span class="simvox-waterfall__time">478ms</span>
+                  </div>
+                  <div class="simvox-waterfall__step" data-step="tts">
+                    <div class="simvox-waterfall__meta">
+                      <span class="simvox-waterfall__num">04</span>
+                      <span class="simvox-waterfall__label">Edge-TTS Stream Buffer</span>
+                    </div>
+                    <div class="simvox-waterfall__bar-track">
+                      <div class="simvox-waterfall__bar" style="width: 24%"></div>
+                    </div>
+                    <span class="simvox-waterfall__time">162ms</span>
+                  </div>
+                  <div class="simvox-waterfall__total">
+                    <span>Total Latency Roundtrip:</span>
+                    <strong class="simvox-waterfall__ms" data-simvox-total>694ms</strong>
+                    <span class="simvox-waterfall__verdict">PASS &lt; 800ms SLA</span>
+                  </div>
+                </div>
+
+                <div class="simvox-bench__actions">
+                  <button class="button button--secondary simvox-bench__trigger" type="button" data-simvox-trigger>
+                    <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><polygon points="4,2 14,8 4,14"/></svg>
+                    Simulate Voice Turn
+                  </button>
+                  <div class="simvox-bench__rates">
+                    <button class="simvox-bench__rate-btn active" type="button" data-rate="48">48 kHz</button>
+                    <button class="simvox-bench__rate-btn" type="button" data-rate="16">16 kHz</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

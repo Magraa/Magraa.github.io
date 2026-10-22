@@ -1531,73 +1531,282 @@
     }
   });
 
-  /* 5. Hisab AI Natural Language Ledger Sandbox --------------------- */
+  /* 4. Interactive Case Workbench Collapsible Drawers ---------------- */
+  const workbenches = document.querySelectorAll("[data-workbench]");
+  workbenches.forEach((wb) => {
+    const trigger = wb.querySelector(".workbench-trigger");
+    const drawer = wb.querySelector(".workbench-drawer");
+    const label = wb.querySelector(".workbench-trigger__label");
+    const isSimvox = wb.getAttribute("data-workbench") === "simvox";
+
+    if (!trigger || !drawer) return;
+
+    trigger.addEventListener("click", () => {
+      const isExpanded = trigger.getAttribute("aria-expanded") === "true";
+      const nextState = !isExpanded;
+
+      trigger.setAttribute("aria-expanded", String(nextState));
+      drawer.setAttribute("aria-hidden", String(!nextState));
+      wb.classList.toggle("case-workbench--expanded", nextState);
+
+      if (label) {
+        label.textContent = nextState
+          ? (isSimvox ? "Close Bench" : "Close Sandbox")
+          : (isSimvox ? "Open Bench" : "Open Sandbox");
+      }
+
+      AudioFX.click();
+
+      if (nextState) {
+        Toast.show(
+          isSimvox
+            ? "Voice Telemetry Bench activated (<800ms SLA)"
+            : "Bahi-Khata Sandbox activated (<1ms local parse)",
+          "info"
+        );
+      }
+    });
+  });
+
+  /* 5. Hisab AI Natural Language Bahi-Khata Ledger Sandbox ------------ */
   const hisabSandbox = document.querySelector("[data-hisab-sandbox]");
   if (hisabSandbox) {
     const form = hisabSandbox.querySelector("[data-hisab-form]");
     const input = hisabSandbox.querySelector("#hisab-input");
     const list = hisabSandbox.querySelector("[data-hisab-list]");
-    const totalEl = hisabSandbox.querySelector("[data-hisab-total]");
+    const recvEl = hisabSandbox.querySelector("[data-hisab-receivable]");
+    const payEl = hisabSandbox.querySelector("[data-hisab-payable]");
+    const lastPartyEl = document.getElementById("hisab-last-party");
+    const lastRoleEl = document.getElementById("hisab-last-role");
     const chips = hisabSandbox.querySelectorAll("[data-hisab-chip]");
 
+    // Pre-loaded realistic Bahi-Khata ledger state
     const state = {
       entries: [
-        { desc: "Cab to Indiranagar", cat: "Travel", amt: 180, time: "09:02 AM" },
-        { desc: "Blue Tokai iced latte", cat: "Food", amt: 260, time: "08:45 AM" },
-        { desc: "Zepto groceries", cat: "Supplies", amt: 640, time: "Yesterday" }
+        {
+          party: "Mr. Proper",
+          role: "Supplier",
+          type: "Udhaar Taken",
+          desc: "Raw materials credit",
+          amt: 3000,
+          direction: "payable", // You owe
+          time: "Just now"
+        },
+        {
+          party: "Gaurav",
+          role: "Customer",
+          type: "Udhaar Given",
+          desc: "Credit sale",
+          amt: 300,
+          direction: "receivable", // Owes you
+          time: "10 mins ago"
+        },
+        {
+          party: "Sharma Hardware",
+          role: "Supplier",
+          type: "Udhaar Taken",
+          desc: "Cement materials",
+          amt: 1200,
+          direction: "payable", // You owe
+          time: "Yesterday"
+        },
+        {
+          party: "Ramesh",
+          role: "Customer",
+          type: "Payment Received",
+          desc: "Jama / settled balance",
+          amt: 500,
+          direction: "settled",
+          time: "2 days ago"
+        }
       ]
+    };
+
+    const KNOWN_PARTIES = {
+      "mr proper": { name: "Mr. Proper", role: "Supplier", desc: "Chemical & raw materials vendor" },
+      "mr. proper": { name: "Mr. Proper", role: "Supplier", desc: "Chemical & raw materials vendor" },
+      "mrproper": { name: "Mr. Proper", role: "Supplier", desc: "Chemical & raw materials vendor" },
+      "sharma hardware": { name: "Sharma Hardware", role: "Supplier", desc: "Building materials vendor" },
+      "sharma ji": { name: "Sharma Hardware", role: "Supplier", desc: "Building materials vendor" },
+      "gaurav": { name: "Gaurav", role: "Customer", desc: "Wholesale retail client" },
+      "ramesh": { name: "Ramesh", role: "Customer", desc: "Local customer" },
+      "mukesh": { name: "Mukesh", role: "Customer", desc: "Walk-in customer" },
+      "satyam": { name: "Satyam", role: "Customer", desc: "Customer account" }
     };
 
     const render = () => {
       if (!list) return;
-      list.innerHTML = state.entries.map((e) => `
-        <li class="hisab-ledger__item">
-          <div>
-            <span class="hisab-ledger__cat">${e.cat}</span>
-            <span>${e.desc}</span>
-          </div>
-          <span class="hisab-ledger__amt">₹${e.amt.toLocaleString("en-IN")}</span>
-        </li>
-      `).join("");
 
-      if (totalEl) {
-        const sum = state.entries.reduce((acc, curr) => acc + curr.amt, 0);
-        totalEl.textContent = `Total: ₹${sum.toLocaleString("en-IN")}`;
-      }
+      list.innerHTML = state.entries.map((e) => {
+        let badgeClass = "hisab-item-badge--cust";
+        let dirLabel = "";
+        let amtClass = "";
+
+        if (e.direction === "payable") {
+          badgeClass = "hisab-item-badge--supp";
+          dirLabel = "You owe";
+          amtClass = "hisab-amt--payable";
+        } else if (e.direction === "receivable") {
+          badgeClass = "hisab-item-badge--cust";
+          dirLabel = "Owed to you";
+          amtClass = "hisab-amt--receivable";
+        } else if (e.direction === "settled") {
+          badgeClass = "hisab-item-badge--settled";
+          dirLabel = "Jama / Received";
+          amtClass = "hisab-amt--settled";
+        } else {
+          badgeClass = "hisab-item-badge--exp";
+          dirLabel = "Expense Paid";
+          amtClass = "hisab-amt--expense";
+        }
+
+        return `
+          <li class="hisab-ledger__item">
+            <div class="hisab-ledger__item-left">
+              <div class="hisab-ledger__party-row">
+                <strong class="hisab-ledger__party-name">${e.party}</strong>
+                <span class="hisab-item-badge ${badgeClass}">${e.role}</span>
+              </div>
+              <span class="hisab-ledger__note">${e.desc} · <span class="hisab-ledger__time">${e.time}</span></span>
+            </div>
+            <div class="hisab-ledger__item-right">
+              <span class="hisab-ledger__dir-tag">${dirLabel}</span>
+              <span class="hisab-ledger__amt ${amtClass}">₹${e.amt.toLocaleString("en-IN")}</span>
+            </div>
+          </li>
+        `;
+      }).join("");
+
+      // Calculate Bahi-Khata balances
+      let totalRecv = 0;
+      let totalPay = 0;
+      state.entries.forEach((e) => {
+        if (e.direction === "receivable") totalRecv += e.amt;
+        else if (e.direction === "payable") totalPay += e.amt;
+      });
+
+      if (recvEl) recvEl.textContent = `Owed to you: ₹${totalRecv.toLocaleString("en-IN")}`;
+      if (payEl) payEl.textContent = `You owe: ₹${totalPay.toLocaleString("en-IN")}`;
     };
 
-    const parseEntry = (raw) => {
+    const parseKhataEntry = (raw) => {
       if (!raw || !raw.trim()) return;
       const text = raw.trim();
-      const numMatch = text.match(/(?:₹|rs\.?|inr)?\s*(\d+(?:,\d+)*(?:\.\d+)?)/i);
-      const amt = numMatch ? parseInt(numMatch[1].replace(/,/g, ""), 10) : 100;
-
-      let cat = "General";
       const lower = text.toLowerCase();
-      if (/cab|uber|ola|auto|metro|petrol|diesel|flight|train/.test(lower)) cat = "Travel";
-      else if (/coffee|tea|swiggy|zomato|starbucks|lunch|dinner|breakfast|burger|biryani|chai/.test(lower)) cat = "Food";
-      else if (/zepto|blinkit|instamart|groceries|milk|vegetables|supermarket/.test(lower)) cat = "Supplies";
-      else if (/aws|server|domain|supabase|vercel|wifi|recharge/.test(lower)) cat = "Infra";
 
-      let desc = text.replace(/(?:₹|rs\.?|inr)\s*\d+/gi, "").replace(/\b\d+\b/g, "").trim();
-      if (!desc) desc = "Quick Entry";
+      // Extract amount (supports ₹300, 300, 3k, 3000)
+      let amt = 300;
+      const numMatch = text.match(/(?:₹|rs\.?|inr)?\s*(\d+(?:,\d+)*(?:\.\d+)?)\s*([kK])?/i);
+      if (numMatch) {
+        amt = parseFloat(numMatch[1].replace(/,/g, ""));
+        if (numMatch[2]) amt *= 1000;
+      }
 
+      // Check intent keywords
+      const isUdhaar = /\b(udhaar|udhar|udhari|baki|credit|baaki)\b/i.test(lower);
+      const isJama = /\b(jama|mila|aaya|aya|received|settle|settled|vasool|paid back)\b/i.test(lower);
+      const isExpense = /\b(diesel|petrol|swiggy|zomato|chai|tea|auto|cab|uber|bill|electricity|rent|food)\b/i.test(lower);
+
+      // Identify party
+      let party = "";
+      let role = "Customer";
+      let direction = "receivable"; // Default: customer owes you
+      let desc = isUdhaar ? "Udhaar given" : "Khata credit";
+
+      // Match known parties first
+      let matchedPartyKey = null;
+      for (const key of Object.keys(KNOWN_PARTIES)) {
+        if (lower.includes(key)) {
+          matchedPartyKey = key;
+          break;
+        }
+      }
+
+      if (matchedPartyKey) {
+        const found = KNOWN_PARTIES[matchedPartyKey];
+        party = found.name;
+        role = found.role;
+        desc = found.desc;
+        if (role === "Supplier") {
+          // In Hisab AI: Supplier udhaar means "You owe supplier"
+          direction = isJama ? "settled" : "payable";
+          desc = isJama ? "Payment to supplier" : "Goods on Udhaar (Credit)";
+        } else {
+          // Customer udhaar means "Customer owes you"
+          direction = isJama ? "settled" : "receivable";
+          desc = isJama ? "Jama / Account settled" : "Udhaar sale (Owed to you)";
+        }
+      } else if (isExpense) {
+        const words = text.replace(/[\d,kK₹]/g, "").trim();
+        party = words.charAt(0).toUpperCase() + words.slice(1) || "Expense";
+        role = "Shop Expense";
+        direction = "expense";
+        desc = "Operational expense";
+      } else {
+        // Inferred entity from text tokens
+        const cleaned = text
+          .replace(/[\d,kK₹]/g, "")
+          .replace(/\b(udhaar|udhar|udhari|baki|jama|diya|liya|ko|se|for|via|cash|upi|cement)\b/gi, "")
+          .trim();
+        party = cleaned ? cleaned.split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : "Party";
+
+        // Supplier heuristics (stores, hardware, traders, enterprise)
+        if (/\b(hardware|traders|agency|enterprise|cement|supplies|wholesaler|distributor)\b/i.test(lower)) {
+          role = "Supplier";
+          direction = "payable";
+          desc = "Goods purchased on credit";
+        } else if (isJama) {
+          role = "Customer";
+          direction = "settled";
+          desc = "Jama / Account settled";
+        } else {
+          role = "Customer";
+          direction = "receivable";
+          desc = "Udhaar sale (Owed to you)";
+        }
+      }
+
+      // Add to front of ledger
       state.entries.unshift({
-        desc: desc.charAt(0).toUpperCase() + desc.slice(1),
-        cat,
+        party,
+        role,
+        type: isJama ? "Payment Received" : isUdhaar ? "Udhaar" : "Ledger Entry",
+        desc,
         amt,
+        direction,
         time: "Just now"
       });
 
+      // Keep max 8 items
+      if (state.entries.length > 8) state.entries.pop();
+
+      // Update telemetry display
+      if (lastPartyEl) lastPartyEl.textContent = party;
+      if (lastRoleEl) {
+        lastRoleEl.textContent = `${role} · ${
+          direction === "payable" ? `You Owe ₹${amt.toLocaleString("en-IN")}` :
+          direction === "receivable" ? `Owed to you ₹${amt.toLocaleString("en-IN")}` :
+          direction === "settled" ? `Settled ₹${amt.toLocaleString("en-IN")}` :
+          `Paid ₹${amt.toLocaleString("en-IN")}`
+        }`;
+      }
+
       render();
-      AudioFX.tap();
-      Toast.show(`Parsed ₹${amt} (${cat}) in 0.4ms into local ledger`, "success");
+      AudioFX.chime();
+      Toast.show(
+        `Parsed "${party}": ${
+          direction === "payable" ? `You owe ₹${amt}` :
+          direction === "receivable" ? `Owes you ₹${amt}` :
+          `Received ₹${amt}`
+        } (<1ms)`,
+        "success"
+      );
     };
 
     if (form && input) {
       form.addEventListener("submit", (e) => {
         e.preventDefault();
-        parseEntry(input.value);
+        parseKhataEntry(input.value);
         input.value = "";
       });
     }
@@ -1606,7 +1815,7 @@
       chip.addEventListener("click", () => {
         const val = chip.getAttribute("data-hisab-chip");
         if (input) input.value = val;
-        parseEntry(val);
+        parseKhataEntry(val);
       });
     });
 
