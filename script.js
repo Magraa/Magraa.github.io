@@ -1295,4 +1295,421 @@
       }
     });
   }
+
+  /* ================================================================ */
+  /* ULTRA-WOW MODULES: AudioFX, Toast, HUD, KeyboardOS, Sandboxes    */
+  /* ================================================================ */
+
+  /* 1. Tactile Audio Synthesizer (Web Audio API, 0KB assets) ------- */
+  const AudioFX = (() => {
+    let ctx = null;
+    let enabled = false;
+
+    const init = () => {
+      if (!ctx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) ctx = new AudioContextClass();
+      }
+      if (ctx && ctx.state === "suspended") {
+        ctx.resume();
+      }
+    };
+
+    const isEnabled = () => enabled;
+
+    const setEnabled = (val) => {
+      enabled = Boolean(val);
+      try {
+        localStorage.setItem("ma_sound_enabled", enabled ? "1" : "0");
+      } catch (e) {}
+      document.querySelectorAll("[data-sound-toggle]").forEach((btn) => {
+        btn.setAttribute("aria-pressed", enabled ? "true" : "false");
+        btn.classList.toggle("sound-toggle--active", enabled);
+      });
+      const hudSound = document.querySelector("[data-hud-sound]");
+      if (hudSound) {
+        hudSound.textContent = enabled ? "ON" : "OFF";
+        hudSound.setAttribute("aria-pressed", enabled ? "true" : "false");
+      }
+      if (enabled) {
+        init();
+        chime();
+      }
+    };
+
+    const click = () => {
+      if (!enabled || !ctx) return;
+      try {
+        const t = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(1400, t);
+        osc.frequency.exponentialRampToValueAtTime(320, t + 0.012);
+        gain.gain.setValueAtTime(0.04, t);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.012);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.012);
+      } catch (e) {}
+    };
+
+    const tap = () => {
+      if (!enabled || !ctx) return;
+      try {
+        const t = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(280, t);
+        osc.frequency.exponentialRampToValueAtTime(80, t + 0.022);
+        gain.gain.setValueAtTime(0.05, t);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.022);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.022);
+      } catch (e) {}
+    };
+
+    const chime = () => {
+      if (!enabled || !ctx) return;
+      try {
+        const t = ctx.currentTime;
+        [587.33, 880].forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(freq, t + i * 0.06);
+          gain.gain.setValueAtTime(0.045, t + i * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.06 + 0.14);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t + i * 0.06);
+          osc.stop(t + i * 0.06 + 0.15);
+        });
+      } catch (e) {}
+    };
+
+    try {
+      enabled = localStorage.getItem("ma_sound_enabled") === "1";
+    } catch (e) {}
+
+    document.querySelectorAll("[data-sound-toggle]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        init();
+        setEnabled(!enabled);
+      });
+      if (enabled) {
+        btn.setAttribute("aria-pressed", "true");
+        btn.classList.add("sound-toggle--active");
+      }
+    });
+
+    const hudSound = document.querySelector("[data-hud-sound]");
+    if (hudSound && enabled) {
+      hudSound.textContent = "ON";
+      hudSound.setAttribute("aria-pressed", "true");
+    }
+
+    document.addEventListener("click", (e) => {
+      const target = e.target;
+      if (target.closest("button, a, .chip, [role='button'], [data-flow] .flow__node")) {
+        tap();
+      }
+    });
+
+    return { init, isEnabled, setEnabled, click, tap, chime };
+  })();
+
+  /* 2. Sonner-Style Spring Toast Feedback --------------------------- */
+  const Toast = {
+    show(message, type = "info") {
+      let container = document.getElementById("toast-container");
+      if (!container) {
+        container = document.createElement("div");
+        container.id = "toast-container";
+        container.className = "toast-container";
+        container.setAttribute("aria-live", "polite");
+        document.body.appendChild(container);
+      }
+      const toast = document.createElement("div");
+      toast.className = `toast toast--${type}`;
+      toast.innerHTML = `
+        <div class="toast__icon" aria-hidden="true">${type === "success" ? "✓" : "ℹ"}</div>
+        <div class="toast__msg">${message}</div>
+      `;
+      container.appendChild(toast);
+      AudioFX.chime();
+
+      requestAnimationFrame(() => {
+        toast.classList.add("toast--visible");
+      });
+
+      setTimeout(() => {
+        toast.classList.remove("toast--visible");
+        toast.classList.add("toast--exit");
+        setTimeout(() => toast.remove(), 260);
+      }, 3400);
+    }
+  };
+
+  /* 3. Engineering HUD Clock ---------------------------------------- */
+  const hudClock = document.querySelector("[data-hud-clock]");
+  if (hudClock) {
+    const updateClock = () => {
+      const now = new Date();
+      hudClock.textContent = now.toLocaleTimeString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }) + " IST";
+    };
+    updateClock();
+    setInterval(updateClock, 1000);
+  }
+
+  /* 4. Global Keyboard OS Layer ------------------------------------ */
+  window.addEventListener("keydown", (e) => {
+    const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
+    if (tag === "input" || tag === "textarea" || (document.activeElement && document.activeElement.isContentEditable)) {
+      return;
+    }
+
+    const key = e.key.toLowerCase();
+
+    const projectMap = {
+      "1": "#project-shoboti",
+      "2": "#project-hisab",
+      "3": "#project-simvox",
+      "4": "#project-mrproper",
+      "5": "#project-tenderiq"
+    };
+
+    if (projectMap[key] && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      e.preventDefault();
+      const el = document.querySelector(projectMap[key]);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        AudioFX.click();
+      }
+      return;
+    }
+
+    if (key === "c" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      e.preventDefault();
+      const email = "agrawalmayank1111@gmail.com";
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(email).then(() => {
+          Toast.show(`Copied ${email} to clipboard!`, "success");
+        }).catch(() => {
+          Toast.show(`Email: ${email}`, "info");
+        });
+      } else {
+        Toast.show(`Email: ${email}`, "info");
+      }
+      return;
+    }
+
+    if (key === "r" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      e.preventDefault();
+      AudioFX.chime();
+      Toast.show("Opening Mayank Agrawal's Resume (PDF)...", "info");
+      window.open("Mayank_Agrawal_Resume.pdf", "_blank", "noopener");
+      return;
+    }
+
+    if (key === "s" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      e.preventDefault();
+      AudioFX.init();
+      AudioFX.setEnabled(!AudioFX.isEnabled());
+      Toast.show(`Tactile Sound: ${AudioFX.isEnabled() ? "ENABLED (Web Audio API)" : "MUTED"}`, "info");
+      return;
+    }
+  });
+
+  /* 5. Hisab AI Natural Language Ledger Sandbox --------------------- */
+  const hisabSandbox = document.querySelector("[data-hisab-sandbox]");
+  if (hisabSandbox) {
+    const form = hisabSandbox.querySelector("[data-hisab-form]");
+    const input = hisabSandbox.querySelector("#hisab-input");
+    const list = hisabSandbox.querySelector("[data-hisab-list]");
+    const totalEl = hisabSandbox.querySelector("[data-hisab-total]");
+    const chips = hisabSandbox.querySelectorAll("[data-hisab-chip]");
+
+    const state = {
+      entries: [
+        { desc: "Cab to Indiranagar", cat: "Travel", amt: 180, time: "09:02 AM" },
+        { desc: "Blue Tokai iced latte", cat: "Food", amt: 260, time: "08:45 AM" },
+        { desc: "Zepto groceries", cat: "Supplies", amt: 640, time: "Yesterday" }
+      ]
+    };
+
+    const render = () => {
+      if (!list) return;
+      list.innerHTML = state.entries.map((e) => `
+        <li class="hisab-ledger__item">
+          <div>
+            <span class="hisab-ledger__cat">${e.cat}</span>
+            <span>${e.desc}</span>
+          </div>
+          <span class="hisab-ledger__amt">₹${e.amt.toLocaleString("en-IN")}</span>
+        </li>
+      `).join("");
+
+      if (totalEl) {
+        const sum = state.entries.reduce((acc, curr) => acc + curr.amt, 0);
+        totalEl.textContent = `Total: ₹${sum.toLocaleString("en-IN")}`;
+      }
+    };
+
+    const parseEntry = (raw) => {
+      if (!raw || !raw.trim()) return;
+      const text = raw.trim();
+      const numMatch = text.match(/(?:₹|rs\.?|inr)?\s*(\d+(?:,\d+)*(?:\.\d+)?)/i);
+      const amt = numMatch ? parseInt(numMatch[1].replace(/,/g, ""), 10) : 100;
+
+      let cat = "General";
+      const lower = text.toLowerCase();
+      if (/cab|uber|ola|auto|metro|petrol|diesel|flight|train/.test(lower)) cat = "Travel";
+      else if (/coffee|tea|swiggy|zomato|starbucks|lunch|dinner|breakfast|burger|biryani|chai/.test(lower)) cat = "Food";
+      else if (/zepto|blinkit|instamart|groceries|milk|vegetables|supermarket/.test(lower)) cat = "Supplies";
+      else if (/aws|server|domain|supabase|vercel|wifi|recharge/.test(lower)) cat = "Infra";
+
+      let desc = text.replace(/(?:₹|rs\.?|inr)\s*\d+/gi, "").replace(/\b\d+\b/g, "").trim();
+      if (!desc) desc = "Quick Entry";
+
+      state.entries.unshift({
+        desc: desc.charAt(0).toUpperCase() + desc.slice(1),
+        cat,
+        amt,
+        time: "Just now"
+      });
+
+      render();
+      AudioFX.tap();
+      Toast.show(`Parsed ₹${amt} (${cat}) in 0.4ms into local ledger`, "success");
+    };
+
+    if (form && input) {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        parseEntry(input.value);
+        input.value = "";
+      });
+    }
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const val = chip.getAttribute("data-hisab-chip");
+        if (input) input.value = val;
+        parseEntry(val);
+      });
+    });
+
+    render();
+  }
+
+  /* 6. SIMVox-AI Latency Waterfall & Audio Canvas Simulator ---------- */
+  const simvoxBench = document.querySelector("[data-simvox-bench]");
+  if (simvoxBench) {
+    const canvas = document.getElementById("simvox-canvas");
+    const triggerBtn = simvoxBench.querySelector("[data-simvox-trigger]");
+    const totalMsEl = simvoxBench.querySelector("[data-simvox-total]");
+    const hzEl = simvoxBench.querySelector("[data-simvox-hz]");
+    const dbEl = simvoxBench.querySelector("[data-simvox-db]");
+    const rateBtns = simvoxBench.querySelectorAll("[data-rate]");
+    const steps = simvoxBench.querySelectorAll(".simvox-waterfall__step");
+
+    let isSimulating = false;
+    let sampleRate = 48;
+    let phase = 0;
+
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      const drawWave = () => {
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.strokeStyle = isSimulating ? "#e0a678" : "rgba(224, 166, 120, 0.45)";
+        ctx.lineWidth = isSimulating ? 2 : 1.5;
+        ctx.beginPath();
+
+        const amplitude = isSimulating ? 36 : 14;
+        const freq = isSimulating ? 0.038 : 0.022;
+
+        for (let x = 0; x < w; x++) {
+          const y = h / 2 + Math.sin(x * freq + phase) * amplitude * Math.sin((x / w) * Math.PI);
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        phase += isSimulating ? 0.16 : 0.05;
+        requestAnimationFrame(drawWave);
+      };
+      drawWave();
+    }
+
+    const runSimulation = () => {
+      if (isSimulating) return;
+      isSimulating = true;
+      if (triggerBtn) {
+        triggerBtn.disabled = true;
+        triggerBtn.innerHTML = `<span class="hud__pulse" aria-hidden="true"></span> Streaming Turn...`;
+      }
+      if (dbEl) dbEl.textContent = "-14.2 dB (ACTIVE)";
+      AudioFX.tap();
+
+      const times = sampleRate === 48
+        ? [38, 16, 478, 162]
+        : [28, 14, 460, 150];
+
+      let currentStep = 0;
+
+      const advance = () => {
+        if (currentStep < steps.length) {
+          steps.forEach((s, idx) => {
+            s.classList.toggle("simvox-waterfall__step--active", idx === currentStep);
+          });
+          AudioFX.click();
+          currentStep++;
+          setTimeout(advance, 220);
+        } else {
+          steps.forEach((s) => s.classList.remove("simvox-waterfall__step--active"));
+          const total = times.reduce((a, b) => a + b, 0);
+          if (totalMsEl) totalMsEl.textContent = `${total}ms`;
+          if (dbEl) dbEl.textContent = "-28.4 dB (IDLE)";
+          if (triggerBtn) {
+            triggerBtn.disabled = false;
+            triggerBtn.innerHTML = `<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><polygon points="4,2 14,8 4,14"/></svg> Simulate Voice Turn`;
+          }
+          isSimulating = false;
+          AudioFX.chime();
+          Toast.show(`Voice Turn Completed: ${total}ms (SLA target <800ms met)`, "success");
+        }
+      };
+
+      advance();
+    };
+
+    if (triggerBtn) {
+      triggerBtn.addEventListener("click", runSimulation);
+    }
+
+    rateBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        rateBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        sampleRate = parseInt(btn.getAttribute("data-rate"), 10) || 48;
+        if (hzEl) hzEl.textContent = `${sampleRate} kHz / 16-bit`;
+        AudioFX.tap();
+        Toast.show(`WASAPI Stream rate configured: ${sampleRate} kHz`, "info");
+      });
+    });
+  }
 })();

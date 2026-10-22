@@ -18,8 +18,10 @@
   --max: 1240px;
   --pad: clamp(20px, 5vw, 72px);
   --radius: 18px;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 *,
@@ -3430,12 +3432,36 @@ html[data-motion="off"] .marquee-track {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .palette-trigger__label {
+  /* A phone has no Ctrl/Cmd key, so show the word and drop the shortcut. */
+  .palette-trigger__kbd {
     display: none;
+  }
+
+  .palette-trigger {
+    padding: 0 12px;
+  }
+
+  .header-inner {
+    column-gap: 12px;
   }
 }
 
 @media (hover: none), (pointer: coarse) {
+  /* Every keyboard hint is a lie on a touch device. Keep the affordance,
+     remove the instruction. */
+  [data-palette-kbd],
+  .sound-toggle__kbd,
+  .palette__foot,
+  .shell__meta,
+  .hud__keyhint,
+  .hud__btn kbd {
+    display: none;
+  }
+
+  .palette-trigger {
+    padding: 0 14px;
+  }
+
   .xray__photo {
     -webkit-mask-image: none;
     mask-image: none;
@@ -4395,5 +4421,726 @@ html[data-motion="off"] .marquee-track {
     width: 34px;
     height: 34px;
     font-size: 11px;
+  }
+}
+
+/* ================================================================== */
+/* ULTRA-WOW EXPANSION PACK (Tactile Audio, HUD, Sandboxes, Toasts)   */
+/* ================================================================== */
+
+/* 1. Header Sound Toggle ------------------------------------------- */
+.sound-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(22, 21, 18, 0.65);
+  backdrop-filter: blur(8px);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 180ms var(--ease);
+}
+
+.sound-toggle:hover {
+  border-color: var(--copper-soft);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.sound-toggle:active {
+  transform: scale(0.97);
+}
+
+.sound-toggle__icon {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sound-toggle__icon--on {
+  display: none;
+}
+
+.sound-toggle--active {
+  border-color: var(--copper);
+  background: rgba(224, 166, 120, 0.12);
+  color: var(--copper-soft);
+}
+
+.sound-toggle--active .sound-toggle__icon--off {
+  display: none;
+}
+
+.sound-toggle--active .sound-toggle__icon--on {
+  display: inline-block;
+}
+
+.sound-toggle__kbd {
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+  font-size: 9px;
+  color: var(--muted);
+}
+
+/* 2. Engineering HUD Statusline ------------------------------------ */
+.hud {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  height: 34px;
+  border-top: 1px solid var(--line);
+  background: rgba(11, 11, 12, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  user-select: none;
+}
+
+.hud__inner {
+  max-width: var(--max);
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hud__col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud__pulse {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px #4ade80;
+  animation: pulseGlow 2.4s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.hud__clock {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.hud__sep {
+  opacity: 0.35;
+}
+
+.hud__tag {
+  color: var(--copper);
+}
+
+.hud__perf {
+  color: var(--mint);
+}
+
+.hud__keyhint kbd {
+  padding: 1px 4px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink-soft);
+  font-size: 9px;
+}
+
+.hud__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 160ms var(--ease);
+}
+
+.hud__btn:hover {
+  border-color: var(--copper-soft);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.hud__btn:active {
+  transform: scale(0.96);
+}
+
+.hud__btn kbd {
+  padding: 1px 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+  font-size: 8.5px;
+}
+
+.hud__btn strong {
+  color: var(--copper-soft);
+}
+
+@media (max-width: 860px) {
+  .hud__col--center {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .hud {
+    height: 30px;
+    font-size: 9.5px;
+  }
+  .hud__location {
+    display: none;
+  }
+}
+
+/* 3. Sonner-Style Spring Toast ------------------------------------- */
+.toast-container {
+  position: fixed;
+  bottom: 46px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 260px;
+  max-width: 420px;
+  padding: 10px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: #181613;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 13px;
+  opacity: 0;
+  transform: translateY(16px) scale(0.95);
+  transition: opacity 220ms var(--ease), transform 240ms var(--ease-spring);
+}
+
+.toast--visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.toast--exit {
+  opacity: 0;
+  transform: translateY(10px) scale(0.96);
+}
+
+.toast__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(224, 166, 120, 0.18);
+  color: var(--copper);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.toast__msg {
+  flex: 1;
+}
+
+.toast__action {
+  color: var(--copper-soft);
+  text-decoration: underline;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* 4. Hisab AI Natural Language Ledger Sandbox ---------------------- */
+.hisab-sandbox {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.hisab-sandbox__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.hisab-sandbox__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hisab-sandbox__title h4 {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.hisab-sandbox__badge {
+  padding: 3px 8px;
+  border: 1px solid rgba(169, 201, 182, 0.3);
+  border-radius: 999px;
+  background: rgba(169, 201, 182, 0.08);
+  color: var(--mint);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.03em;
+}
+
+.hisab-sandbox__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.hisab-sandbox__chip-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.chip {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 160ms var(--ease);
+}
+
+.chip:hover {
+  border-color: var(--copper);
+  color: var(--copper-soft);
+  transform: translateY(-1px);
+}
+
+.chip:active {
+  transform: scale(0.97);
+}
+
+.hisab-sandbox__form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.hisab-sandbox__input {
+  flex: 1;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 160ms var(--ease);
+}
+
+.hisab-sandbox__input:focus {
+  border-color: var(--copper);
+  box-shadow: 0 0 0 3px rgba(224, 166, 120, 0.15);
+}
+
+.hisab-sandbox__btn {
+  height: 42px;
+  white-space: nowrap;
+}
+
+.hisab-sandbox__results {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 18px;
+}
+
+.hisab-ledger {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.hisab-ledger__header {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--surface);
+}
+
+.hisab-ledger__total {
+  color: var(--copper);
+  font-weight: 700;
+}
+
+.hisab-ledger__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.hisab-ledger__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(243, 239, 231, 0.06);
+  font-size: 12.5px;
+  animation: ledgerSlideIn 240ms var(--ease-spring);
+}
+
+@keyframes ledgerSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hisab-ledger__cat {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(224, 166, 120, 0.12);
+  color: var(--copper);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  margin-right: 8px;
+}
+
+.hisab-ledger__amt {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.hisab-telemetry {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hisab-telemetry__card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  font-family: var(--mono);
+}
+
+.hisab-telemetry__kicker {
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hisab-telemetry__card strong {
+  font-size: 18px;
+  color: var(--mint);
+  margin: 3px 0;
+}
+
+.hisab-telemetry__card span:last-child {
+  font-size: 10px;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 760px) {
+  .hisab-sandbox__results {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 5. SIMVox-AI Latency Waterfall & Audio Workbench ----------------- */
+.simvox-bench {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.simvox-bench__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.simvox-bench__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.simvox-bench__title h4 {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.simvox-bench__stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.simvox-bench__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  border-radius: 999px;
+  background: rgba(74, 222, 128, 0.08);
+  color: #4ade80;
+  font-family: var(--mono);
+  font-size: 9.5px;
+}
+
+.simvox-bench__mode {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.simvox-bench__canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 110px;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #08080a;
+  overflow: hidden;
+}
+
+.simvox-bench__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.simvox-bench__overlay {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.simvox-bench__freq {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-soft);
+}
+
+.simvox-bench__db {
+  color: var(--copper);
+}
+
+.simvox-waterfall {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.simvox-waterfall__step {
+  display: grid;
+  grid-template-columns: 220px 1fr 60px;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 1px solid rgba(243, 239, 231, 0.06);
+  border-radius: 8px;
+  background: var(--surface);
+  font-family: var(--mono);
+  font-size: 11px;
+  transition: all 180ms var(--ease);
+}
+
+.simvox-waterfall__step--active {
+  border-color: var(--copper-soft);
+  background: rgba(224, 166, 120, 0.08);
+}
+
+.simvox-waterfall__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.simvox-waterfall__num {
+  color: var(--muted);
+  font-size: 9.5px;
+}
+
+.simvox-waterfall__label {
+  color: var(--ink);
+}
+
+.simvox-waterfall__bar-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.simvox-waterfall__bar {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--copper);
+  transition: width 350ms var(--ease-spring);
+}
+
+.simvox-waterfall__time {
+  text-align: right;
+  color: var(--copper-soft);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.simvox-waterfall__total {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.simvox-waterfall__ms {
+  font-size: 16px;
+  color: #4ade80;
+  font-weight: 700;
+}
+
+.simvox-waterfall__verdict {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+  font-size: 9.5px;
+  font-weight: 600;
+}
+
+.simvox-bench__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.simvox-bench__rates {
+  display: flex;
+  gap: 6px;
+}
+
+.simvox-bench__rate-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 160ms var(--ease);
+}
+
+.simvox-bench__rate-btn.active {
+  border-color: var(--copper);
+  background: rgba(224, 166, 120, 0.15);
+  color: var(--copper-soft);
+}
+
+@media (max-width: 640px) {
+  .simvox-waterfall__step {
+    grid-template-columns: 1fr 50px;
+  }
+  .simvox-waterfall__bar-track {
+    display: none;
   }
 }

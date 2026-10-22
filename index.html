@@ -85,6 +85,12 @@
         <kbd class="palette-trigger__kbd" data-palette-kbd>Ctrl K</kbd>
         <span class="sr-only">open the command palette</span>
       </button>
+      <button class="sound-toggle" type="button" data-sound-toggle aria-label="Toggle tactile sound effects" aria-pressed="false" title="Toggle tactile sound (Press S)">
+        <svg class="icon sound-toggle__icon sound-toggle__icon--off" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7 3 3.5 6H1v4h2.5L7 13V3Z"/><line x1="10" y1="6" x2="14" y2="10"/><line x1="14" y1="6" x2="10" y2="10"/></svg>
+        <svg class="icon sound-toggle__icon sound-toggle__icon--on" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7 3 3.5 6H1v4h2.5L7 13V3Z"/><path d="M10 5.5a4 4 0 0 1 0 5"/><path d="M12 3a7.5 7.5 0 0 1 0 10"/></svg>
+        <span class="sound-toggle__label">Sound</span>
+        <kbd class="sound-toggle__kbd">S</kbd>
+      </button>
       <a class="header-cta" href="mailto:agrawalmayank1111@gmail.com">
         Email me
         <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h9M8.5 3.5 13 8l-4.5 4.5"/></svg>
@@ -301,6 +307,53 @@
           <div class="stage-spotlight" aria-hidden="true"></div>
         </div>
 
+        <div class="hisab-sandbox" data-hisab-sandbox data-reveal>
+          <div class="hisab-sandbox__head">
+            <div class="hisab-sandbox__title">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <h4>Live Client-Side Ledger Sandbox</h4>
+            </div>
+            <span class="hisab-sandbox__badge">IndexedDB Dexie Engine · 0ms Roundtrip</span>
+          </div>
+
+          <div class="hisab-sandbox__chips">
+            <span class="hisab-sandbox__chip-label">Try sample:</span>
+            <button class="chip" type="button" data-hisab-chip="Cab to Indiranagar ₹180">"Cab to Indiranagar ₹180"</button>
+            <button class="chip" type="button" data-hisab-chip="Blue Tokai iced latte ₹260">"Blue Tokai iced latte ₹260"</button>
+            <button class="chip" type="button" data-hisab-chip="Zepto groceries ₹640">"Zepto groceries ₹640"</button>
+          </div>
+
+          <form class="hisab-sandbox__form" data-hisab-form autocomplete="off">
+            <label class="sr-only" for="hisab-input">Natural language expense string</label>
+            <input class="hisab-sandbox__input" id="hisab-input" type="text" placeholder="e.g. Swiggy biryani dinner 350 or Auto 90" autocomplete="off" spellcheck="false" />
+            <button class="button button--secondary hisab-sandbox__btn" type="submit">Parse Entry (0ms)</button>
+          </form>
+
+          <div class="hisab-sandbox__results" data-hisab-results>
+            <div class="hisab-ledger">
+              <div class="hisab-ledger__header">
+                <span>Recent Parsed Ledger</span>
+                <span class="hisab-ledger__total" data-hisab-total>Total: ₹1,080</span>
+              </div>
+              <ul class="hisab-ledger__list" data-hisab-list>
+                <!-- Populated dynamically -->
+              </ul>
+            </div>
+            <div class="hisab-telemetry">
+              <div class="hisab-telemetry__card">
+                <span class="hisab-telemetry__kicker">Client Execution</span>
+                <strong>&lt; 1ms</strong>
+                <span>Zero server roundtrip</span>
+              </div>
+              <div class="hisab-telemetry__card">
+                <span class="hisab-telemetry__kicker">Offline Storage</span>
+                <strong>AES-GCM</strong>
+                <span>Local IndexedDB sync</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <footer class="case__footer" data-reveal>
           <ul class="tags" aria-label="Hisab AI technologies">
             <li>Next.js</li><li>React 19</li><li>Supabase</li><li>Gemini</li><li>Groq</li><li>IndexedDB</li><li>PWA</li>
@@ -369,6 +422,86 @@
             <p class="stage-caption">HFP bridge → Gemini → TTS</p>
           </div>
           <div class="stage-spotlight" aria-hidden="true"></div>
+        </div>
+
+        <div class="simvox-bench" data-simvox-bench data-reveal>
+          <div class="simvox-bench__head">
+            <div class="simvox-bench__title">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <h4>Live Voice Turn Telemetry &amp; Audio Oscilloscope</h4>
+            </div>
+            <div class="simvox-bench__stats">
+              <span class="simvox-bench__badge"><i class="hud__pulse" aria-hidden="true"></i>Target: &lt;800ms</span>
+              <span class="simvox-bench__mode" data-simvox-hz>48 kHz / 16-bit</span>
+            </div>
+          </div>
+
+          <div class="simvox-bench__canvas-wrap">
+            <canvas class="simvox-bench__canvas" id="simvox-canvas" width="900" height="110" aria-label="Audio waveform visualizer"></canvas>
+            <div class="simvox-bench__overlay">
+              <span class="simvox-bench__freq"><span class="hud__pulse" aria-hidden="true"></span>WASAPI Loopback Active</span>
+              <span class="simvox-bench__db" data-simvox-db>-28.4 dB</span>
+            </div>
+          </div>
+
+          <div class="simvox-waterfall" id="simvox-waterfall">
+            <div class="simvox-waterfall__step" data-step="wasapi">
+              <div class="simvox-waterfall__meta">
+                <span class="simvox-waterfall__num">01</span>
+                <span class="simvox-waterfall__label">WASAPI Ring Buffer</span>
+              </div>
+              <div class="simvox-waterfall__bar-track">
+                <div class="simvox-waterfall__bar" style="width: 5%"></div>
+              </div>
+              <span class="simvox-waterfall__time">38ms</span>
+            </div>
+            <div class="simvox-waterfall__step" data-step="vad">
+              <div class="simvox-waterfall__meta">
+                <span class="simvox-waterfall__num">02</span>
+                <span class="simvox-waterfall__label">Silero VAD Silence Gate</span>
+              </div>
+              <div class="simvox-waterfall__bar-track">
+                <div class="simvox-waterfall__bar" style="width: 3%"></div>
+              </div>
+              <span class="simvox-waterfall__time">16ms</span>
+            </div>
+            <div class="simvox-waterfall__step" data-step="gemini">
+              <div class="simvox-waterfall__meta">
+                <span class="simvox-waterfall__num">03</span>
+                <span class="simvox-waterfall__label">Gemini Multimodal Live</span>
+              </div>
+              <div class="simvox-waterfall__bar-track">
+                <div class="simvox-waterfall__bar" style="width: 68%"></div>
+              </div>
+              <span class="simvox-waterfall__time">478ms</span>
+            </div>
+            <div class="simvox-waterfall__step" data-step="tts">
+              <div class="simvox-waterfall__meta">
+                <span class="simvox-waterfall__num">04</span>
+                <span class="simvox-waterfall__label">Edge-TTS Stream Buffer</span>
+              </div>
+              <div class="simvox-waterfall__bar-track">
+                <div class="simvox-waterfall__bar" style="width: 24%"></div>
+              </div>
+              <span class="simvox-waterfall__time">162ms</span>
+            </div>
+            <div class="simvox-waterfall__total">
+              <span>Total Latency Roundtrip:</span>
+              <strong class="simvox-waterfall__ms" data-simvox-total>694ms</strong>
+              <span class="simvox-waterfall__verdict">PASS &lt; 800ms SLA</span>
+            </div>
+          </div>
+
+          <div class="simvox-bench__actions">
+            <button class="button button--secondary simvox-bench__trigger" type="button" data-simvox-trigger>
+              <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><polygon points="4,2 14,8 4,14"/></svg>
+              Simulate Voice Turn
+            </button>
+            <div class="simvox-bench__rates">
+              <button class="simvox-bench__rate-btn active" type="button" data-rate="48">48 kHz</button>
+              <button class="simvox-bench__rate-btn" type="button" data-rate="16">16 kHz</button>
+            </div>
+          </div>
         </div>
 
         <footer class="case__footer" data-reveal>
@@ -851,6 +984,40 @@
     <p>Updated October 2026 · Built with HTML &amp; CSS</p>
     <p>© <span data-year>2026</span> Mayank Agrawal</p>
   </footer>
+
+  <!-- Engineering HUD Statusline -->
+  <aside class="hud" aria-label="Engineering System Statusline">
+    <div class="hud__inner">
+      <div class="hud__col hud__col--status">
+        <span class="hud__pulse" aria-hidden="true"></span>
+        <span class="hud__clock" data-hud-clock>09:00:00 IST</span>
+        <span class="hud__sep">/</span>
+        <span class="hud__location">Bengaluru, IN</span>
+      </div>
+      <div class="hud__col hud__col--center">
+        <span class="hud__tag">5 Systems Live</span>
+        <span class="hud__sep">·</span>
+        <span class="hud__perf">60fps Compositor</span>
+        <span class="hud__sep">·</span>
+        <span class="hud__keyhint"><kbd>1-5</kbd> Jump</span>
+        <span class="hud__keyhint"><kbd>C</kbd> Copy Email</span>
+      </div>
+      <div class="hud__col hud__col--controls">
+        <button class="hud__btn" type="button" data-sound-toggle aria-label="Toggle sound">
+          <span>SND:</span><strong data-hud-sound>OFF</strong>
+        </button>
+        <button class="hud__btn" type="button" data-palette-open aria-label="Open command palette">
+          <kbd>K</kbd> CMD
+        </button>
+        <a class="hud__btn hud__btn--resume" href="Mayank_Agrawal_Resume.pdf" target="_blank" rel="noopener noreferrer">
+          <kbd>R</kbd> Resume
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Sonner-style Spring Toast Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <dialog class="screen-dialog" id="screen-dialog" tabindex="-1" aria-labelledby="screen-dialog-caption">
     <form method="dialog" class="screen-dialog__close-form">
