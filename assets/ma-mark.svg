@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 15 48 33" role="img" aria-label="MA.">
+  <defs>
+    <linearGradient id="ma-copper" gradientUnits="userSpaceOnUse" x1="10" y1="18" x2="54" y2="45">
+      <stop offset="0%" stop-color="#f7dec6"/>
+      <stop offset="48%" stop-color="#e0a678"/>
+      <stop offset="100%" stop-color="#c57644"/>
+    </linearGradient>
+  </defs>
+  <!-- Sculpted editorial M (warm copper) -->
+  <path fill="url(#ma-copper)" d="
+    M 10.0 19.0 H 16.3 L 19.3 30.8 L 22.3 19.0 H 28.5 V 21.3
+    C 27.0 21.4, 26.5 22.0, 26.5 23.6
+    V 39.4
+    C 26.5 41.0, 27.0 41.6, 28.4 41.7
+    V 44.0 H 21.7 V 41.7
+    C 22.7 41.6, 23.2 41.0, 23.2 39.4
+    V 26.0 L 20.2 37.5 H 18.4 L 15.4 26.0 V 39.4
+    C 15.4 41.0, 15.9 41.6, 16.9 41.7
+    V 44.0 H 10.2 V 41.7
+    C 11.5 41.6, 12.0 41.0, 12.0 39.4
+    V 23.6
+    C 12.0 22.0, 11.5 21.4, 10.0 21.3 Z
+  "/>
+  <!-- Bold geometric A (warm ivory) -->
+  <path fill="#f3efe7" fill-rule="evenodd" d="
+    M 37.0 19.0 H 41.3 L 47.6 44.0 H 43.1 L 41.9 38.6 H 36.4 L 35.2 44.0 H 30.7 Z
+    M 39.15 24.2 L 37.1 34.5 H 41.2 Z
+  "/>
+  <!-- Copper signature dot -->
+  <circle cx="51.2" cy="41.25" r="2.75" fill="url(#ma-copper)"/>
+</svg>
