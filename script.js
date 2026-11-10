@@ -1,5 +1,16 @@
 (() => {
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let reduceMotion = reduceMotionQuery.matches;
+  const motionChangeListeners = [];
+  const notifyMotionChange = () => {
+    motionChangeListeners.forEach((listener) => listener());
+  };
+  if (typeof reduceMotionQuery.addEventListener === "function") {
+    reduceMotionQuery.addEventListener("change", (event) => {
+      reduceMotion = event.matches;
+      notifyMotionChange();
+    });
+  }
 
   const header = document.querySelector("[data-header]");
 
@@ -77,12 +88,19 @@
   }
 
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  let workDeck = null;
+  let expTheater = null;
+  let mascotSpeech = null;
 
   if (finePointer && !reduceMotion) {
     document.querySelectorAll("[data-stage]").forEach((stage) => {
       let frame = 0;
 
       stage.addEventListener("pointermove", (event) => {
+        const card = stage.closest(".case");
+        if (card && workDeck && workDeck.isActive() && !card.classList.contains("is-front")) {
+          return;
+        }
         window.cancelAnimationFrame(frame);
         frame = window.requestAnimationFrame(() => {
           const rect = stage.getBoundingClientRect();
@@ -192,6 +210,7 @@
       button.setAttribute("aria-pressed", String(motionOff));
       button.textContent = motionOff ? "Turn motion back on" : "Turn motion off";
     });
+    notifyMotionChange();
   };
 
   motionButtons.forEach((button) => {
@@ -208,6 +227,410 @@
   applyMotion();
 
   const stillPlaying = () => reduceMotion || motionOff;
+
+  /* ---------------------------------------------------------------- */
+  /* Preloader (1 -> 100)                                             */
+  /* ---------------------------------------------------------------- */
+
+  const preloader = document.getElementById("preloader");
+  let resolvePreloaderDone = null;
+  const preloaderDone = new Promise((resolve) => {
+    resolvePreloaderDone = resolve;
+  });
+
+  if (!preloader || stillPlaying()) {
+    document.documentElement.classList.remove("is-preloading");
+    if (preloader) preloader.remove();
+    resolvePreloaderDone();
+  } else {
+    const counterEl = preloader.querySelector("[data-preloader-counter]");
+    const fillEl = preloader.querySelector("[data-preloader-fill]");
+    const landmarks = Array.from(
+      document.querySelectorAll("header.site-header, main, footer.site-footer, aside.hud")
+    ).filter((el) => !el.hasAttribute("inert"));
+
+    document.documentElement.classList.add("is-preloading");
+    landmarks.forEach((el) => el.setAttribute("inert", ""));
+
+    const COUNT_MS = 1650;
+    const easeInOutQuad = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+    let rafId = 0;
+    let finished = false;
+    let startedAt = 0;
+    let lastShown = 1;
+    let brandShown = false;
+
+    const releaseLandmarks = () => {
+      document.documentElement.classList.remove("is-preloading");
+      landmarks.forEach((el) => el.removeAttribute("inert"));
+    };
+
+    const cleanup = () => {
+      if (!preloader.isConnected) return;
+      releaseLandmarks();
+      preloader.remove();
+    };
+
+    const startExit = () => {
+      if (finished) return;
+      finished = true;
+      window.cancelAnimationFrame(rafId);
+
+      if (counterEl && lastShown !== 100) {
+        counterEl.textContent = "100";
+        lastShown = 100;
+      }
+      if (fillEl) {
+        fillEl.style.transform = "scaleX(1)";
+      }
+      preloader.classList.add("is-ready", "is-complete");
+
+      window.setTimeout(() => {
+        preloader.classList.add("is-exiting");
+
+        window.setTimeout(() => {
+          releaseLandmarks();
+          resolvePreloaderDone();
+          preloader.classList.add("is-leaving");
+
+          preloader.addEventListener(
+            "transitionend",
+            (event) => {
+              if (event.target === preloader && event.propertyName === "transform") {
+                cleanup();
+              }
+            },
+            { once: true }
+          );
+          window.setTimeout(cleanup, 750);
+        }, 150);
+      }, 110);
+    };
+
+    const step = (now) => {
+      if (finished) return;
+      if (!startedAt) startedAt = now;
+      const elapsed = now - startedAt;
+      const t = Math.min(1, elapsed / COUNT_MS);
+      const eased = easeInOutQuad(t);
+      const value = Math.min(100, Math.max(1, 1 + Math.round(eased * 99)));
+
+      if (!brandShown && elapsed >= 180) {
+        brandShown = true;
+        preloader.classList.add("is-ready");
+      }
+
+      if (value !== lastShown && counterEl) {
+        lastShown = value;
+        counterEl.textContent = String(value);
+      }
+
+      if (fillEl) {
+        fillEl.style.transform = `scaleX(${(0.01 + eased * 0.99).toFixed(4)})`;
+      }
+
+      if (t < 1) {
+        rafId = window.requestAnimationFrame(step);
+      } else {
+        startExit();
+      }
+    };
+
+    const onKeySkip = (event) => {
+      if (event.key === "Escape" && !finished) {
+        window.removeEventListener("keydown", onKeySkip);
+        startExit();
+      }
+    };
+    window.addEventListener("keydown", onKeySkip);
+    window.setTimeout(() => {
+      window.removeEventListener("keydown", onKeySkip);
+      startExit();
+    }, COUNT_MS + 1200);
+
+    rafId = window.requestAnimationFrame(step);
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Inertial smooth scroll                                           */
+  /* ---------------------------------------------------------------- */
+
+  const finePointerScrollQuery = window.matchMedia("(any-pointer: fine)");
+
+  const smoothScroller = (() => {
+    const DURATION = 1.2;
+    const WHEEL_MULTIPLIER = 0.85;
+    const LINE_HEIGHT = 100 / 6;
+    const EXPO_NORM = 1 - Math.pow(2, -10);
+    const easeOutExpo = (t) => (t <= 0 ? 0 : t >= 1 ? 1 : (1 - Math.pow(2, -10 * t)) / EXPO_NORM);
+    const clampScroll = (y) => {
+      const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      return Math.min(max, Math.max(0, y));
+    };
+
+    let enabled = false;
+    let isRunning = false;
+    let rafId = 0;
+    let lastFrameTime = 0;
+    let elapsed = 0;
+    let fromY = window.scrollY;
+    let currentY = window.scrollY;
+    let targetY = window.scrollY;
+    let lastWrittenY = window.scrollY;
+
+    const stopAnimation = () => {
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      isRunning = false;
+      lastFrameTime = 0;
+    };
+
+    const syncPosition = () => {
+      currentY = window.scrollY;
+      targetY = currentY;
+      fromY = currentY;
+      lastWrittenY = currentY;
+      stopAnimation();
+    };
+
+    const step = (now) => {
+      if (!enabled || !isRunning) {
+        rafId = 0;
+        return;
+      }
+      const dt = lastFrameTime ? Math.min(0.1, (now - lastFrameTime) / 1000) : 1 / 60;
+      lastFrameTime = now;
+      elapsed += dt;
+
+      const progress = Math.min(1, elapsed / DURATION);
+      const eased = easeOutExpo(progress);
+      const nextY = fromY + (targetY - fromY) * eased;
+
+      currentY = nextY;
+      lastWrittenY = nextY;
+      window.scrollTo({ top: nextY, left: window.scrollX, behavior: "instant" });
+
+      if (progress >= 1 || Math.abs(targetY - nextY) < 0.35) {
+        currentY = targetY;
+        lastWrittenY = targetY;
+        window.scrollTo({ top: targetY, left: window.scrollX, behavior: "instant" });
+        stopAnimation();
+        return;
+      }
+
+      rafId = window.requestAnimationFrame(step);
+    };
+
+    const animateTo = (nextTarget) => {
+      const clamped = clampScroll(nextTarget);
+      if (!enabled) {
+        window.scrollTo({ top: clamped, left: window.scrollX, behavior: stillPlaying() ? "auto" : "smooth" });
+        return;
+      }
+      if (!isRunning) {
+        currentY = window.scrollY;
+        lastWrittenY = currentY;
+      }
+      fromY = currentY;
+      targetY = clamped;
+      elapsed = 0;
+
+      if (Math.abs(targetY - currentY) < 0.5) {
+        syncPosition();
+        return;
+      }
+
+      if (!isRunning) {
+        isRunning = true;
+        lastFrameTime = 0;
+        rafId = window.requestAnimationFrame(step);
+      }
+    };
+
+    const canChildScroll = (target, deltaY) => {
+      if (!(target instanceof Element)) return false;
+      if (document.body.classList.contains("dialog-open") || target.closest("dialog[open]")) {
+        return true;
+      }
+      let node = target;
+      while (node && node !== document.body && node !== document.documentElement) {
+        const style = window.getComputedStyle(node);
+        const overflowY = style.overflowY;
+        if (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") {
+          const maxScroll = node.scrollHeight - node.clientHeight;
+          if (maxScroll > 1) {
+            if (style.overscrollBehaviorY !== "auto") return true;
+            if ((deltaY < 0 && node.scrollTop > 0) || (deltaY > 0 && node.scrollTop < maxScroll - 1)) {
+              return true;
+            }
+          }
+        }
+        node = node.parentElement;
+      }
+      return false;
+    };
+
+    const onWheel = (event) => {
+      if (!enabled || event.ctrlKey || event.metaKey) return;
+      if (document.documentElement.classList.contains("is-preloading")) {
+        event.preventDefault();
+        return;
+      }
+      if (canChildScroll(event.target, event.deltaY)) return;
+
+      let dy = event.deltaY;
+      if (event.deltaMode === 1) dy *= LINE_HEIGHT;
+      else if (event.deltaMode === 2) dy *= window.innerHeight;
+      if (!dy) return;
+
+      const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      if (workDeck && workDeck.isActive() && workDeck.handleSideWheel(event, dy)) {
+        /* Side-scroll bypassed the remaining deck animation; continue scrolling normally. */
+      }
+      const base = isRunning ? targetY : window.scrollY;
+      if (!isRunning && ((base <= 0 && dy < 0) || (base >= max && dy > 0))) {
+        return;
+      }
+
+      event.preventDefault();
+      animateTo(base + dy * WHEEL_MULTIPLIER);
+    };
+
+    const onScroll = () => {
+      if (!enabled) return;
+      if (!isRunning || Math.abs(window.scrollY - lastWrittenY) > 2) {
+        syncPosition();
+      }
+    };
+
+    const onKeyScroll = (event) => {
+      if (!enabled) return;
+      const scrollKeys = ["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "];
+      if (scrollKeys.includes(event.key)) {
+        stopAnimation();
+      }
+    };
+
+    const onPointerDown = (event) => {
+      if (!enabled) return;
+      if (event.clientX >= document.documentElement.clientWidth) {
+        stopAnimation();
+      }
+    };
+
+    const refreshState = () => {
+      const shouldEnable = !stillPlaying() && finePointerScrollQuery.matches;
+      if (shouldEnable === enabled) return;
+      enabled = shouldEnable;
+      document.documentElement.classList.toggle("has-smooth-scroll", enabled);
+      if (enabled) {
+        syncPosition();
+        window.addEventListener("wheel", onWheel, { passive: false });
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("keydown", onKeyScroll, { passive: true });
+        window.addEventListener("pointerdown", onPointerDown, { passive: true });
+      } else {
+        stopAnimation();
+        window.removeEventListener("wheel", onWheel);
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("keydown", onKeyScroll);
+        window.removeEventListener("pointerdown", onPointerDown);
+      }
+    };
+
+    refreshState();
+    motionChangeListeners.push(refreshState);
+    if (typeof finePointerScrollQuery.addEventListener === "function") {
+      finePointerScrollQuery.addEventListener("change", refreshState);
+    }
+
+    const shiftBy = (delta) => {
+      if (!delta) return;
+      const nextY = clampScroll(window.scrollY);
+      currentY = nextY;
+      fromY = nextY;
+      targetY = clampScroll(targetY + delta);
+      lastWrittenY = nextY;
+    };
+
+    const scrollToY = (y) => {
+      const clamped = clampScroll(y);
+      if (enabled) {
+        animateTo(clamped);
+      } else {
+        window.scrollTo({ top: clamped, left: window.scrollX, behavior: stillPlaying() ? "auto" : "smooth" });
+      }
+    };
+
+    const scrollToElement = (el, { focus = false } = {}) => {
+      if (!el) return;
+      const deckTargetY = workDeck && workDeck.isActive() ? workDeck.getCardScrollY(el) : null;
+      if (deckTargetY !== null) {
+        scrollToY(deckTargetY);
+        if (focus) {
+          if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+          el.focus({ preventScroll: true });
+        }
+        return;
+      }
+      if (el.id === "experience" && expTheater && expTheater.isActive()) {
+        scrollToY(expTheater.getStartY());
+        if (focus) {
+          if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+          el.focus({ preventScroll: true });
+        }
+        return;
+      }
+      const pad = parseFloat(window.getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      const base = isRunning ? currentY : window.scrollY;
+      const target = el.id === "top" ? 0 : el.getBoundingClientRect().top + base - pad;
+      if (enabled) {
+        animateTo(target);
+      } else {
+        el.scrollIntoView({ behavior: stillPlaying() ? "auto" : "smooth" });
+      }
+      if (focus) {
+        if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+        el.focus({ preventScroll: true });
+      }
+    };
+
+    return { isEnabled: () => enabled, scrollToElement, scrollToY, shiftBy };
+  })();
+
+  const navigateToHash = (hash, { focus = false } = {}) => {
+    if (!hash || !hash.startsWith("#")) return false;
+    const target = hash === "#" ? document.documentElement : document.getElementById(hash.slice(1));
+    if (!target) return false;
+    const deckIntercept = Boolean(workDeck && workDeck.isActive() && workDeck.getCardScrollY(target) !== null);
+    const expIntercept = Boolean(expTheater && expTheater.isActive() && target.id === "experience");
+    if (smoothScroller.isEnabled() || deckIntercept || expIntercept) {
+      smoothScroller.scrollToElement(target, { focus });
+      if (window.location.hash !== hash) {
+        window.history.pushState(null, "", hash);
+      }
+      return true;
+    }
+    window.location.hash = hash;
+    return true;
+  };
+
+  document.addEventListener("click", (event) => {
+    const anchor = event.target instanceof Element ? event.target.closest('a[href^="#"]') : null;
+    if (!anchor) return;
+    const href = anchor.getAttribute("href");
+    if (!href || href === "#") return;
+    const target = document.getElementById(href.slice(1));
+    const deckIntercept = Boolean(workDeck && workDeck.isActive() && target && workDeck.getCardScrollY(target) !== null);
+    const expIntercept = Boolean(expTheater && expTheater.isActive() && target && target.id === "experience");
+    if (!smoothScroller.isEnabled() && !deckIntercept && !expIntercept) return;
+    if (navigateToHash(href, { focus: anchor.classList.contains("skip-link") })) {
+      event.preventDefault();
+    }
+  });
 
   /* ---------------------------------------------------------------- */
   /* Kicker decode                                                    */
@@ -251,6 +674,10 @@
           if (!entry.isIntersecting) {
             return;
           }
+          if (entry.target.closest(".work-deck.is-deck-active .case:not(.is-front)")) {
+            return;
+          }
+          entry.target.dataset.decoded = "true";
           decode(entry.target);
           decodeObserver.unobserve(entry.target);
         });
@@ -260,6 +687,1010 @@
 
     decodeTargets.forEach((el) => decodeObserver.observe(el));
   }
+
+  /* ---------------------------------------------------------------- */
+  /* Sticky Layered Case-Study Deck                                   */
+  /* ---------------------------------------------------------------- */
+
+  workDeck = (() => {
+    const deck = document.querySelector("[data-work-deck]");
+    if (!deck) {
+      return { isActive: () => false, getCardScrollY: () => null, handleSideWheel: () => false, refresh: () => {} };
+    }
+
+    const sticky = deck.querySelector("[data-work-sticky]");
+    const stage = deck.querySelector("[data-work-stage]");
+    const cards = Array.from(deck.querySelectorAll(".case"));
+    const indexLinks = Array.from(deck.querySelectorAll('.work-index a[href^="#"]'));
+    const counterEl = deck.querySelector("[data-work-counter]");
+    const hintEl = deck.querySelector("[data-work-hint]");
+    const progressEl = deck.querySelector("[data-work-progress]");
+
+    if (!sticky || !stage || cards.length < 2) {
+      return { isActive: () => false, getCardScrollY: () => null, handleSideWheel: () => false, refresh: () => {} };
+    }
+
+    const DECK_CONFIG = {
+      minWidth: 961,
+      minHeight: 730,
+      stepPx: 620,
+      dwellRatio: 0.14,
+      leadInPx: 48,
+      leadOutPx: 84,
+      swingPeakX: -97,
+      swingPeakY: -16,
+      swingTiltDeg: -3.2,
+      stackStepY: 13,
+      stackCurveY: 1.1,
+      stackScaleStep: 0.036,
+      maxVisibleDepth: 3,
+      sideGutterMargin: 8,
+      firstCardDwellMs: 900,
+      viewDwellMs: 280,
+    };
+
+    const clamp01 = (v) => (v <= 0 ? 0 : v >= 1 ? 1 : v);
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+    const easeInOutSine = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
+    const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    const remapSegment = (r, dwell) => {
+      if (r <= dwell) return 0;
+      if (r >= 1 - dwell) return 1;
+      return (r - dwell) / (1 - 2 * dwell);
+    };
+
+    const cardIndexById = new Map(cards.map((card, index) => [card.id, index]));
+    const indexLinkById = new Map(
+      indexLinks.map((link) => [(link.getAttribute("href") || "").slice(1), link])
+    );
+
+    const totalCards = cards.length;
+    const totalLabel = String(totalCards).padStart(2, "0");
+    const activeSpan = (totalCards - 1) * DECK_CONFIG.stepPx;
+    const viewedIndices = new Set();
+    const prevStates = cards.map(() => ({
+      transform: "",
+      opacity: "",
+      zIndex: "",
+      scrim: "",
+      front: null,
+      animating: null,
+    }));
+
+    let active = false;
+    let bypassed = false;
+    let inSideLane = false;
+    let stickyTop = 82;
+    let stickyHeight = 0;
+    let trackHeight = 0;
+    let rafId = 0;
+    let lastRawProgress = -1;
+    let lastFrontIdx = -1;
+    let resizeTimer = 0;
+    let viewDwellTimer = 0;
+
+    const isEligible = () =>
+      !stillPlaying() &&
+      window.innerWidth >= DECK_CONFIG.minWidth &&
+      window.innerHeight >= DECK_CONFIG.minHeight;
+
+    const isSideGutterPoint = (clientX) => {
+      const stageRect = stage.getBoundingClientRect();
+      if (!stageRect.width) return false;
+      return (
+        clientX < stageRect.left - DECK_CONFIG.sideGutterMargin ||
+        clientX > stageRect.right + DECK_CONFIG.sideGutterMargin
+      );
+    };
+
+    const setSideLane = (next) => {
+      if (next === inSideLane) return;
+      inSideLane = next;
+      deck.classList.toggle("is-side-lane", inSideLane);
+      if (hintEl && !bypassed) {
+        if (inSideLane) {
+          hintEl.textContent = "Side lane · skip deck";
+        } else {
+          hintEl.textContent =
+            lastFrontIdx === totalCards - 1 ? "End · scroll down" : "Scroll to shuffle";
+        }
+      }
+    };
+
+    const scheduleViewMark = (frontIdx) => {
+      window.clearTimeout(viewDwellTimer);
+      if (bypassed || viewedIndices.has(frontIdx)) return;
+      if (document.documentElement.classList.contains("is-preloading")) return;
+      const stageRect = stage.getBoundingClientRect();
+      const visibleOnScreen =
+        stageRect.top <= window.innerHeight * 0.72 &&
+        stageRect.bottom >= window.innerHeight * 0.2;
+      if (!visibleOnScreen) return;
+      const delay = frontIdx === 0 && viewedIndices.size === 0
+        ? DECK_CONFIG.firstCardDwellMs
+        : DECK_CONFIG.viewDwellMs;
+      viewDwellTimer = window.setTimeout(() => {
+        if (!active || bypassed || lastFrontIdx !== frontIdx) return;
+        if (document.documentElement.classList.contains("is-preloading")) return;
+        const r = stage.getBoundingClientRect();
+        if (r.top <= window.innerHeight * 0.72 && r.bottom >= window.innerHeight * 0.2) {
+          viewedIndices.add(frontIdx);
+        }
+      }, delay);
+    };
+
+    const closeCardWorkbench = (card) => {
+      const wb = card.querySelector("[data-workbench].case-workbench--expanded");
+      if (!wb) return;
+      const trigger = wb.querySelector(".workbench-trigger");
+      const drawer = wb.querySelector(".workbench-drawer");
+      const label = wb.querySelector(".workbench-trigger__label");
+      const isSimvox = wb.getAttribute("data-workbench") === "simvox";
+      wb.classList.remove("case-workbench--expanded");
+      if (trigger) trigger.setAttribute("aria-expanded", "false");
+      if (drawer) {
+        drawer.setAttribute("aria-hidden", "true");
+        drawer.setAttribute("inert", "");
+      }
+      if (label) label.textContent = isSimvox ? "Open Bench" : "Open Sandbox";
+    };
+
+    const applyCardState = (index, transform, opacity, zIndex, scrim, isFront, isAnimating) => {
+      const card = cards[index];
+      const prev = prevStates[index];
+
+      if (prev.transform !== transform) {
+        card.style.transform = transform;
+        prev.transform = transform;
+      }
+      const opacityStr = opacity.toFixed(3);
+      if (prev.opacity !== opacityStr) {
+        card.style.opacity = opacityStr;
+        prev.opacity = opacityStr;
+      }
+      const zStr = String(zIndex);
+      if (prev.zIndex !== zStr) {
+        card.style.zIndex = zStr;
+        prev.zIndex = zStr;
+      }
+      const scrimStr = scrim.toFixed(3);
+      if (prev.scrim !== scrimStr) {
+        card.style.setProperty("--deck-scrim", scrimStr);
+        prev.scrim = scrimStr;
+      }
+      if (prev.front !== isFront) {
+        card.classList.toggle("is-front", isFront);
+        if (!isFront) closeCardWorkbench(card);
+        prev.front = isFront;
+      }
+      if (prev.animating !== isAnimating) {
+        card.classList.toggle("is-animating", isAnimating);
+        prev.animating = isAnimating;
+      }
+    };
+
+    const updateRailUI = (rawProgress, frontIdx, deckRect) => {
+      if (progressEl) {
+        progressEl.style.transform = `scaleX(${rawProgress.toFixed(4)})`;
+      }
+      if (frontIdx !== lastFrontIdx) {
+        lastFrontIdx = frontIdx;
+
+        const frontCard = cards[frontIdx];
+        indexLinks.forEach((link) => {
+          const isCurrent = link === indexLinkById.get(frontCard.id);
+          link.classList.toggle("is-active", isCurrent);
+          if (isCurrent) {
+            link.setAttribute("aria-current", "true");
+          } else {
+            link.removeAttribute("aria-current");
+          }
+        });
+
+        if (counterEl) {
+          counterEl.textContent = `${String(frontIdx + 1).padStart(2, "0")} / ${totalLabel}`;
+        }
+        if (hintEl && !bypassed) {
+          hintEl.textContent = inSideLane
+            ? "Side lane · skip deck"
+            : frontIdx === totalCards - 1
+              ? "End · scroll down"
+              : "Scroll to shuffle";
+        }
+
+        const kicker = frontCard.querySelector(".case__title .kicker");
+        if (kicker && !kicker.dataset.decoded && !stillPlaying()) {
+          kicker.dataset.decoded = "true";
+          decode(kicker);
+        }
+      }
+
+      scheduleViewMark(frontIdx, deckRect);
+    };
+
+    const bypassDeck = () => {
+      if (!active || bypassed) return;
+      const deckRect = deck.getBoundingClientRect();
+      const scrolledPastPin = stickyTop - deckRect.top;
+      const lockedIdx = lastFrontIdx >= 0 ? lastFrontIdx : 0;
+
+      const skippedCards = cards.filter((_, idx) => !viewedIndices.has(idx));
+      const skippedCount = skippedCards.length;
+
+      window.clearTimeout(viewDwellTimer);
+      bypassed = true;
+      setSideLane(false);
+      deck.classList.add("is-deck-bypassed");
+
+      trackHeight = Math.round(stickyHeight || sticky.offsetHeight);
+      deck.style.setProperty("--deck-track-h", `${trackHeight}px`);
+
+      if (scrolledPastPin > 0) {
+        const nextY = Math.max(0, window.scrollY - scrolledPastPin);
+        window.scrollTo({ top: nextY, left: window.scrollX, behavior: "instant" });
+        smoothScroller.shiftBy(-scrolledPastPin);
+      }
+
+      for (let i = 0; i < totalCards; i++) {
+        if (i === lockedIdx) {
+          applyCardState(i, "translate3d(0, 0, 0)", 1, 40, 0, true, false);
+        } else {
+          applyCardState(i, "translate3d(0, 0, 0) scale(0.96)", 0, 10 - i, 0, false, false);
+        }
+      }
+
+      if (hintEl) {
+        hintEl.textContent = "Skipped · click 01–05";
+      }
+
+      if (skippedCount > 0) {
+        const stageRect = stage.getBoundingClientRect();
+        if (stageRect.width) {
+          mascotGlance(
+            stageRect.left + stageRect.width * 0.5,
+            stageRect.top + stageRect.height * 0.5
+          );
+        } else {
+          mascotGlance();
+        }
+
+        let quip = "";
+        if (skippedCount >= totalCards) {
+          quip = `Uh no! You skipped all ${totalCards} projects?! 👀`;
+        } else if (skippedCount === 1) {
+          const skippedName =
+            skippedCards[0].querySelector(".case__title h3")?.textContent?.trim() || "a project";
+          quip = `Uh no! You skipped ${skippedName}! 👀`;
+        } else {
+          quip = `Uh no! You skipped ${skippedCount} projects! 🤖`;
+        }
+
+        if (mascotSpeech) {
+          mascotSpeech.say(quip, 4400);
+        }
+      }
+    };
+
+    const restoreDeck = (compensateBelow = false) => {
+      if (!active || !bypassed) return;
+      const prevTrack = trackHeight;
+      const deckRect = deck.getBoundingClientRect();
+      const belowDeck = compensateBelow && deckRect.top < stickyTop - stickyHeight * 0.25;
+
+      bypassed = false;
+      deck.classList.remove("is-deck-bypassed");
+      if (window.scrollY < 260) {
+        viewedIndices.clear();
+      }
+      measure();
+
+      if (belowDeck && trackHeight > prevTrack) {
+        const diff = trackHeight - prevTrack;
+        window.scrollTo({ top: window.scrollY + diff, left: window.scrollX, behavior: "instant" });
+        smoothScroller.shiftBy(diff);
+      }
+    };
+
+    const handleSideWheel = (event, dy) => {
+      if (!active || bypassed || dy <= 0) return false;
+      if (!isSideGutterPoint(event.clientX)) return false;
+
+      const deckRect = deck.getBoundingClientRect();
+      const scrolledPastPin = stickyTop - deckRect.top;
+      const inBypassWindow =
+        scrolledPastPin >= -220 &&
+        scrolledPastPin < DECK_CONFIG.leadInPx + activeSpan - 24;
+
+      if (!inBypassWindow) return false;
+
+      bypassDeck();
+      return true;
+    };
+
+    const render = (force = false) => {
+      if (!active) return;
+
+      const deckRect = deck.getBoundingClientRect();
+      if (window.scrollY < 160 && viewedIndices.size) {
+        viewedIndices.clear();
+      }
+      if (bypassed) {
+        if (deckRect.top > stickyTop + 96) {
+          restoreDeck(false);
+        }
+        return;
+      }
+
+      const scrolledPastPin = stickyTop - deckRect.top;
+      const rawProgress = activeSpan > 0
+        ? clamp01((scrolledPastPin - DECK_CONFIG.leadInPx) / activeSpan)
+        : 0;
+
+      if (!force && Math.abs(rawProgress - lastRawProgress) < 0.00025) {
+        return;
+      }
+      lastRawProgress = rawProgress;
+
+      const scaled = rawProgress * (totalCards - 1);
+      const a = Math.min(totalCards - 2, Math.floor(scaled));
+      const segRaw = clamp01(scaled - a);
+      const u = remapSegment(segRaw, DECK_CONFIG.dwellRatio);
+      const frontIdx = u >= 0.5 ? a + 1 : a;
+      const midMotion = u > 0.001 && u < 0.999;
+
+      for (let i = 0; i < totalCards; i++) {
+        if (i < a) {
+          const depth = (a - i) + easeInOutCubic(u);
+          const ty = -DECK_CONFIG.stackStepY * depth + DECK_CONFIG.stackCurveY * depth * (depth - 1);
+          const scale = Math.max(0.82, 1 - depth * DECK_CONFIG.stackScaleStep);
+          const opacity =
+            depth <= DECK_CONFIG.maxVisibleDepth - 0.35
+              ? 1
+              : clamp01(1 - (depth - (DECK_CONFIG.maxVisibleDepth - 0.35)) / 1.05);
+          const scrim = Math.min(0.82, depth * 0.27);
+          const zIndex = 24 - Math.round(depth * 2);
+          const transform = `translate3d(0, ${ty.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
+          applyCardState(i, transform, opacity, zIndex, scrim, false, midMotion && depth <= 3.5);
+        } else if (i === a) {
+          if (u <= 0.001) {
+            applyCardState(i, "translate3d(0, 0, 0)", 1, 40, 0, true, false);
+          } else if (u >= 0.999) {
+            const ty = -DECK_CONFIG.stackStepY;
+            const scale = 1 - DECK_CONFIG.stackScaleStep;
+            applyCardState(
+              i,
+              `translate3d(0, ${ty.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`,
+              1,
+              24,
+              0.27,
+              false,
+              false
+            );
+          } else if (u <= 0.5) {
+            const p = easeInOutSine(u / 0.5);
+            const tx = DECK_CONFIG.swingPeakX * p;
+            const ty = DECK_CONFIG.swingPeakY * p;
+            const scale = lerp(1, 0.955, p);
+            const rot = DECK_CONFIG.swingTiltDeg * p;
+            const scrim = lerp(0, 0.12, p);
+            const transform = `translate3d(${tx.toFixed(2)}%, ${ty.toFixed(2)}px, 0) scale(${scale.toFixed(4)}) rotate(${rot.toFixed(2)}deg)`;
+            applyCardState(i, transform, 1, 40, scrim, i === frontIdx, true);
+          } else {
+            const p = easeInOutCubic((u - 0.5) / 0.5);
+            const tx = lerp(DECK_CONFIG.swingPeakX, 0, p);
+            const ty = lerp(DECK_CONFIG.swingPeakY, -DECK_CONFIG.stackStepY, p);
+            const scale = lerp(0.955, 1 - DECK_CONFIG.stackScaleStep, p);
+            const rot = lerp(DECK_CONFIG.swingTiltDeg, 0, p);
+            const scrim = lerp(0.12, 0.27, p);
+            const transform = `translate3d(${tx.toFixed(2)}%, ${ty.toFixed(2)}px, 0) scale(${scale.toFixed(4)}) rotate(${rot.toFixed(2)}deg)`;
+            applyCardState(i, transform, 1, 24, scrim, i === frontIdx, true);
+          }
+        } else if (i === a + 1) {
+          if (u >= 0.999) {
+            applyCardState(i, "translate3d(0, 0, 0)", 1, 30, 0, true, false);
+          } else {
+            const e = easeOutCubic(u);
+            const tyPct = (1 - e) * 104;
+            const scale = lerp(0.95, 1, e);
+            const opacity = clamp01(u / 0.24);
+            const transform = `translate3d(0, ${tyPct.toFixed(2)}%, 0) scale(${scale.toFixed(4)})`;
+            applyCardState(i, transform, opacity, 30, 0, i === frontIdx, midMotion);
+          }
+        } else {
+          applyCardState(i, "translate3d(0, 104%, 0) scale(0.95)", 0, 10 - i, 0, false, false);
+        }
+      }
+
+      updateRailUI(rawProgress, frontIdx, deckRect);
+    };
+
+    const scheduleRender = () => {
+      if (!active) return;
+      if (window.scrollY < 160 && viewedIndices.size) {
+        viewedIndices.clear();
+      }
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        render();
+      });
+    };
+
+    const onFallbackWheel = (event) => {
+      if (smoothScroller.isEnabled() || !active || bypassed) return;
+      if (event.deltaY > 0) {
+        handleSideWheel(event, event.deltaY);
+      }
+    };
+
+    const onPointerMove = (event) => {
+      if (!active || bypassed || event.pointerType === "touch") {
+        setSideLane(false);
+        return;
+      }
+      const deckRect = deck.getBoundingClientRect();
+      const onScreen = deckRect.top < window.innerHeight * 0.85 && deckRect.bottom > 120;
+      setSideLane(onScreen && isSideGutterPoint(event.clientX));
+    };
+
+    const measure = () => {
+      if (!active) return;
+      stickyTop = parseFloat(window.getComputedStyle(sticky).top) || 82;
+      stickyHeight = sticky.offsetHeight;
+      if (bypassed) {
+        const nextTrackHeight = Math.round(stickyHeight);
+        if (nextTrackHeight !== trackHeight) {
+          trackHeight = nextTrackHeight;
+          deck.style.setProperty("--deck-track-h", `${trackHeight}px`);
+        }
+        return;
+      }
+      const nextTrackHeight = Math.round(
+        stickyHeight + DECK_CONFIG.leadInPx + activeSpan + DECK_CONFIG.leadOutPx
+      );
+      if (nextTrackHeight !== trackHeight) {
+        trackHeight = nextTrackHeight;
+        deck.style.setProperty("--deck-track-h", `${trackHeight}px`);
+      }
+      render(true);
+    };
+
+    const teardown = () => {
+      if (!active) return;
+      active = false;
+      bypassed = false;
+      setSideLane(false);
+      window.clearTimeout(viewDwellTimer);
+      window.cancelAnimationFrame(rafId);
+      rafId = 0;
+      window.removeEventListener("scroll", scheduleRender);
+      window.removeEventListener("wheel", onFallbackWheel);
+      window.removeEventListener("pointermove", onPointerMove);
+      deck.classList.remove("is-deck-active", "is-deck-bypassed", "is-side-lane");
+      deck.style.removeProperty("--deck-track-h");
+      if (progressEl) progressEl.style.transform = "";
+
+      cards.forEach((card, index) => {
+        card.style.transform = "";
+        card.style.opacity = "";
+        card.style.zIndex = "";
+        card.style.removeProperty("--deck-scrim");
+        card.classList.remove("is-front", "is-animating");
+        prevStates[index] = {
+          transform: "",
+          opacity: "",
+          zIndex: "",
+          scrim: "",
+          front: null,
+          animating: null,
+        };
+      });
+
+      indexLinks.forEach((link) => {
+        link.classList.remove("is-active");
+        link.removeAttribute("aria-current");
+      });
+
+      lastRawProgress = -1;
+      lastFrontIdx = -1;
+      trackHeight = 0;
+    };
+
+    const activate = () => {
+      if (active) {
+        measure();
+        return;
+      }
+      active = true;
+      bypassed = false;
+      deck.classList.add("is-deck-active");
+      deck.classList.remove("is-deck-bypassed");
+      lastRawProgress = -1;
+      lastFrontIdx = -1;
+      measure();
+      window.addEventListener("scroll", scheduleRender, { passive: true });
+      window.addEventListener("wheel", onFallbackWheel, { passive: true });
+      window.addEventListener("pointermove", onPointerMove, { passive: true });
+    };
+
+    const refresh = () => {
+      if (isEligible()) {
+        activate();
+      } else {
+        teardown();
+      }
+    };
+
+    const getCardScrollY = (el) => {
+      if (!active || !el || !el.id) return null;
+      if (el.id === "work") {
+        if (bypassed) restoreDeck(false);
+        const deckDocTop = deck.getBoundingClientRect().top + window.scrollY;
+        const pinStart = deckDocTop - stickyTop;
+        return Math.max(0, Math.round(pinStart + DECK_CONFIG.leadInPx * 0.25));
+      }
+      const idx = cardIndexById.get(el.id);
+      if (idx === undefined) return null;
+
+      if (bypassed) {
+        restoreDeck(true);
+      }
+      viewedIndices.add(idx);
+
+      const deckDocTop = deck.getBoundingClientRect().top + window.scrollY;
+      const pinStart = deckDocTop - stickyTop;
+      if (idx === 0) {
+        return Math.max(0, Math.round(pinStart + DECK_CONFIG.leadInPx * 0.5));
+      }
+      if (idx === totalCards - 1) {
+        return Math.max(
+          0,
+          Math.round(pinStart + DECK_CONFIG.leadInPx + activeSpan + DECK_CONFIG.leadOutPx * 0.5)
+        );
+      }
+      return Math.max(0, Math.round(pinStart + DECK_CONFIG.leadInPx + idx * DECK_CONFIG.stepPx));
+    };
+
+    const syncToHash = (instant = false) => {
+      if (!active || !window.location.hash) return;
+      const id = window.location.hash.slice(1);
+      if (!cardIndexById.has(id)) return;
+      const target = document.getElementById(id);
+      const y = getCardScrollY(target);
+      if (y === null) return;
+      if (instant) {
+        window.scrollTo({ top: y, left: window.scrollX, behavior: "instant" });
+        render(true);
+      } else {
+        smoothScroller.scrollToElement(target);
+      }
+    };
+
+    // Bring card to front if keyboard focus (Tab / Find-in-page) lands inside a covered card
+    deck.addEventListener("focusin", (event) => {
+      if (!active || !(event.target instanceof Element)) return;
+      const card = event.target.closest(".case");
+      if (!card || (card.classList.contains("is-front") && !bypassed)) return;
+      const y = getCardScrollY(card);
+      if (y !== null) {
+        smoothScroller.scrollToElement(card);
+      }
+    });
+
+    if ("ResizeObserver" in window) {
+      const stickyObserver = new ResizeObserver(() => {
+        if (active) measure();
+      });
+      stickyObserver.observe(sticky);
+    }
+
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(refresh, 100);
+    });
+
+    window.addEventListener("hashchange", () => syncToHash(false));
+    motionChangeListeners.push(refresh);
+
+    refresh();
+
+    if (window.location.hash && cardIndexById.has(window.location.hash.slice(1))) {
+      let userInteracted = false;
+      const markInteracted = () => {
+        userInteracted = true;
+      };
+      ["wheel", "touchstart", "pointerdown", "keydown"].forEach((evt) => {
+        window.addEventListener(evt, markInteracted, { once: true, passive: true });
+      });
+
+      const alignInitialHash = () => {
+        if (!active || userInteracted) return;
+        measure();
+        syncToHash(true);
+      };
+
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+
+      alignInitialHash();
+      window.requestAnimationFrame(alignInitialHash);
+      window.addEventListener("pageshow", () => window.requestAnimationFrame(alignInitialHash), { once: true });
+      window.addEventListener(
+        "load",
+        () => {
+          window.setTimeout(() => {
+            alignInitialHash();
+            if ("scrollRestoration" in window.history) {
+              window.history.scrollRestoration = "auto";
+            }
+          }, 0);
+        },
+        { once: true }
+      );
+      preloaderDone.then(() => window.requestAnimationFrame(alignInitialHash));
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(alignInitialHash);
+      }
+    }
+
+    return {
+      isActive: () => active,
+      getCardScrollY,
+      handleSideWheel,
+      refresh,
+    };
+  })();
+
+  /* ---------------------------------------------------------------- */
+  /* Experience Horizontal Spatial Theater (Origin & Foundations)     */
+  /* ---------------------------------------------------------------- */
+
+  expTheater = (() => {
+    const section = document.querySelector("[data-exp-theater]");
+    if (!section) {
+      return { isActive: () => false, getStartY: () => 0, refresh: () => {} };
+    }
+
+    const viewport = section.querySelector("[data-exp-viewport]");
+    const stage = section.querySelector("[data-exp-stage]");
+    const panels = Array.from(section.querySelectorAll("[data-exp-panel]"));
+    const inners = panels.map((panel) => panel.querySelector("[data-exp-inner]"));
+    const dateBgs = panels.map((panel) => panel.querySelector("[data-exp-date]"));
+    const tickerTop = section.querySelector("[data-exp-ticker-top]");
+    const tickerBottom = section.querySelector("[data-exp-ticker-bottom]");
+    const phaseEl = section.querySelector("[data-exp-phase]");
+    const counterEl = section.querySelector("[data-exp-counter]");
+    const progressEl = section.querySelector("[data-exp-progress]");
+    const hintEl = section.querySelector("[data-exp-hint]");
+    const jumpBtns = Array.from(section.querySelectorAll("[data-exp-jump]"));
+    const prevBtn = section.querySelector("[data-exp-prev]");
+    const nextBtn = section.querySelector("[data-exp-next]");
+
+    if (!viewport || !stage || panels.length < 2) {
+      return { isActive: () => false, getStartY: () => 0, refresh: () => {} };
+    }
+
+    const MIN_WIDTH = 901;
+    const MIN_HEIGHT = 620;
+    const totalLabel = String(panels.length - 1).padStart(2, "0");
+
+    let active = false;
+    let stickyTop = 81;
+    let hudH = 34;
+    let viewportW = window.innerWidth;
+    let viewportH = window.innerHeight - stickyTop - hudH;
+    let maxTranslate = 0;
+    let totalDist = 1;
+    let panelTargets = panels.map(() => 0);
+
+    let currentX = 0;
+    let targetX = 0;
+    let currentProgress = 0;
+    let targetProgress = 0;
+    let activeChapter = -1;
+    let rafId = 0;
+    let lastTime = 0;
+    let resizeTimer = 0;
+
+    const clamp01 = (v) => (v <= 0 ? 0 : v >= 1 ? 1 : v);
+
+    const isEligible = () =>
+      !stillPlaying() &&
+      window.innerWidth >= MIN_WIDTH &&
+      window.innerHeight >= MIN_HEIGHT;
+
+    const getStartY = () => {
+      const rect = section.getBoundingClientRect();
+      return Math.max(0, Math.round(rect.top + window.scrollY - stickyTop));
+    };
+
+    const getChapterScrollY = (idx) => {
+      const clampedIdx = Math.max(0, Math.min(panels.length - 1, idx));
+      const p = panelTargets[clampedIdx] ?? 0;
+      return Math.round(getStartY() + p * totalDist);
+    };
+
+    const updateHUD = (progress) => {
+      if (progressEl) {
+        progressEl.style.transform = `scaleX(${progress.toFixed(4)})`;
+      }
+
+      let bestIdx = 0;
+      let bestDist = Infinity;
+      for (let i = 0; i < panelTargets.length; i++) {
+        const d = Math.abs(progress - panelTargets[i]);
+        if (d < bestDist) {
+          bestDist = d;
+          bestIdx = i;
+        }
+      }
+
+      if (bestIdx === activeChapter) return;
+      activeChapter = bestIdx;
+
+      if (phaseEl) {
+        phaseEl.textContent = panels[bestIdx].dataset.expLabel || "ORIGIN & FOUNDATIONS";
+      }
+      if (counterEl) {
+        counterEl.textContent = `${String(bestIdx).padStart(2, "0")} / ${totalLabel}`;
+      }
+      if (hintEl) {
+        hintEl.textContent = bestIdx === panels.length - 1 ? "End · continue down" : "Scroll to traverse";
+      }
+
+      jumpBtns.forEach((btn, idx) => {
+        const isCurrent = idx === bestIdx;
+        btn.classList.toggle("is-active", isCurrent);
+        if (isCurrent) {
+          btn.setAttribute("aria-current", "step");
+        } else {
+          btn.removeAttribute("aria-current");
+        }
+      });
+
+      if (prevBtn) prevBtn.disabled = bestIdx <= 0;
+      if (nextBtn) nextBtn.disabled = bestIdx >= panels.length - 1;
+    };
+
+    const applyTransforms = () => {
+      stage.style.transform = `translate3d(${currentX.toFixed(2)}px, 0, 0)`;
+
+      if (tickerTop) {
+        tickerTop.style.transform = `translate3d(${(currentX * 0.24).toFixed(2)}px, 0, 0)`;
+      }
+      if (tickerBottom) {
+        tickerBottom.style.transform = `translate3d(${(-currentX * 0.18).toFixed(2)}px, 0, 0)`;
+      }
+
+      for (let i = 0; i < panels.length; i++) {
+        const relX = panels[i].offsetLeft + currentX;
+        const norm = viewportW > 0 ? relX / viewportW : 0;
+
+        const dateBg = dateBgs[i];
+        if (dateBg) {
+          dateBg.style.transform = `translate3d(${(norm * 110).toFixed(2)}px, 0, 0)`;
+        }
+
+        const inner = inners[i];
+        if (inner) {
+          const dist = Math.min(1, Math.abs(norm));
+          const opacity = Math.max(0.44, 1 - dist * 0.56);
+          const scale = 1 - dist * 0.025;
+          inner.style.opacity = opacity.toFixed(3);
+          inner.style.transform = `scale(${scale.toFixed(4)})`;
+        }
+      }
+
+      updateHUD(currentProgress);
+    };
+
+    const syncTargetFromScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const scrolled = stickyTop - rect.top;
+      const raw = totalDist > 0 ? scrolled / totalDist : 0;
+      targetProgress = clamp01(raw);
+      targetX = -targetProgress * maxTranslate;
+    };
+
+    const tick = (now) => {
+      rafId = 0;
+      if (!active) return;
+
+      const dt = lastTime ? Math.min(0.05, (now - lastTime) / 1000) : 1 / 60;
+      lastTime = now;
+      const alpha = 1 - Math.exp(-11 * dt);
+
+      currentProgress += (targetProgress - currentProgress) * alpha;
+      currentX += (targetX - currentX) * alpha;
+
+      const settled =
+        Math.abs(targetX - currentX) < 0.25 &&
+        Math.abs(targetProgress - currentProgress) < 0.0004;
+
+      if (settled) {
+        currentProgress = targetProgress;
+        currentX = targetX;
+      }
+
+      applyTransforms();
+
+      if (!settled) {
+        rafId = window.requestAnimationFrame(tick);
+      } else {
+        lastTime = 0;
+      }
+    };
+
+    const scheduleTick = () => {
+      if (!active) return;
+      syncTargetFromScroll();
+      if (!rafId) {
+        lastTime = 0;
+        rafId = window.requestAnimationFrame(tick);
+      }
+    };
+
+    const measure = () => {
+      if (!active) return;
+      const hdr = document.querySelector(".site-header");
+      const hudEl = document.querySelector(".hud");
+      stickyTop = hdr ? Math.round(hdr.getBoundingClientRect().height) : 81;
+      hudH = hudEl ? Math.round(hudEl.getBoundingClientRect().height) : 34;
+
+      section.style.setProperty("--exp-sticky-top", `${stickyTop}px`);
+      section.style.setProperty("--exp-hud-h", `${hudH}px`);
+
+      viewportW = viewport.clientWidth || window.innerWidth;
+      viewportH = Math.max(460, window.innerHeight - stickyTop - hudH);
+      const lastPanel = panels[panels.length - 1];
+      const stageWidth = lastPanel ? lastPanel.offsetLeft + lastPanel.offsetWidth : stage.scrollWidth;
+      maxTranslate = Math.max(0, stageWidth - viewportW);
+
+      const scrollSpan = Math.max(820, Math.round(maxTranslate * 0.9));
+      section.style.setProperty("--exp-track-h", `${viewportH + scrollSpan}px`);
+      totalDist = Math.max(1, section.offsetHeight - viewportH);
+
+      panelTargets = panels.map((panel, idx) => {
+        if (idx === 0 || maxTranslate <= 0) return 0;
+        if (idx === panels.length - 1) return 1;
+        return clamp01(panel.offsetLeft / maxTranslate);
+      });
+
+      syncTargetFromScroll();
+      currentProgress = targetProgress;
+      currentX = targetX;
+      activeChapter = -1;
+      applyTransforms();
+    };
+
+    const teardown = () => {
+      if (!active) return;
+      active = false;
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      lastTime = 0;
+      window.removeEventListener("scroll", scheduleTick);
+      section.classList.remove("is-exp-active");
+      section.style.removeProperty("--exp-track-h");
+      section.style.removeProperty("--exp-sticky-top");
+      section.style.removeProperty("--exp-hud-h");
+
+      stage.style.transform = "";
+      if (tickerTop) tickerTop.style.transform = "";
+      if (tickerBottom) tickerBottom.style.transform = "";
+      if (progressEl) progressEl.style.transform = "";
+
+      dateBgs.forEach((el) => {
+        if (el) el.style.transform = "";
+      });
+      inners.forEach((el) => {
+        if (el) {
+          el.style.opacity = "";
+          el.style.transform = "";
+        }
+      });
+      activeChapter = -1;
+    };
+
+    const activate = () => {
+      if (active) {
+        measure();
+        return;
+      }
+      active = true;
+      section.classList.add("is-exp-active");
+      measure();
+      window.addEventListener("scroll", scheduleTick, { passive: true });
+    };
+
+    const refresh = () => {
+      if (isEligible()) {
+        activate();
+      } else {
+        teardown();
+      }
+    };
+
+    const jumpToChapter = (idx) => {
+      if (!active) return;
+      const targetY = getChapterScrollY(idx);
+      smoothScroller.scrollToY(targetY);
+      AudioFX.tap();
+    };
+
+    jumpBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number.parseInt(btn.dataset.expJump || "0", 10);
+        if (!Number.isNaN(idx)) jumpToChapter(idx);
+      });
+    });
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        const curr = activeChapter >= 0 ? activeChapter : 0;
+        if (curr > 0) jumpToChapter(curr - 1);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        const curr = activeChapter >= 0 ? activeChapter : 0;
+        if (curr < panels.length - 1) jumpToChapter(curr + 1);
+      });
+    }
+
+    section.addEventListener("keydown", (event) => {
+      if (!active) return;
+      if (event.key === "ArrowRight") {
+        const curr = activeChapter >= 0 ? activeChapter : 0;
+        if (curr < panels.length - 1) {
+          event.preventDefault();
+          jumpToChapter(curr + 1);
+        }
+      } else if (event.key === "ArrowLeft") {
+        const curr = activeChapter >= 0 ? activeChapter : 0;
+        if (curr > 0) {
+          event.preventDefault();
+          jumpToChapter(curr - 1);
+        }
+      }
+    });
+
+    section.addEventListener("focusin", (event) => {
+      if (!active || !(event.target instanceof Element)) return;
+      const panel = event.target.closest("[data-exp-panel]");
+      if (!panel) return;
+      const idx = panels.indexOf(panel);
+      if (idx !== -1 && idx !== activeChapter) {
+        smoothScroller.scrollToY(getChapterScrollY(idx));
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(refresh, 100);
+    });
+
+    motionChangeListeners.push(refresh);
+    refresh();
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        if (active) measure();
+      });
+    }
+
+    return {
+      isActive: () => active,
+      getStartY,
+      refresh,
+    };
+  })();
 
   /* ---------------------------------------------------------------- */
   /* X-ray                                                            */
@@ -890,11 +2321,11 @@
       }
       mascotBooted = true;
 
-      import("./mascot3d.js?v=20261022_20")
+      import("./mascot3d.js?v=20261110_07")
         .then(() => {
-          mascotGlance = () => {
+          mascotGlance = (x, y) => {
             if (typeof window.__mascotGlance === "function") {
-              window.__mascotGlance();
+              window.__mascotGlance(x, y);
             }
           };
         })
@@ -912,155 +2343,222 @@
     };
 
     const startMascot = () => {
-      if (document.readyState === "complete") {
-        scheduleMascot();
-      } else {
-        window.addEventListener("load", scheduleMascot, { once: true });
-      }
+      preloaderDone.then(() => {
+        if (document.readyState === "complete") {
+          bootMascot();
+        } else {
+          window.addEventListener("load", scheduleMascot, { once: true });
+        }
+      });
     };
 
     startMascot();
   }
 
   /* ---------------------------------------------------------------- */
-  /* Mascot speech cloud bubble (Desktop only)                        */
+  /* Mascot speech cloud bubble (Desktop only, site-wide companion)   */
   /* ---------------------------------------------------------------- */
-  /* Contextual speech bubble directly above the 3D robot. Reacts to  */
-  /* hovered hero elements with an optimized dwell delay (180ms) and  */
-  /* automatically resets after 3.5s. Viewport culled via             */
-  /* IntersectionObserver so it takes 0% load when scrolled away.     */
   const initMascotSpeech = () => {
     const speechEl = document.getElementById("mascot-speech");
     const textEl = document.getElementById("mascot-speech-text");
-    const heroEl = document.querySelector(".hero");
-    if (!speechEl || !textEl || !heroEl) return;
+    if (!speechEl || !textEl) return;
 
-    const isDesktop = () => window.matchMedia("(min-width: 900px)").matches;
-    if (!isDesktop()) return;
+    const desktopQuery = window.matchMedia("(min-width: 900px)");
+    const isDesktop = () => desktopQuery.matches;
 
-    const DEFAULT_TEXT = "Welcome! Take a look around 👋";
-    let currentText = DEFAULT_TEXT;
+    const SECTION_QUIPS = {
+      top: "Welcome! Take a look around 👋",
+      work: "Real apps, real traffic, zero fake demos.",
+      systems: "Live GitHub telemetry — fresh from the API.",
+      console: "Go on, type something. Even 'sudo'.",
+      about: "Less busywork, more actual engineering.",
+      experience: "Scroll through — chapters unlock as you go.",
+      skills: "Battle-tested tools. No buzzword filler.",
+      contact: "Say hi! Replies faster than most APIs.",
+      colophon: "Yes, he even documented the byte budget.",
+    };
+
+    const SECTION_IDS = Object.keys(SECTION_QUIPS);
+    let activeSection = "top";
+    let currentText = SECTION_QUIPS.top;
     let dwellTimer = null;
+    let swapTimer = null;
     let resetTimer = null;
-    let isHeroVisible = true;
+    let sectionTimer = null;
+    let activeEl = null;
+    let priorityUntil = 0;
+    let lockHoverUntil = 0;
 
     const setBubbleText = (nextText) => {
-      if (nextText === currentText) return;
+      if (!nextText || nextText === currentText) return;
       currentText = nextText;
+      if (swapTimer) window.clearTimeout(swapTimer);
       speechEl.classList.add("is-switching");
-      window.setTimeout(() => {
+      swapTimer = window.setTimeout(() => {
         textEl.textContent = nextText;
         speechEl.classList.remove("is-switching");
-      }, 120);
+        swapTimer = null;
+      }, 95);
     };
 
-    const scheduleReset = () => {
+    const currentDefaultText = () =>
+      window.scrollY < 160 ? SECTION_QUIPS.top : SECTION_QUIPS[activeSection] || SECTION_QUIPS.top;
+
+    const scheduleReset = (delay = 3200) => {
       if (resetTimer) window.clearTimeout(resetTimer);
       resetTimer = window.setTimeout(() => {
-        if (isHeroVisible && isDesktop()) {
-          setBubbleText(DEFAULT_TEXT);
-        }
-      }, 3500);
+        if (!isDesktop() || activeEl || performance.now() < priorityUntil) return;
+        setBubbleText(currentDefaultText());
+      }, delay);
     };
 
-    const triggers = [
-      {
-        selector: '.hero-actions a[href="#work"]',
-        text: "Yeah, go ahead! Check out the systems and code.",
-      },
-      {
-        selector: '.hero-actions a[href^="mailto:"]',
-        text: "Drop a note directly to Mayank's inbox ✉️",
-      },
-      {
-        selector: '.hero-actions a[href*="linkedin.com"]',
-        text: "Let's connect professionally on LinkedIn!",
-      },
-      {
-        selector: '.brand',
-        text: "Back to top! Always here to guide your tour.",
-      },
-      {
-        selector: '.site-nav a[href="#work"]',
-        text: "Explore production web platforms & flagship projects.",
-      },
-      {
-        selector: '.site-nav a[href="#systems"]',
-        text: "Deep architectural breakdowns & system designs.",
-      },
-      {
-        selector: '.site-nav a[href="#console"]',
-        text: "Interactive terminal console with live system logs.",
-      },
-      {
-        selector: '.site-nav a[href="#about"]',
-        text: "Engineering philosophy, pedigree & technical background.",
-      },
-      {
-        selector: '.site-nav a[href="#experience"]',
-        text: "Verified production history across startups & client teams.",
-      },
-      {
-        selector: '.site-nav a[href="#skills"]',
-        text: "Full-stack toolkit: Next.js, Python, PostgreSQL & AI.",
-      },
-      {
-        selector: '.site-nav a[href="#contact"]',
-        text: "Start a conversation or discuss engineering roles!",
-      },
-      {
-        selector: '.header-cta',
-        text: "Drop an email directly to Mayank's inbox ✉️",
-      },
-      {
-        selector: "#hero-title, .hero-line",
-        text: "That's Mayank — full-stack architect & AI builder.",
-      },
-      {
-        selector: ".eyebrow",
-        text: "Sub-second AI pipelines & low-latency backends.",
-      },
-      {
-        selector: ".hero-lede",
-        text: "Zero fluff. Real production code solving real problems.",
-      },
-      {
-        selector: ".hero-meta li",
-        text: "Bangalore IST · Ready for immediate remote work.",
-      },
-      {
-        selector: ".profile-card",
-        text: "That's Mayank's live stack: Next.js, Python, PostgreSQL!",
-      },
-      {
-        selector: ".mascot",
-        text: "Beep boop! I'm Mayank's autonomous co-pilot 🤖",
-      },
-      {
-        selector: "[data-palette-open]",
-        text: "Hit Ctrl+K anytime for instant search & navigation!",
-      },
-      {
-        selector: "[data-sound-toggle]",
-        text: "Tactile mechanical sounds crafted with Web Audio!",
-      },
+    const say = (text, duration = 4200) => {
+      if (!isDesktop() || !text) return;
+      const now = performance.now();
+      priorityUntil = now + duration;
+      lockHoverUntil = now + Math.min(1600, duration);
+      activeEl = null;
+      if (dwellTimer) {
+        window.clearTimeout(dwellTimer);
+        dwellTimer = null;
+      }
+      if (sectionTimer) {
+        window.clearTimeout(sectionTimer);
+        sectionTimer = null;
+      }
+      setBubbleText(text);
+      scheduleReset(duration);
+    };
+
+    /* Ordered from most specific to broadest; matched with closest(). */
+    const HOVER_TRIGGERS = [
+      { selector: ".brand", text: "Elevator back to the top floor ↑" },
+      { selector: ".site-nav a[href='#work']", text: "Five real builds — screenshots included." },
+      { selector: ".site-nav a[href='#systems']", text: "Peek at the live GitHub pulse." },
+      { selector: ".site-nav a[href='#console']", text: "A working zsh-style page terminal!" },
+      { selector: ".site-nav a[href='#about']", text: "Spoiler: he hates repetitive clicks." },
+      { selector: ".site-nav a[href='#experience']", text: "2019 to now — scroll-powered timeline." },
+      { selector: ".site-nav a[href='#skills']", text: "Tools he actually ships with." },
+      { selector: ".site-nav a[href='#contact']", text: "Ready when you are — say hello!" },
+      { selector: ".header-cta", text: "Straight to Mayank's inbox ✉️" },
+      { selector: "[data-palette-open]", text: "Psst — hit Ctrl+K from anywhere ⚡" },
+      { selector: "[data-sound-toggle]", text: "Mechanical clicks, zero MP3 files." },
+
+      { selector: ".hero-actions a[href='#work']", text: "Let's see what actually shipped!" },
+      { selector: ".hero-actions a[href^='mailto:']", text: "No forms needed — straight to email ✉️" },
+      { selector: ".hero-actions a[href*='linkedin.com']", text: "The polite networking button 💼" },
+      { selector: "#hero-title, .hero-line", text: "Mayank! Full-stack + AI systems." },
+      { selector: ".hero-lede", text: "TL;DR: automates boring stuff cleanly." },
+      { selector: ".hero-meta li", text: "Bengaluru IST · Awake & shipping 🌍" },
+      { selector: ".profile-card", text: "Live JSON specs — zero buzzword fluff." },
+      { selector: ".proof-strip", text: "Receipts only — no vanity metrics." },
+      { selector: ".skill-marquee", text: "Even this marquee stops if motion is off." },
+
+      { selector: ".work-index a[href='#project-shoboti']", text: "Shoboti · Insta DMs -> UPI checkout!" },
+      { selector: ".work-index a[href='#project-hisab']", text: "Hisab AI · Offline Hinglish khatabook." },
+      { selector: ".work-index a[href='#project-simvox']", text: "SIMVox-AI · Old phone + SIM = AI receptionist." },
+      { selector: ".work-index a[href='#project-mrproper']", text: "Mr. Proper · Storefront + ERP in one repo." },
+      { selector: ".work-index a[href='#project-tenderiq']", text: "TenderIQ · Wrangles 33 messy gov portals." },
+
+      { selector: "#project-shoboti .screen-open", text: "Click to zoom — real Shoboti UI, no mockups." },
+      { selector: "#project-shoboti .case__links a", text: "₹0 gateway fees on UPI — check it out ↗" },
+      { selector: "#project-hisab [data-hisab-chip], #project-hisab .hisab-sandbox__btn, #project-hisab .hisab-sandbox__input", text: "Go ahead, test it with Hinglish udhaar!" },
+      { selector: "#project-hisab .workbench-trigger", text: "Pop open the <1ms Bahi-Khata parser!" },
+      { selector: "#project-hisab .screen-open", text: "Works even with zero signal bars." },
+      { selector: "#project-hisab .case__links a", text: "See Hisab AI live in action ↗" },
+      { selector: "#project-simvox [data-simvox-trigger]", text: "Hit play — watch the <800ms voice loop!" },
+      { selector: "#project-simvox .simvox-bench__rate-btn", text: "Switch audio sample rate on the fly." },
+      { selector: "#project-simvox .workbench-trigger", text: "Live oscilloscope + latency waterfall inside!" },
+      { selector: "#project-simvox .browser-frame--proof", text: "10 GitHub stars and counting ⭐" },
+      { selector: "#project-simvox .screen-open", text: "Runs over Bluetooth HFP on a normal SIM!" },
+      { selector: "#project-simvox .case__links a", text: "MIT-licensed open source on GitHub ↗" },
+      { selector: "#project-mrproper .screen-open", text: "Clean layout for a cleaning brand — literally." },
+      { selector: "#project-mrproper .case__links a", text: "95+ Lighthouse on live traffic ↗" },
+      { selector: "#project-tenderiq .screen-open", text: "Reads 80-page PDFs so humans don't have to." },
+      { selector: "#project-tenderiq .case__links a", text: "Peek under the TenderFlow architecture ↗" },
+      { selector: ".screen-open", text: "Click to inspect full screen 🔍" },
+      { selector: "#project-shoboti", text: "Shoboti · Turns Insta comments into UPI orders!" },
+      { selector: "#project-hisab", text: "Hisab AI · Zero-internet Hinglish khatabook." },
+      { selector: "#project-simvox", text: "SIMVox-AI · Gives any Android SIM an AI voice." },
+      { selector: "#project-mrproper", text: "Mr. Proper · Storefront + chemical ERP in one!" },
+      { selector: "#project-tenderiq", text: "TenderIQ · Wrangles 33 portals + captchas." },
+
+      { selector: "[data-more-work-card='tenderflow']", text: "TenderFlow · Eats 80-page PDFs for breakfast." },
+      { selector: "[data-more-work-card='coupletrust']", text: "CoupleTrust · Mutual consent, zero spying." },
+      { selector: "[data-more-work-card='finaudit']", text: "FinAudit · Catches sneaky ledger mismatches." },
+      { selector: ".more-work__panel", text: "Deep dive mode — architecture notes unlocked." },
+
+      { selector: ".repos li a[href*='Magraa.github.io']", text: "Hey, that's this very website! (meta 🤖)" },
+      { selector: ".repos li a[href*='ProperCoupons']", text: "Crypto coupons — no guessing promo codes." },
+      { selector: ".repos li", text: "Fresh commit pulse, straight from GitHub." },
+
+      { selector: ".shell__chips button", text: "Click to auto-run that command!" },
+      { selector: ".shell__input, .shell__run", text: "Try 'whoami', 'projects', or 'sudo' 👀" },
+      { selector: ".shell", text: "A live DOM-reading shell — zero fake logs." },
+
+      { selector: ".fact-card", text: "IIIT Gwalior B.Tech+MBA + 300+ DSA reps." },
+      { selector: ".process-steps li:nth-child(1)", text: "Step 1: Hunt down the annoying manual task." },
+      { selector: ".process-steps li:nth-child(2)", text: "Step 2: Lock down the data model first." },
+      { selector: ".process-steps li:nth-child(3)", text: "Step 3: Never let an LLM do raw math." },
+      { selector: ".process-steps li:nth-child(4)", text: "Step 4: Handle flaky Wi-Fi like a pro." },
+
+      { selector: "[data-exp-jump]", text: "Jump straight to any career chapter!" },
+      { selector: ".exp-arrow-btn", text: "Flip through the timeline chapters." },
+      { selector: ".exp-dock", text: "Scroll or tap arrows to cruise through time." },
+
+      { selector: ".skill-card:nth-child(1)", text: "TypeScript, Python, SQL — the daily drivers." },
+      { selector: ".skill-card:nth-child(2)", text: "60fps UIs, zero layout thrashing." },
+      { selector: ".skill-card:nth-child(3)", text: "Postgres + Redis + strict state guards." },
+      { selector: ".skill-card:nth-child(4)", text: "LLMs, RAG & containers that behave." },
+
+      { selector: "[data-copy]", text: "One click to copy — zero typos allowed 📋" },
+      { selector: ".button--whatsapp", text: "Quick ping on WhatsApp 💬" },
+      { selector: ".connect-channels a[href*='linkedin']", text: "Say hi on LinkedIn!" },
+      { selector: ".connect-channels a[href*='github']", text: "Warning: repo rabbit hole ahead." },
+      { selector: ".connect-channels a[href$='.pdf'], .hud__btn--resume", text: "Grab the PDF résumé 📄" },
+      { selector: "[data-contact-submit]", text: "Launch message! 🚀" },
+      { selector: ".connect-form", text: "Drop a note — hits Mayank's inbox directly." },
+
+      { selector: "[data-motion-toggle]", text: "Need things calmer? Freeze all motion here." },
+      { selector: ".colophon__facts", text: "Under the hood: zero framework, zero bloat." },
+      { selector: ".hud__clock", text: "Live Bengaluru time — IST never sleeps." },
+      { selector: ".hud", text: "Statusline: 5 systems live, 60fps steady." },
+      { selector: ".site-footer", text: "Made in Bengaluru · Thanks for scrolling!" },
     ];
 
-    const onElementEnter = (text) => {
-      if (!isHeroVisible || !isDesktop()) return;
+    const findTrigger = (target) => {
+      if (!(target instanceof Element)) return null;
+      for (const rule of HOVER_TRIGGERS) {
+        const el = target.closest(rule.selector);
+        if (el) return { el, text: rule.text };
+      }
+      return null;
+    };
+
+    const activateRule = (el, text, immediate = false) => {
+      if (!immediate && performance.now() < lockHoverUntil) return;
+      activeEl = el;
       if (resetTimer) {
         window.clearTimeout(resetTimer);
         resetTimer = null;
       }
-      if (dwellTimer) window.clearTimeout(dwellTimer);
+      if (dwellTimer) {
+        window.clearTimeout(dwellTimer);
+        dwellTimer = null;
+      }
+      if (immediate) {
+        setBubbleText(text);
+        return;
+      }
       dwellTimer = window.setTimeout(() => {
-        if (isHeroVisible && isDesktop()) {
+        if (isDesktop() && activeEl === el && performance.now() >= lockHoverUntil) {
           setBubbleText(text);
         }
-      }, 180);
+      }, 110);
     };
 
-    const onElementLeave = () => {
+    const clearHover = () => {
+      activeEl = null;
       if (dwellTimer) {
         window.clearTimeout(dwellTimer);
         dwellTimer = null;
@@ -1068,32 +2566,149 @@
       scheduleReset();
     };
 
-    triggers.forEach(({ selector, text }) => {
-      const items = document.querySelectorAll(selector);
-      items.forEach((item) => {
-        item.addEventListener("mouseenter", () => onElementEnter(text));
-        item.addEventListener("mouseleave", onElementLeave);
-        item.addEventListener("focus", () => onElementEnter(text));
-        item.addEventListener("blur", onElementLeave);
-      });
+    document.addEventListener(
+      "pointerover",
+      (event) => {
+        if (!isDesktop() || event.pointerType === "touch") return;
+        const match = findTrigger(event.target);
+        if (!match) {
+          if (activeEl) clearHover();
+          return;
+        }
+        if (match.el === activeEl) return;
+        activateRule(match.el, match.text);
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      "pointerout",
+      (event) => {
+        if (!activeEl) return;
+        const next = event.relatedTarget;
+        if (!next || !(next instanceof Node) || !activeEl.contains(next)) {
+          clearHover();
+        }
+      },
+      { passive: true }
+    );
+
+    document.addEventListener("focusin", (event) => {
+      if (!isDesktop()) return;
+      const match = findTrigger(event.target);
+      if (match) activateRule(match.el, match.text);
     });
 
+    document.addEventListener("focusout", (event) => {
+      if (!activeEl) return;
+      const next = event.relatedTarget;
+      if (!next || !(next instanceof Node) || !activeEl.contains(next)) {
+        clearHover();
+      }
+    });
+
+    document.addEventListener(
+      "click",
+      (event) => {
+        if (!isDesktop() || !(event.target instanceof Element)) return;
+        let react = null;
+        if (event.target.closest("[data-copy]")) {
+          react = "Yoink! Copied straight to clipboard 📋";
+        } else if (event.target.closest("[data-simvox-trigger]")) {
+          react = "48kHz audio loop — faster than a blink ⚡";
+        } else if (event.target.closest("[data-hisab-chip], .hisab-sandbox__btn")) {
+          react = "0ms Hinglish parse — zero LLM bill harmed 💸";
+        } else if (event.target.closest("[data-full]")) {
+          react = "Zooming in — inspect every pixel 🔍";
+        } else if (event.target.closest("[data-palette-open]")) {
+          react = "Command palette! My favorite shortcut ⌘K";
+        } else if (event.target.closest(".shell__chips button")) {
+          react = "Running straight on the live DOM 🚀";
+        } else if (event.target.closest("[data-sound-toggle]")) {
+          const btn = event.target.closest("[data-sound-toggle]");
+          window.setTimeout(() => {
+            const on = btn.getAttribute("aria-pressed") === "true";
+            activeEl = null;
+            setBubbleText(on ? "Clicky switches engaged 🔊" : "Stealth mode: muted 🤫");
+            scheduleReset(2400);
+          }, 20);
+          return;
+        }
+
+        if (react) {
+          activeEl = null;
+          if (dwellTimer) {
+            window.clearTimeout(dwellTimer);
+            dwellTimer = null;
+          }
+          setBubbleText(react);
+          scheduleReset(2600);
+        }
+      },
+      { capture: true }
+    );
+
+    /* Track the active section as the visitor scrolls so ambient quips stay relevant. */
+    const visibleSections = new Set();
+    const syncSectionQuip = () => {
+      if (!isDesktop() || activeEl || performance.now() < priorityUntil) return;
+      if (sectionTimer) window.clearTimeout(sectionTimer);
+      sectionTimer = window.setTimeout(() => {
+        if (activeEl || !isDesktop() || performance.now() < priorityUntil) return;
+        setBubbleText(currentDefaultText());
+      }, 240);
+    };
+
     if ("IntersectionObserver" in window) {
-      new IntersectionObserver(
+      const sectionObserver = new IntersectionObserver(
         (entries) => {
-          isHeroVisible = entries[0].isIntersecting;
-          if (!isHeroVisible) {
-            if (dwellTimer) window.clearTimeout(dwellTimer);
-            if (resetTimer) window.clearTimeout(resetTimer);
-            setBubbleText(DEFAULT_TEXT);
+          for (const entry of entries) {
+            if (entry.isIntersecting) visibleSections.add(entry.target.id);
+            else visibleSections.delete(entry.target.id);
+          }
+          let chosen = activeSection;
+          for (const id of SECTION_IDS) {
+            if (visibleSections.has(id)) chosen = id;
+          }
+          if (window.scrollY < 160) chosen = "top";
+          if (chosen !== activeSection) {
+            activeSection = chosen;
+            syncSectionQuip();
           }
         },
-        { threshold: 0 }
-      ).observe(heroEl);
+        { rootMargin: "-35% 0px -48% 0px", threshold: 0 }
+      );
+
+      for (const id of SECTION_IDS) {
+        const el = document.getElementById(id);
+        if (el) sectionObserver.observe(el);
+      }
     }
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (activeEl && !activeEl.closest(".site-header, .hud")) {
+          activeEl = null;
+          if (dwellTimer) {
+            window.clearTimeout(dwellTimer);
+            dwellTimer = null;
+          }
+          syncSectionQuip();
+        }
+        if (window.scrollY < 160 && activeSection !== "top") {
+          activeSection = "top";
+          syncSectionQuip();
+        }
+      },
+      { passive: true }
+    );
+
+    syncSectionQuip();
+    return { say };
   };
 
-  initMascotSpeech();
+  mascotSpeech = initMascotSpeech();
 
   /* ---------------------------------------------------------------- */
   /* Hero spacetime mesh                                              */
@@ -1351,18 +2966,20 @@
     }));
 
   const roles = () =>
-    nodesOf(".timeline > li").map((row) => ({
-      span: text(row.querySelector(".timeline__meta span")),
-      place: text(row.querySelector(".timeline__meta span:nth-child(2)")),
-      title: text(row.querySelector(".timeline__body h3")),
-      company: text(row.querySelector(".timeline__company")),
-      points: nodesOf(".timeline__body ul li", row).map((li) => text(li)),
-    }));
+    nodesOf(".exp-panel--role")
+      .reverse()
+      .map((row) => ({
+        span: text(row.querySelector(".exp-eyebrow__date")),
+        place: text(row.querySelector(".exp-eyebrow__place")),
+        title: text(row.querySelector(".exp-role__title")),
+        company: text(row.querySelector(".exp-eyebrow__company")),
+        points: nodesOf(".exp-spec__text", row).map((li) => text(li)),
+      }));
 
   const contactRows = () =>
     nodesOf(".contact-list li").map((row) => ({
-      label: text(row.querySelector("span")),
-      value: text(row.querySelector("a") || row.lastElementChild),
+      label: text(row.querySelector(".connect-tile__label") || row.querySelector("span")),
+      value: text(row.querySelector("a") || row.querySelector(".connect-tile__val") || row.lastElementChild),
       href: row.querySelector("a")?.getAttribute("href") || "",
     }));
 
@@ -1441,7 +3058,9 @@
     };
 
     const goto = (hash) => {
-      window.location.hash = hash;
+      if (!navigateToHash(hash)) {
+        window.location.hash = hash;
+      }
     };
 
     const copyValue = async (value, button) => {
@@ -1625,7 +3244,7 @@
         run: () => {
           const node = group("");
           const rows = contactRows().filter((row) => row.label && row.value);
-          rows.forEach((row) => node.appendChild(make("div", "sh-res", `${row.label.padEnd(12, " ")}${row.value}`)));
+          rows.forEach((row) => node.appendChild(make("div", "sh-res", `${row.label.padEnd(14, " ")}${row.value}`)));
           const actions = make("div", "sh-actions");
           [
             ["agrawalmayank1111@gmail.com", "email"],
@@ -1714,8 +3333,8 @@
           applyMotion();
           return say(
             motionOff
-              ? "motion off — reveals snap, the X-ray splits, the marquee stops."
-              : "motion on — wipe fills, parallax, and the X-ray flashlight are live.",
+              ? "motion off — reveals snap, transitions settle, the marquee stops."
+              : "motion on — wipe fills, parallax, and smooth motion are live.",
             "sh-ok"
           );
         },
@@ -1873,7 +3492,9 @@
 
   if (palette && paletteInput && paletteList) {
     const gotoSection = (hash) => {
-      window.location.hash = hash;
+      if (!navigateToHash(hash)) {
+        window.location.hash = hash;
+      }
     };
 
     const openExternal = (url) => {
@@ -1899,7 +3520,7 @@
 
     const COMMANDS = [
       { group: "Sections", label: "Selected work", hint: "04 projects", run: () => gotoSection("#work") },
-      { group: "Sections", label: "Under the surface", hint: "x-ray · states · repos", run: () => gotoSection("#systems") },
+      { group: "Sections", label: "Under the surface", hint: "live repos", run: () => gotoSection("#systems") },
       { group: "Sections", label: "Console", hint: "type a command", run: () => focusShell("help") },
       { group: "Sections", label: "About", run: () => gotoSection("#about") },
       { group: "Sections", label: "Experience", run: () => gotoSection("#experience") },
@@ -2022,6 +3643,11 @@
         return;
       }
 
+      const openContactModal = document.getElementById("contact-dialog");
+      if (openContactModal?.open) {
+        openContactModal.close();
+      }
+
       palette.showModal();
       mascotGlance();
       document.body.classList.add("dialog-open");
@@ -2033,6 +3659,9 @@
     });
 
     window.addEventListener("keydown", (event) => {
+      if (document.documentElement.classList.contains("is-preloading")) {
+        return;
+      }
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         if (palette.open) {
@@ -2221,10 +3850,14 @@
       }
       const toast = document.createElement("div");
       toast.className = `toast toast--${type}`;
-      toast.innerHTML = `
-        <div class="toast__icon" aria-hidden="true">${type === "success" ? "✓" : "ℹ"}</div>
-        <div class="toast__msg">${message}</div>
-      `;
+      const iconEl = document.createElement("div");
+      iconEl.className = "toast__icon";
+      iconEl.setAttribute("aria-hidden", "true");
+      iconEl.textContent = type === "success" ? "✓" : type === "error" ? "!" : "ℹ";
+      const msgEl = document.createElement("div");
+      msgEl.className = "toast__msg";
+      msgEl.textContent = message;
+      toast.append(iconEl, msgEl);
       container.appendChild(toast);
       AudioFX.chime();
 
@@ -2259,6 +3892,9 @@
 
   /* 4. Global Keyboard OS Layer ------------------------------------ */
   window.addEventListener("keydown", (e) => {
+    if (document.documentElement.classList.contains("is-preloading")) {
+      return;
+    }
     const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
     if (tag === "input" || tag === "textarea" || (document.activeElement && document.activeElement.isContentEditable)) {
       return;
@@ -2278,7 +3914,7 @@
       e.preventDefault();
       const el = document.querySelector(projectMap[key]);
       if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
+        smoothScroller.scrollToElement(el);
         AudioFX.click();
       }
       return;
@@ -2936,4 +4572,315 @@
       }
     });
   });
+
+  /* ------------------------------------------------------------------ */
+  /* Split-text heading reveal (Let's Connect)                          */
+  /* ------------------------------------------------------------------ */
+  document.querySelectorAll("[data-split-heading]").forEach((heading) => {
+    const rawText = text(heading);
+    if (!rawText) return;
+
+    const segments = [];
+    heading.childNodes.forEach((node) => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const em = node.tagName.toLowerCase() === "em";
+        node.textContent.split(/(\s+)/).forEach((part) => {
+          if (part) segments.push({ text: part, em });
+        });
+      } else if (node.nodeType === Node.TEXT_NODE) {
+        node.textContent.split(/(\s+)/).forEach((part) => {
+          if (part) segments.push({ text: part, em: false });
+        });
+      }
+    });
+
+    heading.textContent = "";
+    const sr = document.createElement("span");
+    sr.className = "sr-only";
+    sr.textContent = rawText;
+    heading.appendChild(sr);
+
+    const visual = document.createElement("span");
+    visual.setAttribute("aria-hidden", "true");
+
+    let charIndex = 0;
+    segments.forEach((seg) => {
+      if (/^\s+$/.test(seg.text)) {
+        visual.appendChild(document.createTextNode(" "));
+        return;
+      }
+
+      const wordWrap = document.createElement("span");
+      wordWrap.className = seg.em ? "connect-word connect-word--em" : "connect-word";
+
+      Array.from(seg.text).forEach((ch) => {
+        const charSpan = document.createElement("span");
+        charSpan.className = "connect-char";
+        charSpan.style.setProperty("--char-i", String(charIndex++));
+        charSpan.textContent = ch;
+        wordWrap.appendChild(charSpan);
+      });
+
+      visual.appendChild(wordWrap);
+    });
+
+    heading.appendChild(visual);
+    heading.classList.add("is-armed");
+
+    const revealHeading = () => heading.classList.add("is-revealed");
+
+    if (stillPlaying() || !("IntersectionObserver" in window)) {
+      revealHeading();
+    } else {
+      const splitObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            revealHeading();
+            splitObserver.disconnect();
+          }
+        },
+        { rootMargin: "0px 0px -6% 0px", threshold: 0.25 }
+      );
+      splitObserver.observe(heading);
+    }
+
+    new MutationObserver(() => {
+      if (stillPlaying()) revealHeading();
+    }).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-motion"],
+    });
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* Let's Connect Contact Forms & Modal Dialog                         */
+  /* ------------------------------------------------------------------ */
+  const bindContactForm = (contactForm) => {
+    const submitBtn = contactForm.querySelector("[data-contact-submit]");
+    const submitLabel = contactForm.querySelector("[data-submit-label]");
+    const statusBox = contactForm.querySelector("[data-contact-status]");
+    const honeyInput = contactForm.querySelector('input[name="_honey"]');
+    const nameInput = contactForm.querySelector('input[name="name"]');
+    const emailInput = contactForm.querySelector('input[name="email"]');
+    const phoneInput = contactForm.querySelector('input[name="phone"]');
+    const messageInput = contactForm.querySelector('textarea[name="message"]');
+
+    let resetBtnTimer = 0;
+
+    const setButtonState = (state, labelText) => {
+      if (!submitBtn || !submitLabel) return;
+      submitBtn.dataset.state = state;
+      submitBtn.disabled = state === "loading";
+      submitBtn.setAttribute("aria-busy", String(state === "loading"));
+      submitLabel.textContent = labelText;
+    };
+
+    const setFieldError = (inputEl, errorMsg) => {
+      if (!inputEl) return;
+      const errEl = contactForm.querySelector(`[data-contact-error="${inputEl.name}"]`);
+      if (errorMsg) {
+        inputEl.setAttribute("aria-invalid", "true");
+        if (errEl) {
+          errEl.textContent = errorMsg;
+          errEl.hidden = false;
+        }
+      } else {
+        inputEl.removeAttribute("aria-invalid");
+        if (errEl) {
+          errEl.textContent = "";
+          errEl.hidden = true;
+        }
+      }
+    };
+
+    const showFormStatus = (kind, message, mailtoHref = "") => {
+      if (!statusBox) return;
+      statusBox.textContent = "";
+      statusBox.className = `connect-form__status connect-form__status--${kind}`;
+
+      const p = document.createElement("span");
+      p.textContent = message;
+      statusBox.appendChild(p);
+
+      if (mailtoHref) {
+        statusBox.appendChild(document.createElement("br"));
+        const link = document.createElement("a");
+        link.className = "connect-form__fallback";
+        link.href = mailtoHref;
+        link.textContent = "Open pre-filled message in your email app ↗";
+        statusBox.appendChild(link);
+      }
+
+      statusBox.hidden = false;
+    };
+
+    const hideFormStatus = () => {
+      if (!statusBox) return;
+      statusBox.hidden = true;
+      statusBox.textContent = "";
+    };
+
+    [nameInput, emailInput, messageInput].forEach((inputEl) => {
+      if (!inputEl) return;
+      inputEl.addEventListener("input", () => {
+        if (inputEl.hasAttribute("aria-invalid")) {
+          setFieldError(inputEl, "");
+        }
+        hideFormStatus();
+      });
+    });
+
+    const buildMailtoHref = (name, email, phone, message) => {
+      const subject = encodeURIComponent(`Portfolio inquiry from ${name || "visitor"}`);
+      const bodyLines = [
+        `Name: ${name}`,
+        `Email: ${email}`,
+        phone ? `Phone: ${phone}` : null,
+        "",
+        message,
+      ].filter((line) => line !== null);
+      return `mailto:agrawalmayank1111@gmail.com?subject=${subject}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+    };
+
+    contactForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      window.clearTimeout(resetBtnTimer);
+      hideFormStatus();
+
+      if (honeyInput && honeyInput.value.trim()) {
+        contactForm.reset();
+        setButtonState("success", "Message sent");
+        resetBtnTimer = window.setTimeout(() => setButtonState("idle", "Send message"), 4000);
+        return;
+      }
+
+      const nameVal = (nameInput?.value || "").trim();
+      const emailVal = (emailInput?.value || "").trim();
+      const phoneVal = (phoneInput?.value || "").trim();
+      const messageVal = (messageInput?.value || "").trim();
+
+      let firstInvalid = null;
+
+      if (!nameVal) {
+        setFieldError(nameInput, "Please enter your name.");
+        firstInvalid = firstInvalid || nameInput;
+      } else {
+        setFieldError(nameInput, "");
+      }
+
+      const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
+      if (!emailVal || !validEmail) {
+        setFieldError(emailInput, "Please enter a valid email address.");
+        firstInvalid = firstInvalid || emailInput;
+      } else {
+        setFieldError(emailInput, "");
+      }
+
+      if (!messageVal) {
+        setFieldError(messageInput, "Please add a short message.");
+        firstInvalid = firstInvalid || messageInput;
+      } else {
+        setFieldError(messageInput, "");
+      }
+
+      if (firstInvalid) {
+        firstInvalid.focus();
+        AudioFX.tap();
+        return;
+      }
+
+      setButtonState("loading", "Sending...");
+
+      try {
+        const response = await fetch("https://formsubmit.co/ajax/agrawalmayank1111@gmail.com", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            name: nameVal,
+            email: emailVal,
+            phone: phoneVal || "Not provided",
+            message: messageVal,
+            _subject: `New Portfolio Message from ${nameVal}`,
+            _template: "table",
+            _replyto: emailVal,
+            _honey: "",
+          }),
+        });
+
+        const payload = await response.json().catch(() => ({}));
+        const ok = response.ok && (payload.success === true || payload.success === "true");
+
+        if (!ok) {
+          throw new Error(payload.message || "Unable to deliver message right now.");
+        }
+
+        contactForm.reset();
+        setButtonState("success", "Message sent");
+        showFormStatus("success", "Message sent! Thanks for reaching out — I'll get back to you within one business day.");
+        AudioFX.chime();
+        Toast.show("Message sent to Mayank!", "success");
+
+        resetBtnTimer = window.setTimeout(() => {
+          setButtonState("idle", "Send message");
+        }, 5000);
+      } catch (error) {
+        const mailtoHref = buildMailtoHref(nameVal, emailVal, phoneVal, messageVal);
+        const detail = error && typeof error.message === "string" && error.message
+          ? error.message
+          : "Could not reach the mail relay.";
+        setButtonState("idle", "Send message");
+        showFormStatus("error", `${detail} You can still send it directly in one click:`, mailtoHref);
+        Toast.show("Could not send via relay — email app fallback ready.", "error");
+      }
+    });
+  };
+
+  document.querySelectorAll("[data-contact-form]").forEach(bindContactForm);
+
+  const contactDialog = document.getElementById("contact-dialog");
+  if (contactDialog) {
+    let lastContactTrigger = null;
+    const firstDialogInput = contactDialog.querySelector('input[name="name"]');
+
+    const openContactDialog = (trigger) => {
+      lastContactTrigger = trigger || document.activeElement;
+      if (palette?.open) {
+        palette.close();
+      }
+      if (typeof contactDialog.showModal !== "function") {
+        window.location.hash = "#contact";
+        return;
+      }
+
+      contactDialog.showModal();
+      mascotGlance();
+      document.body.classList.add("dialog-open");
+      if (firstDialogInput) {
+        firstDialogInput.focus();
+      } else {
+        contactDialog.focus({ preventScroll: true });
+      }
+    };
+
+    document.querySelectorAll("[data-contact-open]").forEach((trigger) => {
+      trigger.addEventListener("click", () => openContactDialog(trigger));
+    });
+
+    contactDialog.addEventListener("close", () => {
+      document.body.classList.remove("dialog-open");
+      if (lastContactTrigger instanceof HTMLElement) {
+        lastContactTrigger.focus();
+      }
+      lastContactTrigger = null;
+    });
+
+    contactDialog.addEventListener("click", (event) => {
+      if (event.target === contactDialog) {
+        contactDialog.close();
+      }
+    });
+  }
 })();

@@ -39,8 +39,12 @@ const C = {
 };
 
 const host = document.querySelector("[data-mascot]");
+const rigEl = host && host.querySelector(".mascot__rig");
 const canvas = host && host.querySelector(".mascot__stage");
 const hero = host && host.closest(".hero");
+const heroSide = host && host.closest(".hero-side");
+const anchor = heroSide && heroSide.querySelector(".mascot-anchor");
+const hud = document.querySelector(".hud");
 
 if (!canvas || !hero) {
   throw new Error("mascot: no canvas in [data-mascot]");
@@ -327,7 +331,7 @@ function measureModel() {
 }
 
 function frameModel() {
-  const padding = 1.04;
+  const padding = 1.09;
   const halfV = Math.tan(THREE.MathUtils.degToRad(FOV) / 2);
   const halfH = halfV * Math.max(camera.aspect, 0.001);
   const distV = (modelSize.y * padding) / 2 / halfV;
@@ -338,22 +342,204 @@ function frameModel() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Desktop scroll flight — flows from hero perch to bottom-left dock   */
+/* ------------------------------------------------------------------ */
+
+const canFloat = () => ready && !smallScreen.matches && !motionOff();
+
+const flight = {
+  active: false,
+  targetP: 0,
+  p: 0,
+  vel: 0,
+  bank: 0,
+  lastAppliedP: -1,
+  floatingClass: false,
+  startCX: 0,
+  startCY: 0,
+  startW: 0,
+  startH: 0,
+  endCX: 0,
+  endCY: 0,
+  endScale: 0.53,
+  flightDist: 560,
+  heroCX: 0,
+  heroCY: 0,
+  heroRX: 460,
+  heroRY: 320,
+  liveCX: 0,
+  liveCY: 0,
+  dirtyMetrics: true,
+};
+
+function smoothstep(x) {
+  const c = clamp(x, 0, 1);
+  return c * c * (3 - 2 * c);
+}
+
+function cubicBezier(p0, c1, c2, p3, t) {
+  const u = 1 - t;
+  const u2 = u * u;
+  const t2 = t * t;
+  return u2 * u * p0 + 3 * u2 * t * c1 + 3 * u * t2 * c2 + t2 * t * p3;
+}
+
+function measureFlightMetrics() {
+  if (smallScreen.matches) return;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const heroRect = hero.getBoundingClientRect();
+  const aRect = (anchor || host).getBoundingClientRect();
+
+  const startW = aRect.width || host.clientWidth;
+  const startH = aRect.height || host.clientHeight;
+  if (!startW || !startH) return;
+
+  const sx = window.scrollX;
+  const sy = window.scrollY;
+  flight.startW = startW;
+  flight.startH = startH;
+  flight.startCX = aRect.left + sx + startW / 2;
+  flight.startCY = aRect.top + sy + startH / 2;
+
+  flight.heroCX = heroRect.left + sx + heroRect.width / 2;
+  flight.heroCY = heroRect.top + sy + heroRect.height / 2;
+  flight.heroRX = Math.max(heroRect.width * 0.55, 460);
+  flight.heroRY = Math.max(heroRect.height * 0.5, 320);
+
+  const endW = clamp(vw * 0.088, 114, 152);
+  const endH = endW * (startH / startW);
+  const endLeft = clamp(vw * 0.018, 16, 32);
+  const hudH = hud ? hud.getBoundingClientRect().height : 34;
+  const endBottom = hudH + 14;
+
+  flight.endScale = endW / startW;
+  flight.endCX = endLeft + endW / 2;
+  flight.endCY = Math.max(endH / 2 + 96, vh - endBottom - endH / 2);
+
+  const maxScroll = Math.max(0, document.documentElement.scrollHeight - vh);
+  const baseDist = clamp(heroRect.height * 0.78, 420, 620);
+  flight.flightDist = maxScroll > 0 ? Math.min(baseDist, Math.max(240, maxScroll * 0.5)) : baseDist;
+  flight.dirtyMetrics = true;
+}
+
+function computeScrollProgress() {
+  if (!flight.flightDist) return 0;
+  return clamp(window.scrollY / flight.flightDist, 0, 1);
+}
+
+function applyFlightTransform(force = false) {
+  if (!flight.active) return;
+  if (!force && !flight.dirtyMetrics && Math.abs(flight.p - flight.lastAppliedP) < 1e-4) {
+    return;
+  }
+  flight.lastAppliedP = flight.p;
+  flight.dirtyMetrics = false;
+
+  const p = clamp(flight.p, 0, 1);
+  const t = 0.5 - 0.5 * Math.cos(Math.PI * p);
+
+  const p0x = flight.startCX - window.scrollX;
+  const p0y = flight.startCY;
+  const p3x = flight.endCX;
+  const p3y = flight.endCY;
+  const dx = p3x - p0x;
+  const dy = p3y - p0y;
+
+  const cx = cubicBezier(p0x, p0x + dx * 0.16, p0x + dx * 0.78, p3x, t);
+  const cy = cubicBezier(p0y, p0y + dy * 0.42, p0y + dy * 0.96, p3y, t);
+  const dock = smoothstep(p);
+  const s = 1 + (flight.endScale - 1) * dock;
+
+  flight.liveCX = cx;
+  flight.liveCY = cy;
+
+  const tx = cx - flight.startW / 2;
+  const ty = cy - flight.startH / 2;
+  host.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0)`;
+  host.style.setProperty("--mascot-scale", s.toFixed(4));
+  host.style.setProperty("--mascot-dock", dock.toFixed(4));
+  if (rigEl) {
+    rigEl.style.transform = `scale(${s.toFixed(4)})`;
+  }
+
+  const isFloating = p > 0.03 || flight.targetP > 0.03;
+  if (isFloating !== flight.floatingClass) {
+    flight.floatingClass = isFloating;
+    host.classList.toggle("is-floating", isFloating);
+  }
+}
+
+function syncFlightMode(snapToScroll = false) {
+  const shouldFloat = canFloat();
+  if (shouldFloat && !flight.active) {
+    flight.active = true;
+    host.classList.add("mascot--flight");
+    measureFlightMetrics();
+    flight.targetP = computeScrollProgress();
+    if (snapToScroll) {
+      flight.p = flight.targetP;
+      flight.vel = 0;
+      flight.bank = 0;
+    }
+    applyFlightTransform(true);
+  } else if (!shouldFloat && flight.active) {
+    flight.active = false;
+    flight.floatingClass = false;
+    flight.p = 0;
+    flight.targetP = 0;
+    flight.vel = 0;
+    flight.bank = 0;
+    flight.lastAppliedP = -1;
+    host.classList.remove("mascot--flight", "is-floating");
+    host.style.transform = "";
+    host.style.removeProperty("--mascot-scale");
+    host.style.removeProperty("--mascot-dock");
+    if (rigEl) {
+      rigEl.style.transform = "";
+    }
+    robot.rotation.set(0, 0, 0);
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* Pointer — measured against the hero, not the 262px box, or the      */
 /* clamp saturates before the cursor has crossed a third of the page.  */
 /* ------------------------------------------------------------------ */
+
+const lastPointer = { x: 0, y: 0, has: false };
+
+function pointerToTarget(clientX, clientY, out) {
+  if (flight.active) {
+    const dockEase = smoothstep(flight.p);
+    const heroRefX = flight.heroCX - window.scrollX;
+    const heroRefY = flight.heroCY - window.scrollY;
+    const refX = heroRefX + (flight.liveCX - heroRefX) * dockEase;
+    const refY = heroRefY + (flight.liveCY - heroRefY) * dockEase;
+    const rx = flight.heroRX + (Math.max(window.innerWidth * 0.72, 560) - flight.heroRX) * dockEase;
+    const ry = flight.heroRY + (Math.max(window.innerHeight * 0.72, 420) - flight.heroRY) * dockEase;
+    out.x = clamp((clientX - refX) / rx, -1.2, 1.2);
+    out.y = clamp((clientY - refY) / ry, -1.2, 1.2);
+    return true;
+  }
+  const rect = hero.getBoundingClientRect();
+  if (!rect.width || !rect.height) return false;
+  const rx = Math.max(rect.width * 0.55, 460);
+  const ry = Math.max(rect.height * 0.5, 320);
+  out.x = clamp((clientX - (rect.left + rect.width / 2)) / rx, -1.2, 1.2);
+  out.y = clamp((clientY - (rect.top + rect.height / 2)) / ry, -1.2, 1.2);
+  return true;
+}
 
 function onPointer(event) {
   if (event.clientX === undefined) return;
   if (event.pointerType === "touch" || window.innerWidth <= 768 || window.matchMedia("(pointer: coarse)").matches) {
     return;
   }
-  const rect = hero.getBoundingClientRect();
-  if (!rect.width || !rect.height) return;
-
-  const rx = Math.max(rect.width * 0.55, 460);
-  const ry = Math.max(rect.height * 0.5, 320);
-  target.x = clamp((event.clientX - (rect.left + rect.width / 2)) / rx, -1.2, 1.2);
-  target.y = clamp((event.clientY - (rect.top + rect.height / 2)) / ry, -1.2, 1.2);
+  lastPointer.x = event.clientX;
+  lastPointer.y = event.clientY;
+  lastPointer.has = true;
+  pointerToTarget(event.clientX, event.clientY, target);
   lastMoveT = elapsed;
   glance.until = -1;
 }
@@ -829,6 +1015,7 @@ async function init() {
   } else {
     intro = 0;
     robot.scale.setScalar(0.001);
+    syncFlightMode(true);
     start();
   }
 }
@@ -870,6 +1057,7 @@ function staticPose() {
   glance.until = -1;
   robot.scale.setScalar(1);
   robot.position.y = 0;
+  robot.rotation.set(0, 0, 0);
   /* A small fixed turn toward the hero copy reads as attention rather
      than a dead-front mannequin, and it never moves. */
   head.rotation.set(-0.05, -0.14, 0.02);
@@ -904,13 +1092,38 @@ function tick() {
   elapsed += dt;
   const t = elapsed;
 
+  let dockBias = 0;
+  if (flight.active) {
+    const prevP = flight.p;
+    const follow = 1 - Math.exp(-8.5 * dt);
+    flight.p += (flight.targetP - flight.p) * follow;
+    if (Math.abs(flight.targetP - flight.p) < 0.0004) {
+      flight.p = flight.targetP;
+    }
+    const rawVel = dt > 1e-4 ? (flight.p - prevP) / dt : 0;
+    flight.vel += (rawVel - flight.vel) * (1 - Math.exp(-12 * dt));
+
+    const desiredBank = clamp(flight.vel * 0.09, -0.1, 0.1);
+    flight.bank += (desiredBank - flight.bank) * (1 - Math.exp(-10 * dt));
+
+    applyFlightTransform(false);
+    dockBias = smoothstep(flight.p);
+
+    if (lastPointer.has && t - lastMoveT <= 3.5 && Math.abs(flight.vel) > 0.01) {
+      pointerToTarget(lastPointer.x, lastPointer.y, target);
+    }
+  } else {
+    flight.bank = 0;
+    flight.vel = 0;
+  }
+
   if (isMobile) {
     /* Autonomous gentle idle movement on mobile: no cursor/touch tracking */
     target.x = Math.sin(t * 0.45) * 0.32;
     target.y = Math.sin(t * 0.31 + 1.2) * 0.16;
   } else if (t - lastMoveT > 3.5 && t > glance.until) {
-    target.x = Math.sin(t * 0.45) * 0.45;
-    target.y = Math.sin(t * 0.31 + 1.2) * 0.2;
+    target.x = dockBias * 0.28 + Math.sin(t * 0.45) * (0.45 - dockBias * 0.1);
+    target.y = dockBias * -0.16 + Math.sin(t * 0.31 + 1.2) * (0.2 - dockBias * 0.03);
   }
 
   const s = 1 - Math.pow(0.0025, dt);
@@ -925,14 +1138,18 @@ function tick() {
     robot.scale.setScalar(Math.max(1 + 2.4 * Math.pow(k - 1, 3) + 1.4 * Math.pow(k - 1, 2), 0.001));
   }
 
-  robot.position.y = Math.sin(t * 1.6) * 0.09;
+  robot.rotation.z = flight.bank;
+  robot.rotation.x = Math.abs(flight.vel) * 0.035;
+
+  const flightLift = clamp(flight.vel * 0.035, -0.04, 0.07);
+  robot.position.y = Math.sin(t * 1.6) * 0.09 + flightLift;
   const bob = robot.position.y;
 
   head.rotation.y = look.x * 0.5;
   head.rotation.x = look.y * 0.42;
   head.rotation.z = -look.x * 0.06 + Math.sin(t * 1.1) * 0.015;
 
-  body.rotation.y = look.x * 0.28;
+  body.rotation.y = look.x * 0.28 + dockBias * 0.16;
   body.rotation.x = look.y * 0.12;
 
   orientEyes();
@@ -992,7 +1209,8 @@ function stop() {
 
 function sync() {
   if (!ready) return;
-  if (motionOff() || document.hidden || !heroVisible || !layout()) {
+  syncFlightMode(motionOff() ? false : !flight.active);
+  if (motionOff() || document.hidden || (!flight.active && !heroVisible) || !layout()) {
     stop();
     if (motionOff() && W && H) staticPose();
     return;
@@ -1000,9 +1218,28 @@ function sync() {
   start();
 }
 
+function refreshFlight() {
+  if (!ready || !flight.active) return;
+  measureFlightMetrics();
+  flight.targetP = computeScrollProgress();
+  applyFlightTransform(true);
+}
+
 /* ------------------------------------------------------------------ */
 /* Lifecycle                                                           */
 /* ------------------------------------------------------------------ */
+
+function onScroll() {
+  if (!flight.active) return;
+  flight.targetP = computeScrollProgress();
+  if (lastPointer.has && elapsed - lastMoveT <= 3.5) {
+    pointerToTarget(lastPointer.x, lastPointer.y, target);
+  }
+}
+
+window.addEventListener("scroll", onScroll, { passive: true });
+window.addEventListener("resize", refreshFlight, { passive: true });
+document.fonts?.ready.then(refreshFlight);
 
 new IntersectionObserver(
   (entries) => {
@@ -1018,6 +1255,7 @@ new ResizeObserver(() => {
     stop();
     return;
   }
+  refreshFlight();
   if (motionOff()) {
     stop();
     staticPose();
@@ -1025,6 +1263,11 @@ new ResizeObserver(() => {
   }
   sync();
 }).observe(host);
+
+if (heroSide) {
+  new ResizeObserver(refreshFlight).observe(heroSide);
+}
+new ResizeObserver(refreshFlight).observe(root);
 
 document.addEventListener("visibilitychange", sync);
 reduceQuery.addEventListener("change", sync);
@@ -1034,27 +1277,31 @@ canvas.addEventListener("webglcontextlost", (event) => {
   event.preventDefault();
   stop();
   ready = false;
+  syncFlightMode(false);
   host.classList.add("mascot--failed");
 });
 
-/* The robot looks at the command palette when it opens. */
-window.__mascotGlance = () => {
+/* The robot looks at the command palette (or a custom screen point) on demand. */
+window.__mascotGlance = (targetX, targetY) => {
   if (!ready || motionOff()) return;
-  const dlg = document.getElementById("palette");
-  if (dlg) {
-    const r = dlg.getBoundingClientRect();
-    const hr = hero.getBoundingClientRect();
-    if (r.width && hr.width) {
-      glance.x = clamp((r.left + r.width / 2 - (hr.left + hr.width / 2)) / Math.max(hr.width * 0.55, 460), -1.2, 1.2);
-      glance.y = clamp((r.top + r.height / 2 - (hr.top + hr.height / 2)) / Math.max(hr.height * 0.5, 320), -1.2, 1.2);
+  if (typeof targetX === "number" && typeof targetY === "number") {
+    pointerToTarget(targetX, targetY, glance);
+  } else {
+    const dlg = document.getElementById("palette");
+    if (dlg) {
+      const r = dlg.getBoundingClientRect();
+      if (r.width) {
+        pointerToTarget(r.left + r.width / 2, r.top + r.height / 2, glance);
+      }
     }
   }
-  glance.until = elapsed + 1.6;
+  glance.until = elapsed + 1.8;
   if (!running) start();
 };
 
 smallScreen.addEventListener("change", () => {
   if (!ready) return;
+  syncFlightMode(true);
   layout();
   sync();
 });
