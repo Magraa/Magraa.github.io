@@ -15,26 +15,196 @@
   const header = document.querySelector("[data-header]");
 
   if (header) {
-    const updateHeader = () => {
-      header.classList.toggle("is-scrolled", window.scrollY > 12);
+    const headerInner = header.querySelector(".header-inner");
+    const brand = header.querySelector(".brand");
+    const collapsibles = Array.from(header.querySelectorAll("[data-header-collapsible]"));
+    const menuToggle = document.querySelector("[data-menu-toggle]");
+    const drawer = document.getElementById("site-drawer");
+    const backdrop = document.querySelector("[data-menu-backdrop]");
+    const drawerLinks = drawer ? Array.from(drawer.querySelectorAll("[data-drawer-link]")) : [];
+    const drawerCloseTriggers = drawer ? Array.from(drawer.querySelectorAll("[data-drawer-close]")) : [];
+    const SCROLL_SPLIT_Y = 56;
+    let isMenuOpen = false;
+    let drawerInertTargets = [];
+
+    const syncHeaderOffsets = () => {
+      if (!brand) return;
+      let naturalLeft = 0;
+      let node = brand;
+      while (node && node !== header) {
+        naturalLeft += node.offsetLeft;
+        node = node.offsetParent;
+      }
+      const targetLeft = window.innerWidth <= 560
+        ? 20
+        : Math.min(44, Math.max(20, Math.round(window.innerWidth * 0.03)));
+      const dx = Math.round(targetLeft - naturalLeft);
+      header.style.setProperty("--header-brand-dx", `${dx}px`);
     };
 
+    const syncCollapsedInert = () => {
+      const collapsed = header.classList.contains("is-scrolled") || isMenuOpen;
+      collapsibles.forEach((el) => {
+        if (collapsed) {
+          el.setAttribute("inert", "");
+          el.setAttribute("aria-hidden", "true");
+        } else {
+          el.removeAttribute("inert");
+          el.removeAttribute("aria-hidden");
+        }
+      });
+    };
+
+    const updateHeader = () => {
+      const scrolled = window.scrollY > SCROLL_SPLIT_Y;
+      header.classList.toggle("is-scrolled", scrolled);
+      syncCollapsedInert();
+    };
+
+    const syncDrawerActiveSection = () => {
+      if (!drawerLinks.length) return;
+      const anchorY = Math.round(window.innerHeight * 0.34);
+      let activeHref = "";
+      if (window.scrollY > 120) {
+        let bestId = "";
+        for (const link of drawerLinks) {
+          const href = link.getAttribute("href");
+          if (!href || !href.startsWith("#")) continue;
+          const sec = document.getElementById(href.slice(1));
+          if (!sec) continue;
+          if (sec.getBoundingClientRect().top <= anchorY) {
+            bestId = href;
+          }
+        }
+        activeHref = bestId;
+      }
+      drawerLinks.forEach((link) => {
+        if (link.getAttribute("href") === activeHref) {
+          link.setAttribute("aria-current", "location");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+    };
+
+    const openDrawer = () => {
+      if (!drawer || isMenuOpen) return;
+      isMenuOpen = true;
+      syncHeaderOffsets();
+      syncDrawerActiveSection();
+      header.classList.add("is-menu-open");
+      drawer.classList.add("is-open");
+      drawer.setAttribute("aria-hidden", "false");
+      drawer.removeAttribute("inert");
+      if (backdrop) {
+        backdrop.classList.add("is-open");
+      }
+      if (menuToggle) {
+        menuToggle.setAttribute("aria-expanded", "true");
+        menuToggle.setAttribute("aria-label", "Close menu");
+      }
+      syncCollapsedInert();
+      document.body.classList.add("dialog-open");
+
+      drawerInertTargets = Array.from(
+        document.querySelectorAll("main, footer.site-footer, aside.hud, .colophon-drawer")
+      ).filter((el) => !el.hasAttribute("inert"));
+      drawerInertTargets.forEach((el) => el.setAttribute("inert", ""));
+
+      if (drawerLinks[0]) {
+        window.requestAnimationFrame(() => {
+          if (isMenuOpen) {
+            drawerLinks[0].focus({ preventScroll: true });
+          }
+        });
+      }
+    };
+
+    const closeDrawer = ({ restoreFocus = true } = {}) => {
+      if (!drawer || !isMenuOpen) return;
+      isMenuOpen = false;
+      header.classList.remove("is-menu-open");
+      drawer.classList.remove("is-open");
+      drawer.setAttribute("aria-hidden", "true");
+      drawer.setAttribute("inert", "");
+      if (backdrop) {
+        backdrop.classList.remove("is-open");
+      }
+      if (menuToggle) {
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Open menu");
+      }
+      drawerInertTargets.forEach((el) => el.removeAttribute("inert"));
+      drawerInertTargets = [];
+      document.body.classList.remove("dialog-open");
+      syncCollapsedInert();
+
+      if (restoreFocus && menuToggle && (header.classList.contains("is-scrolled"))) {
+        menuToggle.focus({ preventScroll: true });
+      }
+    };
+
+    if (menuToggle && drawer) {
+      menuToggle.addEventListener("click", () => {
+        if (isMenuOpen) {
+          closeDrawer({ restoreFocus: true });
+        } else {
+          openDrawer();
+        }
+      });
+
+      if (backdrop) {
+        backdrop.addEventListener("click", () => closeDrawer({ restoreFocus: true }));
+      }
+
+      drawerLinks.forEach((link) => {
+        link.addEventListener("click", () => closeDrawer({ restoreFocus: false }));
+      });
+
+      drawerCloseTriggers.forEach((btn) => {
+        btn.addEventListener("click", () => closeDrawer({ restoreFocus: false }), { capture: true });
+      });
+
+      if (brand) {
+        brand.addEventListener("click", () => {
+          if (isMenuOpen) {
+            closeDrawer({ restoreFocus: false });
+          }
+        });
+      }
+
+      window.addEventListener("keydown", (event) => {
+        if (!isMenuOpen) return;
+        if (event.key === "Escape") {
+          if (document.querySelector("dialog[open]")) return;
+          event.preventDefault();
+          closeDrawer({ restoreFocus: true });
+        }
+      });
+    }
+
+    syncHeaderOffsets();
     updateHeader();
     window.addEventListener("scroll", updateHeader, { passive: true });
+    window.addEventListener("resize", () => {
+      syncHeaderOffsets();
+      updateHeader();
+    });
   }
 
   const progress = document.querySelector("[data-scroll-progress]");
+  let updateScrollProgress = () => {};
 
   if (progress) {
-    const updateProgress = () => {
+    updateScrollProgress = () => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const ratio = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
       progress.style.transform = `scaleX(${ratio})`;
     };
 
-    updateProgress();
-    window.addEventListener("scroll", updateProgress, { passive: true });
-    window.addEventListener("resize", updateProgress);
+    updateScrollProgress();
+    window.addEventListener("scroll", updateScrollProgress, { passive: true });
+    window.addEventListener("resize", updateScrollProgress);
   }
 
   const year = document.querySelector("[data-year]");
@@ -89,7 +259,9 @@
 
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   let workDeck = null;
+  let aboutExpand = null;
   let expTheater = null;
+  let colophonDrawer = null;
   let mascotSpeech = null;
 
   if (finePointer && !reduceMotion) {
@@ -356,6 +528,29 @@
   /* Inertial smooth scroll                                           */
   /* ---------------------------------------------------------------- */
 
+  const canChildScroll = (target, deltaY) => {
+    if (!(target instanceof Element)) return false;
+    if (document.body.classList.contains("dialog-open") || target.closest("dialog[open]")) {
+      return true;
+    }
+    let node = target;
+    while (node && node !== document.body && node !== document.documentElement) {
+      const style = window.getComputedStyle(node);
+      const overflowY = style.overflowY;
+      if (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") {
+        const maxScroll = node.scrollHeight - node.clientHeight;
+        if (maxScroll > 1) {
+          if (style.overscrollBehaviorY !== "auto") return true;
+          if ((deltaY < 0 && node.scrollTop > 0) || (deltaY > 0 && node.scrollTop < maxScroll - 1)) {
+            return true;
+          }
+        }
+      }
+      node = node.parentElement;
+    }
+    return false;
+  };
+
   const finePointerScrollQuery = window.matchMedia("(any-pointer: fine)");
 
   const smoothScroller = (() => {
@@ -450,29 +645,6 @@
       }
     };
 
-    const canChildScroll = (target, deltaY) => {
-      if (!(target instanceof Element)) return false;
-      if (document.body.classList.contains("dialog-open") || target.closest("dialog[open]")) {
-        return true;
-      }
-      let node = target;
-      while (node && node !== document.body && node !== document.documentElement) {
-        const style = window.getComputedStyle(node);
-        const overflowY = style.overflowY;
-        if (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") {
-          const maxScroll = node.scrollHeight - node.clientHeight;
-          if (maxScroll > 1) {
-            if (style.overscrollBehaviorY !== "auto") return true;
-            if ((deltaY < 0 && node.scrollTop > 0) || (deltaY > 0 && node.scrollTop < maxScroll - 1)) {
-              return true;
-            }
-          }
-        }
-        node = node.parentElement;
-      }
-      return false;
-    };
-
     const onWheel = (event) => {
       if (!enabled || event.ctrlKey || event.metaKey) return;
       if (document.documentElement.classList.contains("is-preloading")) {
@@ -489,6 +661,9 @@
       const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
       if (workDeck && workDeck.isActive() && workDeck.handleSideWheel(event, dy)) {
         /* Side-scroll bypassed the remaining deck animation; continue scrolling normally. */
+      }
+      if (colophonDrawer && colophonDrawer.handleWheel(event, max)) {
+        return;
       }
       const base = isRunning ? targetY : window.scrollY;
       if (!isRunning && ((base <= 0 && dy < 0) || (base >= max && dy > 0))) {
@@ -576,6 +751,14 @@
         }
         return;
       }
+      if (el.id === "about" && aboutExpand && aboutExpand.isActive()) {
+        scrollToY(aboutExpand.getStartY());
+        if (focus) {
+          if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+          el.focus({ preventScroll: true });
+        }
+        return;
+      }
       if (el.id === "experience" && expTheater && expTheater.isActive()) {
         scrollToY(expTheater.getStartY());
         if (focus) {
@@ -598,16 +781,20 @@
       }
     };
 
-    return { isEnabled: () => enabled, scrollToElement, scrollToY, shiftBy };
+    return { isEnabled: () => enabled, scrollToElement, scrollToY, shiftBy, sync: syncPosition };
   })();
 
   const navigateToHash = (hash, { focus = false } = {}) => {
     if (!hash || !hash.startsWith("#")) return false;
     const target = hash === "#" ? document.documentElement : document.getElementById(hash.slice(1));
     if (!target) return false;
+    if (hash === "#colophon" && colophonDrawer) {
+      colophonDrawer.unlock({ instant: false, scrollTo: false });
+    }
     const deckIntercept = Boolean(workDeck && workDeck.isActive() && workDeck.getCardScrollY(target) !== null);
+    const aboutIntercept = Boolean(aboutExpand && aboutExpand.isActive() && target.id === "about");
     const expIntercept = Boolean(expTheater && expTheater.isActive() && target.id === "experience");
-    if (smoothScroller.isEnabled() || deckIntercept || expIntercept) {
+    if (smoothScroller.isEnabled() || deckIntercept || aboutIntercept || expIntercept) {
       smoothScroller.scrollToElement(target, { focus });
       if (window.location.hash !== hash) {
         window.history.pushState(null, "", hash);
@@ -625,8 +812,9 @@
     if (!href || href === "#") return;
     const target = document.getElementById(href.slice(1));
     const deckIntercept = Boolean(workDeck && workDeck.isActive() && target && workDeck.getCardScrollY(target) !== null);
+    const aboutIntercept = Boolean(aboutExpand && aboutExpand.isActive() && target && target.id === "about");
     const expIntercept = Boolean(expTheater && expTheater.isActive() && target && target.id === "experience");
-    if (!smoothScroller.isEnabled() && !deckIntercept && !expIntercept) return;
+    if (!smoothScroller.isEnabled() && !deckIntercept && !aboutIntercept && !expIntercept) return;
     if (navigateToHash(href, { focus: anchor.classList.contains("skip-link") })) {
       event.preventDefault();
     }
@@ -1693,6 +1881,1811 @@
   })();
 
   /* ---------------------------------------------------------------- */
+  /* About — Scroll-Expanding Editorial Atelier Card                  */
+  /* ---------------------------------------------------------------- */
+
+  aboutExpand = (() => {
+    const section = document.querySelector("[data-about-expand]");
+    if (!section) {
+      return { isActive: () => false, getStartY: () => 0, getExpandedY: () => 0, refresh: () => {} };
+    }
+
+    const viewport = section.querySelector("[data-about-viewport]");
+    const card = section.querySelector("[data-about-card]");
+    const contentEl = section.querySelector("[data-about-content]");
+    const expandBtn = section.querySelector("[data-about-expand-btn]");
+    const imgEl = section.querySelector(".about-card__img");
+
+    if (!viewport || !card) {
+      return { isActive: () => false, getStartY: () => 0, getExpandedY: () => 0, refresh: () => {} };
+    }
+
+    const MIN_WIDTH = 768;
+    const MIN_HEIGHT = 560;
+    const DEFAULT_RATIO = 1134 / 760;
+
+    let active = false;
+    let stickyTop = 81;
+    let hudH = 34;
+    let viewportH = Math.max(460, window.innerHeight - stickyTop - hudH);
+    let totalDist = 1;
+    let currentProgress = 0;
+    let targetProgress = 0;
+    let currentDropDrive = 0;
+    let rafId = 0;
+    let lastTime = 0;
+    let resizeTimer = 0;
+    let contentUnlocked = false;
+
+    const clamp01 = (v) => (v <= 0 ? 0 : v >= 1 ? 1 : v);
+
+    const getRatio = () => {
+      if (imgEl && imgEl.naturalWidth > 0 && imgEl.naturalHeight > 0) {
+        return imgEl.naturalWidth / imgEl.naturalHeight;
+      }
+      return DEFAULT_RATIO;
+    };
+
+    const isEligible = () =>
+      !stillPlaying() &&
+      window.innerWidth >= MIN_WIDTH &&
+      window.innerHeight >= MIN_HEIGHT;
+
+    const getStartY = () => {
+      const rect = section.getBoundingClientRect();
+      return Math.max(0, Math.round(rect.top + window.scrollY - stickyTop));
+    };
+
+    const getExpandedY = () => {
+      return Math.round(getStartY() + totalDist * 0.94);
+    };
+
+    const applyProgress = (p) => {
+      const isCompact = window.innerWidth < 960;
+      const startW = isCompact ? 264 : 300;
+      const startH = isCompact ? 344 : 400;
+      const ratio = getRatio();
+
+      // Act 1 (p = 0..0.56): expand portrait card to full widescreen split frame
+      const expandP = clamp01(p / 0.56);
+      // Act 2 (p = 0.58..0.94): keep frame steady while down-scroll drops skills from both pipes
+      const dropDrive = clamp01((p - 0.58) / 0.36);
+      currentDropDrive = dropDrive;
+
+      const maxW = Math.min(1180, window.innerWidth * 0.92);
+      const maxH = Math.max(460, viewportH * 0.89);
+      const endW = Math.min(maxW, maxH * ratio);
+      const endH = endW / ratio;
+
+      const curW = startW + expandP * (endW - startW);
+      const curH = startH + expandP * (endH - startH);
+      const splitVW = expandP * (isCompact ? 115 : 135);
+      const blurOp = expandP < 0.45 ? Math.max(0, 1 - expandP * 2.3) : 0;
+      const borderOp = 0.14 + (1 - expandP) * 0.22;
+      const scrimOp = Math.max(0.56, 0.82 - expandP * 0.24);
+      const imgScale = 1.03 - expandP * 0.03;
+      const titleOp = Math.max(0, 1 - expandP * 1.75);
+      const subOp = Math.max(0, 1 - expandP * 2.8);
+
+      const contentFade = p >= 0.40 ? Math.min(1, (p - 0.40) / 0.16) : 0;
+      const contentY = (1 - contentFade) * 14;
+      const unlocked = contentFade >= 0.45;
+
+      section.style.setProperty("--about-w", `${curW.toFixed(1)}px`);
+      section.style.setProperty("--about-h", `${curH.toFixed(1)}px`);
+      section.style.setProperty("--about-border", borderOp.toFixed(3));
+      section.style.setProperty("--about-img-scale", imgScale.toFixed(4));
+      section.style.setProperty("--about-blur-opacity", blurOp.toFixed(3));
+      section.style.setProperty("--about-scrim-opacity", scrimOp.toFixed(3));
+      section.style.setProperty("--about-split-vw", `${splitVW.toFixed(2)}vw`);
+      section.style.setProperty("--about-title-opacity", titleOp.toFixed(3));
+      section.style.setProperty("--about-sub-opacity", subOp.toFixed(3));
+      section.style.setProperty("--about-content-opacity", contentFade.toFixed(3));
+      section.style.setProperty("--about-content-y", `${contentY.toFixed(1)}px`);
+      section.style.setProperty("--about-content-pe", unlocked ? "auto" : "none");
+
+      if (unlocked !== contentUnlocked) {
+        contentUnlocked = unlocked;
+        if (contentEl) {
+          if (unlocked) {
+            contentEl.removeAttribute("inert");
+            contentEl.removeAttribute("aria-hidden");
+          } else {
+            contentEl.setAttribute("inert", "");
+            contentEl.setAttribute("aria-hidden", "true");
+          }
+        }
+        if (expandBtn) {
+          expandBtn.classList.toggle("is-hidden", unlocked);
+          if (unlocked) {
+            expandBtn.setAttribute("tabindex", "-1");
+          } else {
+            expandBtn.removeAttribute("tabindex");
+          }
+        }
+        if (unlocked) {
+          section.dispatchEvent(new CustomEvent("about:unlocked"));
+        }
+      }
+
+      section.dispatchEvent(
+        new CustomEvent("about:progress", {
+          detail: { progress: p, expandP, dropDrive, unlocked },
+        })
+      );
+    };
+
+    const syncTargetFromScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const scrolled = stickyTop - rect.top;
+      const raw = totalDist > 0 ? scrolled / totalDist : 0;
+      targetProgress = clamp01(raw / 0.92);
+    };
+
+    const tick = (now) => {
+      rafId = 0;
+      if (!active) return;
+
+      const dt = lastTime ? Math.min(0.05, (now - lastTime) / 1000) : 1 / 60;
+      lastTime = now;
+      const alpha = 1 - Math.exp(-13 * dt);
+
+      currentProgress += (targetProgress - currentProgress) * alpha;
+      const settled = Math.abs(targetProgress - currentProgress) < 0.0005;
+      if (settled) {
+        currentProgress = targetProgress;
+      }
+
+      applyProgress(currentProgress);
+
+      if (!settled) {
+        rafId = window.requestAnimationFrame(tick);
+      } else {
+        lastTime = 0;
+      }
+    };
+
+    const scheduleTick = () => {
+      if (!active) return;
+      syncTargetFromScroll();
+      if (!rafId) {
+        lastTime = 0;
+        rafId = window.requestAnimationFrame(tick);
+      }
+    };
+
+    const measure = () => {
+      if (!active) return;
+      const hdr = document.querySelector(".site-header");
+      const hudEl = document.querySelector(".hud");
+      stickyTop = hdr ? Math.round(hdr.getBoundingClientRect().height) : 81;
+      hudH = hudEl ? Math.round(hudEl.getBoundingClientRect().height) : 34;
+
+      viewportH = Math.max(460, window.innerHeight - stickyTop - hudH);
+      const scrollSpan = Math.max(880, Math.round(window.innerHeight * 1.25));
+
+      section.style.setProperty("--about-sticky-top", `${stickyTop}px`);
+      section.style.setProperty("--about-hud-h", `${hudH}px`);
+      section.style.setProperty("--about-track-h", `${viewportH + scrollSpan}px`);
+
+      totalDist = Math.max(1, section.offsetHeight - viewportH);
+      syncTargetFromScroll();
+      currentProgress = targetProgress;
+      contentUnlocked = !(currentProgress >= 0.47);
+      applyProgress(currentProgress);
+    };
+
+    const teardown = () => {
+      if (!active) return;
+      active = false;
+      currentDropDrive = 1;
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      lastTime = 0;
+      window.removeEventListener("scroll", scheduleTick);
+      section.classList.remove("is-about-active");
+
+      [
+        "--about-sticky-top",
+        "--about-hud-h",
+        "--about-track-h",
+        "--about-w",
+        "--about-h",
+        "--about-border",
+        "--about-img-scale",
+        "--about-blur-opacity",
+        "--about-scrim-opacity",
+        "--about-split-vw",
+        "--about-title-opacity",
+        "--about-sub-opacity",
+        "--about-content-opacity",
+        "--about-content-y",
+        "--about-content-pe",
+      ].forEach((prop) => section.style.removeProperty(prop));
+
+      if (contentEl) {
+        contentEl.removeAttribute("inert");
+        contentEl.removeAttribute("aria-hidden");
+      }
+      if (expandBtn) {
+        expandBtn.classList.remove("is-hidden");
+        expandBtn.removeAttribute("tabindex");
+      }
+
+      section.dispatchEvent(
+        new CustomEvent("about:progress", {
+          detail: { progress: 1, expandP: 1, dropDrive: 1, unlocked: true },
+        })
+      );
+    };
+
+    const activate = () => {
+      if (active) {
+        measure();
+        return;
+      }
+      active = true;
+      section.classList.add("is-about-active");
+      measure();
+      window.addEventListener("scroll", scheduleTick, { passive: true });
+    };
+
+    const refresh = () => {
+      if (isEligible()) {
+        activate();
+      } else {
+        teardown();
+      }
+    };
+
+    if (expandBtn) {
+      expandBtn.addEventListener("click", () => {
+        if (!active) return;
+        smoothScroller.scrollToY(getExpandedY());
+        AudioFX.tap();
+      });
+    }
+
+    if (imgEl && !imgEl.complete) {
+      imgEl.addEventListener("load", () => {
+        if (active) measure();
+      }, { once: true });
+    }
+
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(refresh, 100);
+    });
+
+    motionChangeListeners.push(refresh);
+    refresh();
+
+    return {
+      isActive: () => active,
+      getDropDrive: () => currentDropDrive,
+      getStartY,
+      getExpandedY,
+      refresh,
+    };
+  })();
+
+  /* ---------------------------------------------------------------- */
+  /* Embedded Toolkit — Restrained Gravitational String Physics       */
+  /* ---------------------------------------------------------------- */
+
+  (() => {
+    const aboutSection = document.getElementById("about");
+    const rig = document.querySelector("[data-toolkit-rig]");
+    const stage = document.querySelector("[data-toolkit-stage]");
+    const canvas = document.querySelector("[data-toolkit-canvas]");
+    if (!rig || !stage || !canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const readoutEl = rig.querySelector("[data-toolkit-readout]");
+    const filterBtns = Array.from(rig.querySelectorAll("[data-toolkit-filter]"));
+    const gustBtn = rig.querySelector("[data-toolkit-gust]");
+    const settleBtn = rig.querySelector("[data-toolkit-settle]");
+    const groupEls = Array.from(stage.querySelectorAll("[data-toolkit-group]"));
+
+    const SEGS = 4;
+    const NODE_COUNT = SEGS + 1;
+    const GRAVITY = 3150;
+    const GROUP_NAMES = {
+      languages: "Languages",
+      frontend: "Frontend & mobile",
+      backend: "Backend & data",
+      ai: "AI & infrastructure",
+    };
+
+    const items = [];
+    groupEls.forEach((groupEl) => {
+      const groupKey = groupEl.dataset.toolkitGroup || "languages";
+      const tagEls = Array.from(groupEl.querySelectorAll(".toolkit-tag"));
+      tagEls.forEach((el, idx) => {
+        const seqIdx = items.length;
+        items.push({
+          el,
+          skill: el.dataset.skill || el.textContent.trim(),
+          group: groupKey,
+          tone: el.dataset.tone || "copper",
+          w: 76,
+          h: 28,
+          mass: 1,
+          ax: 0,
+          ay: 0,
+          dropLen: 64,
+          bayId: groupKey,
+          dropped: false,
+          dropThresh: 0.04,
+          seqIdx,
+          angle: 0,
+          angVel: 0,
+          phase: idx * 0.73 + seqIdx * 0.41,
+          pts: Array.from({ length: NODE_COUNT }, () => ({ x: 0, y: 0, ox: 0, oy: 0 })),
+          hovered: false,
+          pendingGustAt: 0,
+          gustStrength: 0,
+        });
+      });
+    });
+
+    if (!items.length) return;
+
+    let stageW = 1100;
+    let stageH = 740;
+    let isMobile = false;
+    let dpr = Math.min(2, window.devicePixelRatio || 1);
+    let mobileRails = [];
+    let activeBottomFloor = 720;
+    let activeUpperY = 180;
+    let rafId = 0;
+    let lastNow = 0;
+    let prevDt = 1 / 60;
+    let inView = false;
+    let activeFilter = "all";
+    let selectedSkill = "";
+
+    const pointer = {
+      active: false,
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      lastMoveAt: 0,
+    };
+
+    let grabbed = null;
+
+    const placeTagDOM = (it) => {
+      const tip = it.pts[SEGS];
+      const tx = tip.x - it.w * 0.5;
+      const ty = tip.y - 5;
+      it.el.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0) rotate(${it.angle.toFixed(4)}rad)`;
+    };
+
+    const parkItemAtAnchor = (it) => {
+      for (let i = 0; i < NODE_COUNT; i++) {
+        const pt = it.pts[i];
+        pt.x = it.ax;
+        pt.y = it.ay;
+        pt.ox = it.ax;
+        pt.oy = it.ay;
+      }
+      it.angle = 0;
+      it.angVel = 0;
+      placeTagDOM(it);
+    };
+
+    const resetItemPlumb = (it) => {
+      const segLen = it.dropLen / SEGS;
+      for (let i = 0; i < NODE_COUNT; i++) {
+        const pt = it.pts[i];
+        pt.x = it.ax;
+        pt.y = it.ay + i * segLen;
+        pt.ox = pt.x;
+        pt.oy = pt.y;
+      }
+      it.angle = 0;
+      it.angVel = 0;
+      placeTagDOM(it);
+    };
+
+    const assignBaySlots = (bayItems, xStart, xEnd, anchorY, drops, bayId) => {
+      if (!bayItems.length) return;
+      const span = Math.max(80, xEnd - xStart);
+      const weights = bayItems.map((it) => it.w + 10);
+      const totalWeight = weights.reduce((a, b) => a + b, 0) || 1;
+      const tierRight = drops.map(() => -Infinity);
+
+      let cursor = 0;
+      bayItems.forEach((it, idx) => {
+        const share = (weights[idx] / totalWeight) * span;
+        const rawX = xStart + cursor + share * 0.5;
+        cursor += share;
+
+        const minX = xStart + it.w * 0.5 + 3;
+        const maxX = xEnd - it.w * 0.5 - 3;
+        const ax = minX <= maxX ? Math.min(maxX, Math.max(minX, rawX)) : (xStart + xEnd) * 0.5;
+
+        const leftEdge = ax - it.w * 0.5;
+        let chosenTier = 0;
+        let foundClean = false;
+
+        const prefStart = idx % drops.length;
+        for (let k = 0; k < drops.length; k++) {
+          const t = (prefStart + k) % drops.length;
+          if (leftEdge >= tierRight[t] + 8) {
+            chosenTier = t;
+            foundClean = true;
+            break;
+          }
+        }
+        if (!foundClean) {
+          let bestTier = 0;
+          let smallestRight = tierRight[0];
+          for (let t = 1; t < drops.length; t++) {
+            if (tierRight[t] < smallestRight) {
+              smallestRight = tierRight[t];
+              bestTier = t;
+            }
+          }
+          chosenTier = bestTier;
+        }
+
+        const rightEdge = ax + it.w * 0.5;
+        if (rightEdge > tierRight[chosenTier]) {
+          tierRight[chosenTier] = rightEdge;
+        }
+
+        const prevAx = it.ax;
+        const prevAy = it.ay;
+        it.ax = ax;
+        it.ay = anchorY;
+        it.dropLen = drops[chosenTier];
+        it.bayId = bayId;
+
+        if (!it.dropped) {
+          parkItemAtAnchor(it);
+        } else if (prevAx === 0 && prevAy === 0) {
+          resetItemPlumb(it);
+        } else {
+          const dx = ax - prevAx;
+          const dy = anchorY - prevAy;
+          it.pts.forEach((pt) => {
+            pt.x += dx;
+            pt.y += dy;
+            pt.ox += dx;
+            pt.oy += dy;
+          });
+          placeTagDOM(it);
+        }
+      });
+    };
+
+    const syncDropState = (drive) => {
+      const theaterActive = Boolean(aboutExpand && aboutExpand.isActive && aboutExpand.isActive() && !stillPlaying());
+      let spawned = false;
+      let changed = false;
+
+      items.forEach((it, idx) => {
+        if (!theaterActive) {
+          if (!it.dropped) {
+            it.dropped = true;
+            it.el.classList.remove("is-retracted");
+            resetItemPlumb(it);
+            changed = true;
+          }
+          return;
+        }
+
+        if (!it.dropped && drive >= it.dropThresh) {
+          it.dropped = true;
+          it.el.classList.remove("is-retracted");
+          const dir = idx % 2 === 0 ? 1 : -1;
+          for (let i = 0; i < NODE_COUNT; i++) {
+            const pt = it.pts[i];
+            pt.x = it.ax + (i === SEGS ? dir * 2 : 0);
+            pt.y = it.ay + i * 2.5;
+            pt.ox = pt.x - (i === SEGS ? dir * 0.45 : 0);
+            pt.oy = pt.y - (i === SEGS ? 1.15 : 0.3);
+          }
+          it.angle = dir * -0.04;
+          it.angVel = dir * 0.12;
+          placeTagDOM(it);
+          spawned = true;
+          changed = true;
+        } else if (it.dropped && drive < Math.max(0, it.dropThresh - 0.03)) {
+          it.dropped = false;
+          it.el.classList.add("is-retracted");
+          parkItemAtAnchor(it);
+          changed = true;
+        }
+      });
+
+      if (spawned) {
+        ensureRunning();
+      } else if (changed) {
+        drawCanvas();
+      }
+    };
+
+    const layoutItems = (forceReset = false) => {
+      stageW = stage.clientWidth || 1100;
+      stageH = stage.clientHeight || 720;
+      isMobile = window.innerWidth < 768 || stageW < 620;
+      stage.classList.toggle("is-mobile-stack", isMobile);
+      stage.classList.toggle("toolkit-stage--compact", !isMobile && (stageH < 660 || stageW < 980));
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+
+      items.forEach((it) => {
+        it.w = Math.max(36, it.el.offsetWidth || 70);
+        it.h = Math.max(22, it.el.offsetHeight || 27);
+        it.mass = 0.94 + Math.min(0.56, it.w * 0.0038);
+      });
+
+      const byGroup = {
+        languages: items.filter((it) => it.group === "languages"),
+        frontend: items.filter((it) => it.group === "frontend"),
+        backend: items.filter((it) => it.group === "backend"),
+        ai: items.filter((it) => it.group === "ai"),
+      };
+
+      mobileRails = [];
+
+      // Assign cascading drop thresholds: upper pipe drops first, lower pipe follows cleanly
+      const upperWave = [...byGroup.languages, ...byGroup.frontend];
+      const lowerWave = [...byGroup.backend, ...byGroup.ai];
+      upperWave.forEach((it, idx) => {
+        it.dropThresh = 0.06 + idx * 0.062;
+      });
+      lowerWave.forEach((it, idx) => {
+        it.dropThresh = 0.30 + idx * 0.072;
+      });
+
+      if (!isMobile) {
+        // Lock both rails directly onto about-atelier.webp's rendered pipes (right 60% inside vertical rods)
+        const railUpperY = Math.round(stageH * 0.256);
+        const railLowerY = Math.round(stageH * 0.656);
+        const railLeft = Math.round(stageW * 0.518);
+        const railRight = Math.round(stageW * 0.870);
+        const railSpan = Math.max(220, railRight - railLeft);
+
+        activeUpperY = railUpperY;
+        activeBottomFloor = stageH - 12;
+
+        stage.style.setProperty("--beam-upper-y", `${railUpperY}px`);
+        stage.style.setProperty("--beam-lower-y", `${railLowerY}px`);
+        stage.style.setProperty("--beam-rail-left", `${railLeft}px`);
+        stage.style.setProperty("--beam-rail-right", `${stageW - railRight}px`);
+
+        const upperGap = 14;
+        const upperSplit = railSpan * (byGroup.languages.length / Math.max(1, upperWave.length));
+        const langEnd = railLeft + upperSplit - upperGap * 0.5;
+        const frontStart = railLeft + upperSplit + upperGap * 0.5;
+        const upperAvail = Math.max(62, (railLowerY - railUpperY) - 72);
+        const upperDrops = [
+          Math.max(16, Math.round(upperAvail * 0.16)),
+          Math.max(38, Math.round(upperAvail * 0.48)),
+          Math.max(60, Math.round(upperAvail * 0.80)),
+        ];
+
+        assignBaySlots(byGroup.languages, railLeft + 6, langEnd, railUpperY, upperDrops, "upper");
+        assignBaySlots(byGroup.frontend, frontStart, railRight - 6, railUpperY, upperDrops, "upper");
+
+        const lowerGap = 14;
+        const lowerSplit = railSpan * (byGroup.backend.length / Math.max(1, lowerWave.length));
+        const backEnd = railLeft + lowerSplit - lowerGap * 0.5;
+        const aiStart = railLeft + lowerSplit + lowerGap * 0.5;
+        const lowerAvail = Math.max(58, (activeBottomFloor - railLowerY) - 34);
+        const lowerDrops = [
+          Math.max(16, Math.round(lowerAvail * 0.16)),
+          Math.max(36, Math.round(lowerAvail * 0.48)),
+          Math.max(56, Math.round(lowerAvail * 0.80)),
+        ];
+
+        assignBaySlots(byGroup.backend, railLeft + 6, backEnd, railLowerY, lowerDrops, "lower");
+        assignBaySlots(byGroup.ai, aiStart, railRight - 6, railLowerY, lowerDrops, "lower");
+      } else {
+        const padX = 14;
+        const order = ["languages", "frontend", "backend", "ai"];
+        const dropsTwo = [22, 54];
+        const dropsThree = [20, 50, 80];
+
+        let curY = 38;
+        order.forEach((key, idx) => {
+          const grpItems = byGroup[key];
+          const drops = grpItems.length > 5 ? dropsThree : dropsTwo;
+          stage.style.setProperty(`--bay-y-${idx}`, `${curY}px`);
+          mobileRails.push({ y: curY, key });
+          assignBaySlots(grpItems, padX, stageW - padX, curY + 7, drops, key);
+          const maxDrop = drops[drops.length - 1];
+          curY += maxDrop + 58;
+        });
+
+        stageH = curY - 8;
+        activeUpperY = 18;
+        activeBottomFloor = stageH;
+        stage.style.setProperty("--toolkit-h", `${stageH}px`);
+      }
+
+      canvas.width = Math.round(stageW * dpr);
+      canvas.height = Math.round(stageH * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const theaterActive = Boolean(aboutExpand && aboutExpand.isActive && aboutExpand.isActive() && !stillPlaying());
+      if (forceReset || stillPlaying()) {
+        items.forEach((it) => {
+          if (theaterActive && !it.dropped) {
+            it.el.classList.add("is-retracted");
+            parkItemAtAnchor(it);
+          } else {
+            it.el.classList.remove("is-retracted");
+            resetItemPlumb(it);
+          }
+        });
+      }
+      drawCanvas();
+    };
+
+    const applyFilter = (nextFilter) => {
+      activeFilter = nextFilter;
+      filterBtns.forEach((btn) => {
+        const isCurrent = btn.dataset.toolkitFilter === nextFilter;
+        btn.classList.toggle("is-active", isCurrent);
+        btn.setAttribute("aria-pressed", String(isCurrent));
+      });
+
+      items.forEach((it, idx) => {
+        const matches = nextFilter === "all" || it.group === nextFilter;
+        it.el.classList.toggle("is-dimmed", !matches);
+        it.el.classList.toggle("is-highlighted", nextFilter !== "all" && matches);
+        if (!stillPlaying() && it.dropped && nextFilter !== "all" && matches) {
+          const tip = it.pts[SEGS];
+          const kick = ((idx % 2 === 0 ? 1 : -1) * 0.9);
+          tip.ox -= kick;
+          tip.oy += 0.35;
+        }
+      });
+
+      if (readoutEl) {
+        readoutEl.textContent =
+          nextFilter === "all"
+            ? (selectedSkill || "Gently interactive")
+            : `${GROUP_NAMES[nextFilter] || nextFilter}`;
+      }
+      ensureRunning();
+    };
+
+    const triggerGust = (strength = 1) => {
+      if (stillPlaying()) return;
+      const now = performance.now();
+      items.forEach((it) => {
+        if (!it.dropped) return;
+        const normX = stageW > 0 ? it.ax / stageW : 0;
+        it.pendingGustAt = now + normX * 320;
+        it.gustStrength = strength;
+      });
+      ensureRunning();
+    };
+
+    const settleAll = () => {
+      items.forEach((it) => {
+        it.pendingGustAt = 0;
+        if (!it.dropped) {
+          parkItemAtAnchor(it);
+        } else if (stillPlaying()) {
+          resetItemPlumb(it);
+        } else {
+          it.pts.forEach((pt) => {
+            pt.ox = pt.x + (pt.ox - pt.x) * 0.08;
+            pt.oy = pt.y + (pt.oy - pt.y) * 0.08;
+          });
+          it.angVel *= 0.08;
+        }
+      });
+      selectedSkill = "";
+      if (activeFilter !== "all") {
+        applyFilter("all");
+      } else if (readoutEl) {
+        readoutEl.textContent = "Gently interactive";
+      }
+      drawCanvas();
+    };
+
+    const stepPhysics = (dt, now) => {
+      const dtRatio = prevDt > 0 ? Math.min(1.45, Math.max(0.55, dt / prevDt)) : 1;
+      prevDt = dt;
+      // Calm, weighted damping so mouse sway settles cleanly without fidgeting
+      const damp = Math.pow(0.14, dt);
+      const timeSec = now * 0.001;
+
+      items.forEach((it) => {
+        if (!it.dropped) {
+          parkItemAtAnchor(it);
+          return;
+        }
+
+        const pts = it.pts;
+
+        if (it.pendingGustAt && now >= it.pendingGustAt) {
+          it.pendingGustAt = 0;
+          const gustPush = (1.1 + Math.random() * 0.5) * it.gustStrength;
+          pts[SEGS].ox -= gustPush;
+          pts[SEGS].oy += 0.35 * it.gustStrength;
+          pts[2].ox -= gustPush * 0.35;
+          it.angVel -= 0.02 * it.gustStrength;
+        }
+
+        pts[0].x = it.ax;
+        pts[0].y = it.ay;
+        pts[0].ox = it.ax;
+        pts[0].oy = it.ay;
+
+        for (let i = 1; i < NODE_COUNT; i++) {
+          const pt = pts[i];
+          if (grabbed && grabbed.item === it && i === SEGS) {
+            continue;
+          }
+
+          let vx = (pt.x - pt.ox) * dtRatio * damp;
+          let vy = (pt.y - pt.oy) * dtRatio * damp;
+          pt.ox = pt.x;
+          pt.oy = pt.y;
+
+          // Subtle ambient micro-breeze
+          const breezeAcc = Math.sin(timeSec * 0.9 + it.phase + i * 0.3) * 3.8;
+          const gravAcc = i === SEGS ? GRAVITY * it.mass : GRAVITY * 0.44;
+
+          // Restrained cursor wake: gentle ~2-5deg lean when brushing nearby
+          if (pointer.active) {
+            const dx = pt.x - pointer.x;
+            const dy = pt.y - pointer.y;
+            const distSq = dx * dx + dy * dy;
+            const radius = isMobile ? 52 : 76;
+            if (distSq < radius * radius) {
+              const dist = Math.sqrt(distSq) || 1;
+              const falloff = Math.pow(1 - dist / radius, 2.0);
+              const windScale = i === SEGS ? 0.0020 : 0.00085;
+              vx += Math.max(-1.35, Math.min(1.35, pointer.vx * windScale * falloff));
+              vy += Math.max(-0.95, Math.min(0.95, pointer.vy * windScale * falloff));
+
+              const pSpeed = Math.hypot(pointer.vx, pointer.vy);
+              if (pSpeed > 65 && dist < 44) {
+                const push = (1 - dist / 44) * Math.min(0.26, pSpeed * 0.00035);
+                vx += (dx / dist) * push;
+                vy += (dy / dist) * push * 0.45;
+              }
+            }
+          }
+
+          pt.x += vx + breezeAcc * dt * dt;
+          pt.y += vy + gravAcc * dt * dt;
+        }
+
+        if (grabbed && grabbed.item === it) {
+          const tip = pts[SEGS];
+          const targetX = Math.max(it.w * 0.5 + 12, Math.min(stageW - it.w * 0.5 - 12, pointer.x - grabbed.offsetX));
+          const targetY = Math.max(it.ay + 10, Math.min(activeBottomFloor - it.h - 4, pointer.y - grabbed.offsetY));
+          tip.ox = tip.x;
+          tip.oy = tip.y;
+          tip.x += (targetX - tip.x) * 0.45;
+          tip.y += (targetY - tip.y) * 0.45;
+        }
+
+        const segLen = it.dropLen / SEGS;
+        const iterations = 6;
+        for (let iter = 0; iter < iterations; iter++) {
+          pts[0].x = it.ax;
+          pts[0].y = it.ay;
+
+          for (let i = 0; i < SEGS; i++) {
+            const a = pts[i];
+            const b = pts[i + 1];
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+            const dist = Math.hypot(dx, dy) || 0.0001;
+            // Tensile string: goes slack when compressed (lets falling pills drop smoothly), catches weight when taut
+            if (dist <= segLen) continue;
+            const diff = (dist - segLen) / dist;
+
+            if (i === 0) {
+              b.x -= dx * diff;
+              b.y -= dy * diff;
+            } else if (grabbed && grabbed.item === it && i + 1 === SEGS) {
+              a.x += dx * diff * 0.85;
+              a.y += dy * diff * 0.85;
+              b.x -= dx * diff * 0.15;
+              b.y -= dy * diff * 0.15;
+            } else {
+              a.x += dx * diff * 0.42;
+              a.y += dy * diff * 0.42;
+              b.x -= dx * diff * 0.58;
+              b.y -= dy * diff * 0.58;
+            }
+          }
+        }
+
+        const tip = pts[SEGS];
+        const minX = it.w * 0.5 + 8;
+        const maxX = stageW - it.w * 0.5 - 8;
+        if (tip.x < minX) tip.x = minX;
+        if (tip.x > maxX) tip.x = maxX;
+        if (tip.y > activeBottomFloor - it.h - 4) tip.y = activeBottomFloor - it.h - 4;
+      });
+
+      // Soft tag-to-tag collision within shared bays
+      for (let i = 0; i < items.length; i++) {
+        const a = items[i];
+        if (!a.dropped) continue;
+        const tipA = a.pts[SEGS];
+        for (let j = i + 1; j < items.length; j++) {
+          const b = items[j];
+          if (!b.dropped || a.bayId !== b.bayId) continue;
+          const tipB = b.pts[SEGS];
+
+          const minDistX = (a.w + b.w) * 0.5 + 3;
+          const minDistY = (a.h + b.h) * 0.44;
+          const dx = tipB.x - tipA.x;
+          const dy = tipB.y - tipA.y;
+
+          if (Math.abs(dx) < minDistX && Math.abs(dy) < minDistY) {
+            const overlapX = minDistX - Math.abs(dx);
+            const dir = dx >= 0 ? 1 : -1;
+            const push = Math.min(2.8, overlapX * 0.2);
+            if (!(grabbed && grabbed.item === a)) {
+              tipA.x -= dir * push;
+              tipA.ox += dir * push * 0.2;
+            }
+            if (!(grabbed && grabbed.item === b)) {
+              tipB.x += dir * push;
+              tipB.ox -= dir * push * 0.2;
+            }
+          }
+        }
+      }
+
+      // Restrained pendulum tilt
+      items.forEach((it) => {
+        if (!it.dropped) return;
+        const topSegA = it.pts[SEGS - 1];
+        const tip = it.pts[SEGS];
+        const sdx = tip.x - topSegA.x;
+        const sdy = Math.max(8, tip.y - topSegA.y);
+        const stringTilt = -Math.atan2(sdx, sdy);
+        const clampedTarget = Math.max(-0.2, Math.min(0.2, stringTilt * 0.72));
+
+        const torque = (clampedTarget - it.angle) * 52 - it.angVel * 11;
+        it.angVel += torque * dt;
+        it.angle += it.angVel * dt;
+        it.angle = Math.max(-0.24, Math.min(0.24, it.angle));
+
+        placeTagDOM(it);
+      });
+    };
+
+    const drawCanvas = () => {
+      ctx.clearRect(0, 0, stageW, stageH);
+
+      // Draw mobile gantry rails directly on canvas
+      if (isMobile && mobileRails.length) {
+        mobileRails.forEach((rail) => {
+          const left = 10;
+          const right = stageW - 10;
+          const width = right - left;
+
+          ctx.fillStyle = "#1c1a17";
+          ctx.fillRect(left, rail.y, width, 4.5);
+          ctx.fillStyle = "rgba(243, 239, 231, 0.16)";
+          ctx.fillRect(left, rail.y, width, 1);
+
+          const grad = ctx.createLinearGradient(left, 0, right, 0);
+          grad.addColorStop(0, "#784d2c");
+          grad.addColorStop(0.5, "#e0a678");
+          grad.addColorStop(1, "#784d2c");
+          ctx.fillStyle = grad;
+          ctx.fillRect(left, rail.y + 4.5, width, 2);
+        });
+      }
+
+      items.forEach((it) => {
+        if (!it.dropped) return;
+
+        const pts = it.pts;
+        const isGrabbed = grabbed && grabbed.item === it;
+        const isDimmed = activeFilter !== "all" && it.group !== activeFilter;
+        const isLit = isGrabbed || it.hovered || (activeFilter !== "all" && it.group === activeFilter);
+        const isMint = it.tone === "mint";
+
+        ctx.save();
+        if (isDimmed) {
+          ctx.globalAlpha = 0.24;
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < NODE_COUNT - 1; i++) {
+          const xc = (pts[i].x + pts[i + 1].x) * 0.5;
+          const yc = (pts[i].y + pts[i + 1].y) * 0.5;
+          ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+        }
+        ctx.lineTo(pts[SEGS].x, pts[SEGS].y);
+
+        if (isLit) {
+          ctx.strokeStyle = isMint ? "rgba(169, 201, 182, 0.85)" : "rgba(239, 208, 179, 0.88)";
+          ctx.lineWidth = isGrabbed ? 1.5 : 1.25;
+        } else {
+          ctx.strokeStyle = isMint ? "rgba(169, 201, 182, 0.34)" : "rgba(224, 166, 120, 0.38)";
+          ctx.lineWidth = 1.05;
+        }
+        ctx.stroke();
+
+        // Eyelet ring anchored directly onto rail
+        ctx.beginPath();
+        ctx.arc(it.ax, it.ay, 2.7, 0, Math.PI * 2);
+        ctx.fillStyle = "#0b0b0c";
+        ctx.fill();
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = isLit
+          ? (isMint ? "#a9c9b6" : "#efd0b3")
+          : (isMint ? "rgba(169, 201, 182, 0.65)" : "rgba(224, 166, 120, 0.72)");
+        ctx.stroke();
+
+        // Knot bead at tag grommet
+        ctx.beginPath();
+        ctx.arc(pts[SEGS].x, pts[SEGS].y, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = isMint ? "#a9c9b6" : "#e0a678";
+        ctx.fill();
+
+        ctx.restore();
+      });
+    };
+
+    const tick = (now) => {
+      rafId = 0;
+      if (!inView || document.hidden || stillPlaying()) return;
+
+      const dt = lastNow ? Math.min(0.025, Math.max(0.004, (now - lastNow) / 1000)) : 1 / 60;
+      lastNow = now;
+
+      pointer.vx *= Math.pow(0.04, dt);
+      pointer.vy *= Math.pow(0.04, dt);
+
+      stepPhysics(dt, now);
+      drawCanvas();
+
+      rafId = window.requestAnimationFrame(tick);
+    };
+
+    const stopLoop = () => {
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      lastNow = 0;
+    };
+
+    const ensureRunning = () => {
+      if (stillPlaying()) {
+        stopLoop();
+        syncDropState(1);
+        items.forEach(resetItemPlumb);
+        drawCanvas();
+        return;
+      }
+      if (!rafId && inView && !document.hidden) {
+        lastNow = 0;
+        rafId = window.requestAnimationFrame(tick);
+      }
+    };
+
+    stage.addEventListener("pointermove", (event) => {
+      if (stillPlaying()) return;
+      const rect = stage.getBoundingClientRect();
+      const nx = event.clientX - rect.left;
+      const ny = event.clientY - rect.top;
+      const now = performance.now();
+
+      // Only feed cursor wind while pointer is inside the hanging zone
+      const inHangZone = isMobile || (nx >= stageW * 0.46 && ny >= activeUpperY - 24 && ny <= activeBottomFloor);
+      if (!grabbed && !inHangZone) {
+        pointer.active = false;
+        return;
+      }
+
+      if (pointer.active) {
+        const elapsed = Math.max(0.004, (now - (pointer.lastMoveAt || now - 16)) / 1000);
+        const instVx = (nx - pointer.x) / elapsed;
+        const instVy = (ny - pointer.y) / elapsed;
+        pointer.vx = pointer.vx * 0.4 + instVx * 0.6;
+        pointer.vy = pointer.vy * 0.4 + instVy * 0.6;
+      }
+      pointer.active = true;
+      pointer.x = nx;
+      pointer.y = ny;
+      pointer.lastMoveAt = now;
+
+      if (grabbed && Math.hypot(nx - grabbed.startX, ny - grabbed.startY) > 5) {
+        grabbed.moved = true;
+      }
+
+      ensureRunning();
+    });
+
+    stage.addEventListener("pointerleave", () => {
+      pointer.active = false;
+      pointer.vx = 0;
+      pointer.vy = 0;
+    });
+
+    items.forEach((it) => {
+      it.el.addEventListener("pointerenter", () => {
+        it.hovered = true;
+      });
+      it.el.addEventListener("pointerleave", () => {
+        it.hovered = false;
+      });
+
+      it.el.addEventListener("pointerdown", (event) => {
+        if (!it.dropped) return;
+        if (event.button !== 0 && event.pointerType === "mouse") return;
+        const rect = stage.getBoundingClientRect();
+        const px = event.clientX - rect.left;
+        const py = event.clientY - rect.top;
+
+        pointer.active = true;
+        pointer.x = px;
+        pointer.y = py;
+        pointer.vx = 0;
+        pointer.vy = 0;
+        pointer.lastMoveAt = performance.now();
+
+        if (!stillPlaying()) {
+          const tip = it.pts[SEGS];
+          grabbed = {
+            item: it,
+            offsetX: px - tip.x,
+            offsetY: py - tip.y,
+            startX: px,
+            startY: py,
+            moved: false,
+          };
+          it.el.classList.add("is-grabbed");
+          try {
+            it.el.setPointerCapture(event.pointerId);
+          } catch {}
+          AudioFX.tap();
+          ensureRunning();
+        }
+      });
+
+      const releaseGrab = (event) => {
+        if (!grabbed || grabbed.item !== it) return;
+        const wasDragged = grabbed.moved;
+        grabbed = null;
+        it.el.classList.remove("is-grabbed");
+        try {
+          if (it.el.hasPointerCapture(event.pointerId)) {
+            it.el.releasePointerCapture(event.pointerId);
+          }
+        } catch {}
+
+        if (wasDragged) {
+          const tip = it.pts[SEGS];
+          const flingX = Math.max(-5.5, Math.min(5.5, pointer.vx * 0.0045));
+          const flingY = Math.max(-4.5, Math.min(4.5, pointer.vy * 0.0045));
+          tip.ox = tip.x - flingX;
+          tip.oy = tip.y - flingY;
+        } else {
+          selectedSkill = `${it.skill} · ${GROUP_NAMES[it.group] || it.group}`;
+          if (readoutEl) readoutEl.textContent = selectedSkill;
+          if (!stillPlaying()) {
+            it.pts[SEGS].ox -= 1.0;
+            it.pts[SEGS].oy += 0.5;
+            it.angVel += 0.05;
+          }
+          AudioFX.click();
+          if (mascotSpeech) {
+            mascotSpeech.say(`${it.skill} — part of the ${GROUP_NAMES[it.group]} bay.`);
+          }
+        }
+      };
+
+      it.el.addEventListener("pointerup", releaseGrab);
+      it.el.addEventListener("pointercancel", releaseGrab);
+
+      it.el.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          selectedSkill = `${it.skill} · ${GROUP_NAMES[it.group] || it.group}`;
+          if (readoutEl) readoutEl.textContent = selectedSkill;
+          if (!stillPlaying()) {
+            it.pts[SEGS].ox -= 1.2;
+            it.angVel += 0.06;
+            ensureRunning();
+          }
+          AudioFX.click();
+        }
+      });
+    });
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        applyFilter(btn.dataset.toolkitFilter || "all");
+        AudioFX.tap();
+      });
+    });
+
+    if (gustBtn) {
+      gustBtn.addEventListener("click", () => {
+        triggerGust(0.8);
+        AudioFX.chime();
+      });
+    }
+
+    if (settleBtn) {
+      settleBtn.addEventListener("click", () => {
+        settleAll();
+        AudioFX.tap();
+      });
+    }
+
+    if (aboutSection) {
+      aboutSection.addEventListener("about:unlocked", () => {
+        window.requestAnimationFrame(() => {
+          layoutItems(true);
+          syncDropState(aboutExpand && aboutExpand.getDropDrive ? aboutExpand.getDropDrive() : 0);
+        });
+      });
+
+      aboutSection.addEventListener("about:progress", (event) => {
+        const curW = stage.clientWidth || 1100;
+        const curH = stage.clientHeight || 720;
+        if (Math.abs(curW - stageW) > 1 || Math.abs(curH - stageH) > 1) {
+          layoutItems(false);
+        }
+        const drive = event.detail ? event.detail.dropDrive : 0;
+        syncDropState(drive);
+      });
+    }
+
+    if ("IntersectionObserver" in window) {
+      const obs = new IntersectionObserver(
+        (entries) => {
+          inView = entries.some((entry) => entry.isIntersecting);
+          if (inView) {
+            ensureRunning();
+          } else {
+            stopLoop();
+          }
+        },
+        { threshold: 0.02 }
+      );
+      obs.observe(stage);
+    } else {
+      inView = true;
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        stopLoop();
+      } else {
+        ensureRunning();
+      }
+    });
+
+    let resizeDebounce = 0;
+    if ("ResizeObserver" in window) {
+      const ro = new ResizeObserver(() => {
+        window.clearTimeout(resizeDebounce);
+        resizeDebounce = window.setTimeout(() => layoutItems(false), 50);
+      });
+      ro.observe(stage);
+    } else {
+      window.addEventListener("resize", () => {
+        window.clearTimeout(resizeDebounce);
+        resizeDebounce = window.setTimeout(() => layoutItems(false), 80);
+      });
+    }
+
+    motionChangeListeners.push(() => {
+      if (stillPlaying()) {
+        stopLoop();
+        window.requestAnimationFrame(() => {
+          syncDropState(1);
+          layoutItems(true);
+        });
+      } else {
+        window.requestAnimationFrame(() => {
+          layoutItems(true);
+          syncDropState(aboutExpand && aboutExpand.getDropDrive ? aboutExpand.getDropDrive() : 1);
+          ensureRunning();
+        });
+      }
+    });
+
+    layoutItems(true);
+    syncDropState(aboutExpand && aboutExpand.getDropDrive ? aboutExpand.getDropDrive() : 0);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        layoutItems(false);
+        syncDropState(aboutExpand && aboutExpand.getDropDrive ? aboutExpand.getDropDrive() : 0);
+      });
+    }
+  })();
+
+  /* ---------------------------------------------------------------- */
+  /* Colophon Pull-From-Below Curtain                                 */
+  /* ---------------------------------------------------------------- */
+
+  colophonDrawer = (() => {
+    const drawer = document.querySelector("[data-colophon-drawer]");
+    const section = document.getElementById("colophon");
+    const footer = document.querySelector(".site-footer");
+    if (!drawer || !section) {
+      return {
+        handleWheel: () => false,
+        unlock: () => {},
+        isOpen: () => true,
+      };
+    }
+
+    const labelEl = section.querySelector("[data-colophon-label]");
+    const pctEl = section.querySelector("[data-colophon-pct]");
+
+    const UNLOCK_RAW_PX = 440;
+    const VISIBLE_UNLOCK_RATIO = 0.4;
+    const ARRIVAL_SETTLE_MS = 140;
+    const IDLE_RESET_MS = 520;
+    const RELOCK_CLEARANCE_PX = 120;
+
+    const root = document.documentElement;
+    const clamp01 = (v) => (v <= 0 ? 0 : v >= 1 ? 1 : v);
+    const getMaxScroll = () => Math.max(0, root.scrollHeight - window.innerHeight);
+
+    let commitPullPx = 236;
+    const measureCommitPull = () => {
+      const colophonH = section.offsetHeight || 592;
+      const target40 = Math.round(colophonH * VISIBLE_UNLOCK_RATIO);
+      const maxSafe = Math.max(160, Math.round(window.innerHeight * 0.56));
+      commitPullPx = Math.min(target40, maxSafe);
+    };
+
+    const rawToVisualPull = (raw) => {
+      if (raw <= 0) return 0;
+      const p = Math.min(1.04, raw / UNLOCK_RAW_PX);
+      if (p <= 1) {
+        return (1 - Math.pow(1 - p, 1.35)) * commitPullPx;
+      }
+      return commitPullPx + (p - 1) * commitPullPx * 0.25;
+    };
+
+    let isOpen = false;
+    let initialized = false;
+    let targetRawPull = 0;
+    let currentPull = 0;
+    let rafId = 0;
+    let lastTime = 0;
+    let idleTimer = 0;
+    let hasReachedBottomSinceUnlock = false;
+    let initialHashPending = window.location.hash === "#colophon";
+    let lastObservedScrollY = window.scrollY;
+    let resizeGuardUntil = 0;
+    let lastNotAtBottomAt = performance.now();
+
+    let touchStartY = 0;
+    let touchLastY = 0;
+    let touchPullEngaged = false;
+
+    const updateCueUI = (pullPx) => {
+      const progress = commitPullPx > 0 ? clamp01(pullPx / commitPullPx) : 0;
+      const visiblePct = Math.round(progress * 40);
+      drawer.style.setProperty("--colophon-progress", progress.toFixed(4));
+      if (pctEl) {
+        pctEl.textContent = `${visiblePct}% / 40%`;
+      }
+      if (labelEl) {
+        labelEl.textContent =
+          pullPx >= commitPullPx - 1.5
+            ? touchPullEngaged
+              ? "Release to open colophon"
+              : "Opening colophon…"
+            : "Keep scrolling harder to open";
+      }
+    };
+
+    const applyPullVisual = (px) => {
+      if (px <= 0.15) {
+        currentPull = 0;
+        root.classList.remove("is-colophon-pulling");
+        root.style.removeProperty("--colophon-pull");
+        root.style.removeProperty("--colophon-vp-h");
+        drawer.classList.remove("is-pulling");
+        if (!isOpen) {
+          drawer.classList.add("is-collapsed");
+          drawer.setAttribute("inert", "");
+          drawer.setAttribute("aria-hidden", "true");
+        }
+        updateCueUI(0);
+        return;
+      }
+
+      if (!drawer.classList.contains("is-pulling")) {
+        measureCommitPull();
+        const anchorY = footer ? Math.round(footer.getBoundingClientRect().bottom) : window.innerHeight;
+        root.style.setProperty("--colophon-vp-h", `${anchorY}px`);
+      }
+      currentPull = px;
+      root.style.setProperty("--colophon-pull", `${px.toFixed(2)}px`);
+      root.classList.add("is-colophon-pulling");
+      drawer.classList.remove("is-collapsed");
+      drawer.classList.add("is-pulling");
+      drawer.setAttribute("inert", "");
+      drawer.setAttribute("aria-hidden", "true");
+      updateCueUI(px);
+    };
+
+    const stopSpring = () => {
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+      lastTime = 0;
+    };
+
+    const clearIdleTimer = () => {
+      if (idleTimer) {
+        window.clearTimeout(idleTimer);
+        idleTimer = 0;
+      }
+    };
+
+    const tickSpring = (now) => {
+      rafId = 0;
+      if (isOpen) return;
+
+      const committed = targetRawPull >= UNLOCK_RAW_PX;
+      const targetPx = committed ? commitPullPx * 1.03 : rawToVisualPull(targetRawPull);
+      const dt = lastTime ? Math.min(0.05, (now - lastTime) / 1000) : 1 / 60;
+      lastTime = now;
+
+      const rate = targetPx > currentPull ? 13 : 15;
+      const alpha = 1 - Math.exp(-rate * dt);
+      currentPull += (targetPx - currentPull) * alpha;
+
+      if (committed && currentPull >= commitPullPx - 1.5) {
+        applyPullVisual(commitPullPx);
+        unlock({ instant: false, scrollTo: true, fromPull: true });
+        return;
+      }
+
+      if (Math.abs(targetPx - currentPull) < 0.35) {
+        currentPull = targetPx;
+        applyPullVisual(currentPull);
+        lastTime = 0;
+        return;
+      }
+
+      applyPullVisual(currentPull);
+      rafId = window.requestAnimationFrame(tickSpring);
+    };
+
+    const ensureSpring = () => {
+      if (!rafId) {
+        lastTime = 0;
+        rafId = window.requestAnimationFrame(tickSpring);
+      }
+    };
+
+    const scheduleIdleReset = () => {
+      clearIdleTimer();
+      idleTimer = window.setTimeout(() => {
+        idleTimer = 0;
+        if (isOpen || touchPullEngaged) return;
+        targetRawPull = 0;
+        ensureSpring();
+      }, IDLE_RESET_MS);
+    };
+
+    const collapse = () => {
+      stopSpring();
+      clearIdleTimer();
+      targetRawPull = 0;
+      currentPull = 0;
+      isOpen = false;
+      touchPullEngaged = false;
+      root.classList.remove("is-colophon-pulling");
+      root.style.removeProperty("--colophon-pull");
+      root.style.removeProperty("--colophon-vp-h");
+      drawer.classList.remove("is-open", "is-pulling");
+      drawer.classList.add("is-collapsed");
+      drawer.setAttribute("inert", "");
+      drawer.setAttribute("aria-hidden", "true");
+      updateCueUI(0);
+      updateScrollProgress();
+    };
+
+    const unlock = ({ instant = false, scrollTo = true, fromPull = false } = {}) => {
+      const wasOpen = isOpen;
+      const handoffOffset = !wasOpen ? currentPull : 0;
+      const oldMaxScroll = getMaxScroll();
+
+      stopSpring();
+      clearIdleTimer();
+      targetRawPull = 0;
+      currentPull = 0;
+      touchPullEngaged = false;
+      isOpen = true;
+      hasReachedBottomSinceUnlock = Boolean(fromPull);
+
+      root.classList.remove("is-colophon-pulling");
+      root.style.removeProperty("--colophon-pull");
+      root.style.removeProperty("--colophon-vp-h");
+      drawer.classList.remove("is-collapsed", "is-pulling");
+      drawer.classList.add("is-open");
+      drawer.removeAttribute("inert");
+      drawer.removeAttribute("aria-hidden");
+
+      if (wasOpen) {
+        if (scrollTo) {
+          smoothScroller.scrollToElement(section);
+        }
+        return;
+      }
+
+      const newMaxScroll = getMaxScroll();
+      if (!instant && handoffOffset > 0.5) {
+        const handoffY = Math.min(newMaxScroll, oldMaxScroll + handoffOffset);
+        window.scrollTo({ top: handoffY, left: window.scrollX, behavior: "instant" });
+        smoothScroller.sync();
+      }
+      updateScrollProgress();
+
+      if (scrollTo && !instant) {
+        const hdr = document.querySelector(".site-header");
+        const headerH = hdr ? Math.round(hdr.getBoundingClientRect().height) : 81;
+        const colophonTop = section.getBoundingClientRect().top + window.scrollY;
+        const idealTopY = colophonTop - headerH - 24;
+        const targetUnlockY = Math.min(
+          newMaxScroll,
+          Math.max(window.scrollY, idealTopY)
+        );
+        if (smoothScroller.isEnabled()) {
+          smoothScroller.scrollToY(targetUnlockY);
+        } else {
+          window.requestAnimationFrame(() => {
+            smoothScroller.scrollToY(targetUnlockY);
+          });
+        }
+      }
+
+      if (fromPull && !instant) {
+        if (typeof AudioFX !== "undefined" && AudioFX.chime) {
+          AudioFX.chime();
+        }
+        if (mascotSpeech) {
+          mascotSpeech.say("Yes, he even documented the byte budget.", 4200);
+        }
+      }
+    };
+
+    const getFooterTop = () => {
+      if (footer) {
+        return footer.getBoundingClientRect().top + window.scrollY;
+      }
+      return section.getBoundingClientRect().top + window.scrollY;
+    };
+
+    const getFooterBottom = () => {
+      if (footer) {
+        return footer.getBoundingClientRect().bottom + window.scrollY;
+      }
+      return section.getBoundingClientRect().top + window.scrollY;
+    };
+
+    const feedOverscroll = (dy, { fromTouch = false } = {}) => {
+      const max = getMaxScroll();
+
+      if (window.scrollY < max - 0.5) {
+        window.scrollTo({ top: max, left: window.scrollX, behavior: "instant" });
+        smoothScroller.sync();
+      }
+
+      if (currentPull <= 0.15) {
+        measureCommitPull();
+      }
+
+      const ratio = clamp01(targetRawPull / UNLOCK_RAW_PX);
+      const gain = fromTouch
+        ? 1.9 * (0.76 - 0.42 * ratio)
+        : 0.78 - 0.48 * ratio;
+      targetRawPull = Math.min(UNLOCK_RAW_PX * 1.06, targetRawPull + dy * gain);
+
+      if (fromTouch) {
+        clearIdleTimer();
+        stopSpring();
+        applyPullVisual(rawToVisualPull(targetRawPull));
+      } else {
+        if (targetRawPull >= UNLOCK_RAW_PX) {
+          clearIdleTimer();
+        } else {
+          scheduleIdleReset();
+        }
+        ensureSpring();
+      }
+      return false;
+    };
+
+    const handleWheel = (event, knownMax) => {
+      if (isOpen || stillPlaying()) return false;
+      if (
+        document.body.classList.contains("dialog-open") ||
+        root.classList.contains("is-preloading") ||
+        canChildScroll(event.target, event.deltaY)
+      ) {
+        return false;
+      }
+
+      let dy = event.deltaY;
+      if (event.deltaMode === 1) dy *= 32;
+      else if (event.deltaMode === 2) dy *= 180;
+      if (!dy) return false;
+
+      if (dy < 0) {
+        if (targetRawPull <= 0 && currentPull <= 0.25) return false;
+        targetRawPull = Math.max(0, targetRawPull + dy * 1.15);
+        scheduleIdleReset();
+        ensureSpring();
+        event.preventDefault();
+        return true;
+      }
+
+      const max = typeof knownMax === "number" ? knownMax : getMaxScroll();
+      if (window.scrollY < max - 2) {
+        return false;
+      }
+
+      if (performance.now() - lastNotAtBottomAt < ARRIVAL_SETTLE_MS) {
+        event.preventDefault();
+        return true;
+      }
+
+      feedOverscroll(dy, { fromTouch: false });
+      event.preventDefault();
+      return true;
+    };
+
+    window.addEventListener(
+      "wheel",
+      (event) => {
+        if (smoothScroller.isEnabled() || event.ctrlKey || event.metaKey) return;
+        handleWheel(event);
+      },
+      { passive: false }
+    );
+
+    window.addEventListener(
+      "touchstart",
+      (event) => {
+        if (isOpen || stillPlaying() || event.touches.length !== 1) return;
+        if (
+          document.body.classList.contains("dialog-open") ||
+          root.classList.contains("is-preloading")
+        ) {
+          return;
+        }
+        touchStartY = event.touches[0].clientY;
+        touchLastY = touchStartY;
+        touchPullEngaged = false;
+      },
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "touchmove",
+      (event) => {
+        if (isOpen || stillPlaying() || event.touches.length !== 1) return;
+        if (
+          document.body.classList.contains("dialog-open") ||
+          root.classList.contains("is-preloading")
+        ) {
+          return;
+        }
+
+        const touchY = event.touches[0].clientY;
+        const dy = touchLastY - touchY;
+        touchLastY = touchY;
+
+        if (!touchPullEngaged) {
+          const max = getMaxScroll();
+          if (
+            window.scrollY >= max - 3 &&
+            dy > 2 &&
+            touchStartY - touchY > 6 &&
+            performance.now() - lastNotAtBottomAt >= ARRIVAL_SETTLE_MS &&
+            !canChildScroll(event.target, dy)
+          ) {
+            touchPullEngaged = true;
+          } else {
+            return;
+          }
+        }
+
+        event.preventDefault();
+        if (dy >= 0) {
+          feedOverscroll(dy, { fromTouch: true });
+        } else {
+          targetRawPull = Math.max(0, targetRawPull + dy * 1.35);
+          if (targetRawPull <= 0) {
+            touchPullEngaged = false;
+            applyPullVisual(0);
+          } else {
+            applyPullVisual(rawToVisualPull(targetRawPull));
+          }
+        }
+      },
+      { passive: false }
+    );
+
+    const endTouchPull = () => {
+      if (!touchPullEngaged) return;
+      touchPullEngaged = false;
+      if (!isOpen && currentPull >= commitPullPx - 1.5) {
+        unlock({ instant: false, scrollTo: true, fromPull: true });
+      } else if (!isOpen) {
+        targetRawPull = 0;
+        ensureSpring();
+      }
+    };
+
+    window.addEventListener("touchend", endTouchPull, { passive: true });
+    window.addEventListener("touchcancel", endTouchPull, { passive: true });
+
+    window.addEventListener("keydown", (event) => {
+      if (isOpen || stillPlaying()) return;
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      if (
+        document.body.classList.contains("dialog-open") ||
+        root.classList.contains("is-preloading")
+      ) {
+        return;
+      }
+
+      const activeEl = document.activeElement;
+      const tag = activeEl ? activeEl.tagName.toLowerCase() : "";
+      if (tag === "input" || tag === "textarea" || tag === "select" || activeEl?.isContentEditable) {
+        return;
+      }
+      if (event.key === " " && (tag === "button" || tag === "a" || tag === "summary")) {
+        return;
+      }
+
+      const isDownKey =
+        event.key === "ArrowDown" ||
+        event.key === "PageDown" ||
+        (event.key === " " && !event.shiftKey);
+
+      if (!isDownKey) return;
+
+      const max = getMaxScroll();
+      if (window.scrollY < max - 4) return;
+      if (performance.now() - lastNotAtBottomAt < ARRIVAL_SETTLE_MS) return;
+
+      event.preventDefault();
+      const step = event.key === "ArrowDown" ? 110 : 170;
+      feedOverscroll(step, { fromTouch: false });
+    });
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        const currY = window.scrollY;
+        const scrollingUp = currY < lastObservedScrollY;
+        lastObservedScrollY = currY;
+        const max = getMaxScroll();
+        if (!isOpen) {
+          if (currY < max - 12) {
+            lastNotAtBottomAt = performance.now();
+            if (targetRawPull > 0 || currentPull > 0) {
+              targetRawPull = 0;
+              applyPullVisual(0);
+            }
+          }
+          return;
+        }
+
+        if (stillPlaying() || root.classList.contains("is-preloading") || initialHashPending) return;
+        if (performance.now() < resizeGuardUntil) return;
+        const footerBottom = getFooterBottom();
+        if (currY + window.innerHeight >= footerBottom - 40) {
+          hasReachedBottomSinceUnlock = true;
+        }
+        if (!hasReachedBottomSinceUnlock || !scrollingUp) return;
+        if (currY + window.innerHeight < getFooterTop() - RELOCK_CLEARANCE_PX) {
+          collapse();
+        }
+      },
+      { passive: true }
+    );
+
+    window.addEventListener("resize", () => {
+      resizeGuardUntil = performance.now() + 350;
+      if (drawer.classList.contains("is-pulling")) {
+        measureCommitPull();
+        const anchorY = footer
+          ? Math.round(footer.getBoundingClientRect().bottom + currentPull)
+          : window.innerHeight;
+        root.style.setProperty("--colophon-vp-h", `${anchorY}px`);
+      }
+    });
+
+    window.addEventListener("hashchange", () => {
+      if (window.location.hash === "#colophon") {
+        unlock({ instant: false, scrollTo: true });
+      }
+    });
+
+    const refresh = () => {
+      if (stillPlaying() || window.location.hash === "#colophon") {
+        unlock({ instant: true, scrollTo: false });
+        initialized = true;
+        return;
+      }
+      if (!initialized) {
+        collapse();
+        initialized = true;
+        return;
+      }
+      if (isOpen) {
+        if (window.scrollY + window.innerHeight < getFooterTop() - RELOCK_CLEARANCE_PX) {
+          collapse();
+        }
+      }
+    };
+
+    motionChangeListeners.push(refresh);
+    refresh();
+
+    if (window.location.hash === "#colophon") {
+      let userInteracted = false;
+      const markInteracted = () => {
+        userInteracted = true;
+        initialHashPending = false;
+      };
+      ["wheel", "touchstart", "pointerdown", "keydown"].forEach((evt) => {
+        window.addEventListener(evt, markInteracted, { once: true, passive: true });
+      });
+
+      const alignInitialColophon = () => {
+        if (userInteracted || !isOpen) return;
+        const max = getMaxScroll();
+        const hdr = document.querySelector(".site-header");
+        const headerH = hdr ? Math.round(hdr.getBoundingClientRect().height) : 81;
+        const colophonTop = section.getBoundingClientRect().top + window.scrollY;
+        const target = Math.min(max, Math.max(0, colophonTop - headerH - 24));
+        window.scrollTo({ top: target, left: window.scrollX, behavior: "instant" });
+        smoothScroller.sync();
+        lastObservedScrollY = window.scrollY;
+        hasReachedBottomSinceUnlock = true;
+        initialHashPending = false;
+      };
+
+      preloaderDone.then(() => {
+        window.requestAnimationFrame(alignInitialColophon);
+        window.setTimeout(alignInitialColophon, 80);
+      });
+    }
+
+    return {
+      handleWheel,
+      unlock,
+      isOpen: () => isOpen,
+    };
+  })();
+
+  /* ---------------------------------------------------------------- */
   /* X-ray                                                            */
   /* ---------------------------------------------------------------- */
 
@@ -2371,10 +4364,9 @@
       work: "Real apps, real traffic, zero fake demos.",
       systems: "Live GitHub telemetry — fresh from the API.",
       console: "Go on, type something. Even 'sudo'.",
-      about: "Less busywork, more actual engineering.",
+      about: "Workflow first — with the stack hanging right inside.",
       experience: "Scroll through — chapters unlock as you go.",
-      skills: "Battle-tested tools. No buzzword filler.",
-      contact: "Say hi! Replies faster than most APIs.",
+      contact: "Open to work · Immediate notice",
       colophon: "Yes, he even documented the byte budget.",
     };
 
@@ -2433,12 +4425,12 @@
     /* Ordered from most specific to broadest; matched with closest(). */
     const HOVER_TRIGGERS = [
       { selector: ".brand", text: "Elevator back to the top floor ↑" },
+      { selector: ".menu-toggle", text: "Open the full deck — every section & shortcut." },
       { selector: ".site-nav a[href='#work']", text: "Five real builds — screenshots included." },
       { selector: ".site-nav a[href='#systems']", text: "Peek at the live GitHub pulse." },
       { selector: ".site-nav a[href='#console']", text: "A working zsh-style page terminal!" },
-      { selector: ".site-nav a[href='#about']", text: "Spoiler: he hates repetitive clicks." },
+      { selector: ".site-nav a[href='#about']", text: "About + hanging stack in one place." },
       { selector: ".site-nav a[href='#experience']", text: "2019 to now — scroll-powered timeline." },
-      { selector: ".site-nav a[href='#skills']", text: "Tools he actually ships with." },
       { selector: ".site-nav a[href='#contact']", text: "Ready when you are — say hello!" },
       { selector: ".header-cta", text: "Straight to Mayank's inbox ✉️" },
       { selector: "[data-palette-open]", text: "Psst — hit Ctrl+K from anywhere ⚡" },
@@ -2496,20 +4488,20 @@
       { selector: ".shell__input, .shell__run", text: "Try 'whoami', 'projects', or 'sudo' 👀" },
       { selector: ".shell", text: "A live DOM-reading shell — zero fake logs." },
 
-      { selector: ".fact-card", text: "IIIT Gwalior B.Tech+MBA + 300+ DSA reps." },
-      { selector: ".process-steps li:nth-child(1)", text: "Step 1: Hunt down the annoying manual task." },
-      { selector: ".process-steps li:nth-child(2)", text: "Step 2: Lock down the data model first." },
-      { selector: ".process-steps li:nth-child(3)", text: "Step 3: Never let an LLM do raw math." },
-      { selector: ".process-steps li:nth-child(4)", text: "Step 4: Handle flaky Wi-Fi like a pro." },
+      { selector: ".about-card__actions [data-contact-open]", text: "Straight to Mayank's inbox — let's talk ✉️" },
+      { selector: ".about-card__actions a[href='#experience']", text: "Scroll down to the career timeline ↓" },
+      { selector: "[data-toolkit-gust]", text: "Send a gentle breeze through the hanging stack." },
+      { selector: "[data-toolkit-settle]", text: "Calm the hanging stack back to plumb." },
+      { selector: ".toolkit-filter", text: "Filter by stack layer — lights up its bay." },
+      { selector: ".toolkit-tag[data-group='languages']", text: "TypeScript, Python, SQL — the daily drivers." },
+      { selector: ".toolkit-tag[data-group='frontend']", text: "60fps UIs, zero layout thrashing." },
+      { selector: ".toolkit-tag[data-group='backend']", text: "Postgres + Redis + strict state guards." },
+      { selector: ".toolkit-tag[data-group='ai']", text: "LLMs, RAG & containers that behave." },
+      { selector: ".about-card", text: "Workflow first — gentle gravity physics inside." },
 
       { selector: "[data-exp-jump]", text: "Jump straight to any career chapter!" },
       { selector: ".exp-arrow-btn", text: "Flip through the timeline chapters." },
       { selector: ".exp-dock", text: "Scroll or tap arrows to cruise through time." },
-
-      { selector: ".skill-card:nth-child(1)", text: "TypeScript, Python, SQL — the daily drivers." },
-      { selector: ".skill-card:nth-child(2)", text: "60fps UIs, zero layout thrashing." },
-      { selector: ".skill-card:nth-child(3)", text: "Postgres + Redis + strict state guards." },
-      { selector: ".skill-card:nth-child(4)", text: "LLMs, RAG & containers that behave." },
 
       { selector: "[data-copy]", text: "One click to copy — zero typos allowed 📋" },
       { selector: ".button--whatsapp", text: "Quick ping on WhatsApp 💬" },
@@ -2518,6 +4510,7 @@
       { selector: ".connect-channels a[href$='.pdf'], .hud__btn--resume", text: "Grab the PDF résumé 📄" },
       { selector: "[data-contact-submit]", text: "Launch message! 🚀" },
       { selector: ".connect-form", text: "Drop a note — hits Mayank's inbox directly." },
+      { selector: ".connect-info", text: "Open to work · Immediate notice" },
 
       { selector: "[data-motion-toggle]", text: "Need things calmer? Freeze all motion here." },
       { selector: ".colophon__facts", text: "Under the hood: zero framework, zero bloat." },
@@ -2960,7 +4953,7 @@
     }));
 
   const skillGroups = () =>
-    nodesOf(".skills-grid .skill-card").map((card) => ({
+    nodesOf(".toolkit-group, .skills-grid .skill-card").map((card) => ({
       group: text(card.querySelector("h3")),
       items: nodesOf("li", card).map((li) => text(li)),
     }));
@@ -3522,9 +5515,19 @@
       { group: "Sections", label: "Selected work", hint: "04 projects", run: () => gotoSection("#work") },
       { group: "Sections", label: "Under the surface", hint: "live repos", run: () => gotoSection("#systems") },
       { group: "Sections", label: "Console", hint: "type a command", run: () => focusShell("help") },
-      { group: "Sections", label: "About", run: () => gotoSection("#about") },
+      { group: "Sections", label: "About & Toolkit", run: () => gotoSection("#about") },
       { group: "Sections", label: "Experience", run: () => gotoSection("#experience") },
-      { group: "Sections", label: "Toolkit", run: () => gotoSection("#skills") },
+      {
+        group: "Sections",
+        label: "Toolkit (expanded)",
+        run: () => {
+          if (aboutExpand && aboutExpand.isActive()) {
+            smoothScroller.scrollToY(aboutExpand.getExpandedY());
+          } else {
+            gotoSection("#about");
+          }
+        },
+      },
       { group: "Sections", label: "Contact", run: () => gotoSection("#contact") },
       { group: "Sections", label: "How this page is built", hint: "colophon", run: () => gotoSection("#colophon") },
       { group: "Projects", label: "Shoboti", hint: "social commerce", run: () => gotoSection("#project-shoboti") },
@@ -3629,12 +5632,22 @@
       if (!command) {
         return;
       }
+      if (command.group === "Sections" || command.group === "Projects") {
+        lastTrigger = null;
+      }
       palette.close();
       command.run();
     };
 
     const openPalette = (trigger) => {
-      lastTrigger = trigger || document.activeElement;
+      const fromDrawer = trigger instanceof Element && trigger.closest("#site-drawer");
+      lastTrigger = fromDrawer ? document.querySelector("[data-menu-toggle]") : (trigger || document.activeElement);
+      if (fromDrawer) {
+        const openDrawerEl = document.getElementById("site-drawer");
+        if (openDrawerEl?.classList.contains("is-open")) {
+          document.querySelector("[data-menu-backdrop]")?.click();
+        }
+      }
       paletteInput.value = "";
       filter("");
       status.textContent = "";
@@ -3651,7 +5664,7 @@
       palette.showModal();
       mascotGlance();
       document.body.classList.add("dialog-open");
-      paletteInput.focus();
+      paletteInput.focus({ preventScroll: true });
     };
 
     document.querySelectorAll("[data-palette-open]").forEach((trigger) => {
@@ -3699,8 +5712,8 @@
 
     palette.addEventListener("close", () => {
       document.body.classList.remove("dialog-open");
-      if (lastTrigger instanceof HTMLElement) {
-        lastTrigger.focus();
+      if (lastTrigger instanceof HTMLElement && !lastTrigger.closest("[inert]")) {
+        lastTrigger.focus({ preventScroll: true });
       }
       lastTrigger = null;
     });
@@ -3742,10 +5755,9 @@
         btn.setAttribute("aria-pressed", enabled ? "true" : "false");
         btn.classList.toggle("sound-toggle--active", enabled);
       });
-      const hudSound = document.querySelector("[data-hud-sound]");
-      if (hudSound) {
-        hudSound.textContent = enabled ? "ON" : "OFF";
-      }
+      document.querySelectorAll("[data-hud-sound], [data-drawer-sound]").forEach((el) => {
+        el.textContent = enabled ? "ON" : "OFF";
+      });
       if (enabled) {
         init();
         chime();
@@ -3822,9 +5834,10 @@
       }
     });
 
-    const hudSound = document.querySelector("[data-hud-sound]");
-    if (hudSound && enabled) {
-      hudSound.textContent = "ON";
+    if (enabled) {
+      document.querySelectorAll("[data-hud-sound], [data-drawer-sound]").forEach((el) => {
+        el.textContent = "ON";
+      });
     }
 
     document.addEventListener("click", (e) => {
@@ -4846,7 +6859,8 @@
     const firstDialogInput = contactDialog.querySelector('input[name="name"]');
 
     const openContactDialog = (trigger) => {
-      lastContactTrigger = trigger || document.activeElement;
+      const fromDrawer = trigger instanceof Element && trigger.closest("#site-drawer");
+      lastContactTrigger = fromDrawer ? document.querySelector("[data-menu-toggle]") : (trigger || document.activeElement);
       if (palette?.open) {
         palette.close();
       }
@@ -4859,7 +6873,7 @@
       mascotGlance();
       document.body.classList.add("dialog-open");
       if (firstDialogInput) {
-        firstDialogInput.focus();
+        firstDialogInput.focus({ preventScroll: true });
       } else {
         contactDialog.focus({ preventScroll: true });
       }
@@ -4871,8 +6885,8 @@
 
     contactDialog.addEventListener("close", () => {
       document.body.classList.remove("dialog-open");
-      if (lastContactTrigger instanceof HTMLElement) {
-        lastContactTrigger.focus();
+      if (lastContactTrigger instanceof HTMLElement && !lastContactTrigger.closest("[inert]")) {
+        lastContactTrigger.focus({ preventScroll: true });
       }
       lastContactTrigger = null;
     });
