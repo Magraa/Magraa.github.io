@@ -11,7 +11,7 @@ from functools import partial
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit
 
 ROOT_DIR = Path(__file__).resolve().parent
 DEV_AGENTATION = ROOT_DIR.parent / "dev" / "agentation.dev.js"
@@ -114,6 +114,21 @@ class PortfolioRequestHandler(SimpleHTTPRequestHandler):
             return "public, max-age=31536000, immutable"
         return "public, max-age=3600"
 
+    def _maybe_inject_agentation(self, file_path: Path, query: str, data: bytes) -> bytes:
+        if file_path.name != "index.html" or not DEV_AGENTATION.is_file():
+            return data
+        if os.environ.get("PREVIEW_NO_AGENTATION") == "1":
+            return data
+        params = parse_qs(query, keep_blank_values=True)
+        # Opt-out flags for clean Lighthouse audits; skip if ?agentation is already handled inline.
+        if "no-agentation" in params or params.get("agentation") == ["0"] or "agentation" in params:
+            return data
+        head, sep, tail = data.rpartition(b"</body>")
+        if not sep:
+            return data
+        snippet = b'<script src="/__dev/agentation.dev.js" defer></script>'
+        return head + snippet + sep + tail
+
     def _serve(self, head_only: bool = False) -> None:
         file_path = self._resolve_file()
         if file_path is None:
@@ -123,7 +138,7 @@ class PortfolioRequestHandler(SimpleHTTPRequestHandler):
         parsed = urlsplit(self.path)
         ext = file_path.suffix.lower()
         ctype = MIME_OVERRIDES.get(ext, self.guess_type(str(file_path)))
-        data = file_path.read_bytes()
+        data = self._maybe_inject_agentation(file_path, parsed.query, file_path.read_bytes())
 
         accepts_gzip = "gzip" in (self.headers.get("Accept-Encoding") or "").lower()
         use_gzip = accepts_gzip and ext in COMPRESSIBLE_EXTS and len(data) >= 256 and not self.headers.get("Range")
