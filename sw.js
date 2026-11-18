@@ -1,6 +1,6 @@
 /* Lightweight Service Worker: stale-while-revalidate for static portfolio shell & cache-first for versioned/media assets */
 
-const CACHE_VERSION = "03b3fcd0";
+const CACHE_VERSION = "84e450db";
 const SHELL_CACHE = `ma-shell-${CACHE_VERSION}`;
 const ASSET_CACHE = `ma-assets-${CACHE_VERSION}`;
 
